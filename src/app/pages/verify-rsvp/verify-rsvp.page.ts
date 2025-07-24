@@ -34,7 +34,7 @@ export class VerifyRsvpPage implements OnInit {
       // Safe to use data[0].fullname here
       this.global.presentToast(`User ${data[0].fullname} is inivited!`, 'success', 'checkmark-circle-outline');
     } else {
-      this.global.presentToast(`Opps! We're having trouble finding your invite. Please check your spelling of you name or contact the couple.`, 'warning', 'alert-circle-outline');
+      this.global.presentToast(`Opps! We're having trouble finding your invite. Please check your spelling of your name or contact the couple.`, 'warning', 'alert-circle-outline');
 
     }
 
