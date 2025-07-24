@@ -1,0 +1,16 @@
+.rsvp-background {
+    --background: #f2f2f2;
+}
+
+.rsvp-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80%;
+}
+
+.rsvp-card {
+    width: 100%;
+    max-width: 400px;
+    padding: 1rem;
+}
