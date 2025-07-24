@@ -6,7 +6,7 @@
   "scripts": {
     "ng": "ng",
     "generate-env": "node generate-env.js",
-    "build": "npm run generate-env && ionic build --prod",
+    "build": "ng build --configuration production",
     "start": "npm run generate-env && ionic serve",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
