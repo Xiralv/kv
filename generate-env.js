@@ -2,27 +2,22 @@ const fs = require('fs');
 const path = require('path');
 require('dotenv').config();
 
-if (!process.env.SUPABASE_URL || !process.env.SUPABASE_KEY) {
-    throw new Error('❌ Missing SUPABASE_URL or SUPABASE_KEY in .env');
+const environmentsDir = path.join(__dirname, 'src/environments');
+
+// Create the environments folder if it doesn't exist
+if (!fs.existsSync(environmentsDir)) {
+    fs.mkdirSync(environmentsDir, { recursive: true });
 }
 
-const envVars = {
-    SUPABASE_URL: process.env.SUPABASE_URL,
-    SUPABASE_KEY: process.env.SUPABASE_KEY
-};
-
-function generateEnvFile(filePath, isProd) {
-    const content = `
+const envContent = (isProd) => `
 export const environment = {
   production: ${isProd},
-  SUPABASE_URL: '${envVars.SUPABASE_URL}',
-  SUPABASE_KEY: '${envVars.SUPABASE_KEY}'
+  SUPABASE_URL: '${process.env.SUPABASE_URL}',
+  SUPABASE_KEY: '${process.env.SUPABASE_KEY}'
 };
 `;
 
-    fs.writeFileSync(filePath, content.trim() + '\n');
-    console.log(`✅ Generated ${filePath}`);
-}
+fs.writeFileSync(path.join(environmentsDir, 'environment.ts'), envContent(false));
+fs.writeFileSync(path.join(environmentsDir, 'environment.prod.ts'), envContent(true));
 
-generateEnvFile(path.join(__dirname, 'src/environments/environment.ts'), false);
-generateEnvFile(path.join(__dirname, 'src/environments/environment.prod.ts'), true);
+console.log('✅ Environment files generated.');
