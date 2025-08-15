@@ -37,5 +37,8 @@
 // @import "@ionic/angular/css/palettes/dark.system.css";
 
 .toast-text-color {
-    --color: #ffffff;
+    --color: #ffffff !important;
+    /* changes icon color */
+    --ion-color-contrast: #ffffff !important;
+    /* changes text color */
 }

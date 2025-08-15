@@ -1,1 +1,17 @@
+ion-tab-button {
+    --color: #999;
+    /* Inactive color */
+    --color-selected: #f7c51e;
+    /* Active color (pink in this case) */
+}
 
+
+/* Optional: Add smooth transition */
+ion-tab-button {
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+ion-tab-button.tab-selected {
+    transform: scale(1.05);
+    /* Small zoom effect */
+}

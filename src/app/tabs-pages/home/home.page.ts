@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { IonRouterOutlet, ModalController } from '@ionic/angular';
+import { VerifyRsvpPage } from 'src/app/pages/verify-rsvp/verify-rsvp.page';
 
 @Component({
   selector: 'app-home',
@@ -9,15 +11,34 @@ import { Component, OnInit } from '@angular/core';
 export class HomePage implements OnInit {
 
   user_fullname: string | null = null;
-  bannerHeight = 250; // initial height
+  bannerHeight = Math.min(window.innerHeight * 0.3, 300);
 
-  constructor() { }
+  constructor(
+    private modalCtrl: ModalController,
+    private routerOutlet: IonRouterOutlet
+
+  ) { }
 
 
   ngOnInit() {
-
     this.user_fullname = localStorage.getItem('user_fullname') ? localStorage.getItem('user_fullname') : '';
   }
+
+
+  async rsvp() {
+    const modal = await this.modalCtrl.create({
+      component: VerifyRsvpPage,
+      presentingElement: this.routerOutlet.nativeEl,
+    });
+    modal.present();
+
+    const { data, role } = await modal.onWillDismiss();
+
+    // if (role === 'confirm') {
+    //   this.message = `Hello, ${data}!`;
+    // }
+  }
+
 
 
   onScroll(ev: any) {

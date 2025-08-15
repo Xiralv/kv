@@ -4,7 +4,7 @@ import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'verify-rsvp',
+    redirectTo: 'tabs/home',
     pathMatch: 'full'
   },
   {

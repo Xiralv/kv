@@ -16,7 +16,7 @@
   <ion-grid>
     <ion-row>
       @for (image of images; track $index) {
-      <ion-col size="12">
+      <ion-col size="12" size-sm="6" size-md="4" size-lg="3">
         <ion-card>
           <img [src]="image" alt="Gallery Image" />
         </ion-card>
@@ -24,6 +24,7 @@
       }
     </ion-row>
   </ion-grid>
+
 
 
 

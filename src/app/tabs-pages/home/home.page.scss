@@ -1,8 +1,6 @@
 :host {
-    --banner-max-height: 250px;
-    /* Starting height */
-    --banner-min-height: 56px;
-    /* Collapsed height */
+    --banner-max-height: 30vh; // ~30% of screen height
+    --banner-min-height: 56px; // keep toolbar collapse height fixed
 }
 
 .transparent-toolbar {
@@ -16,10 +14,9 @@
     z-index: 10;
 }
 
+
 .collapsing-image {
-    position: relative;
-    overflow: hidden;
-    transition: height 0.2s ease-out;
+    height: var(--banner-max-height);
 }
 
 .collapsing-image img {
@@ -29,27 +26,53 @@
 }
 
 .main-content {
-    background: #fff;
+    background: #F0EADB;
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
     margin-top: -20px;
     box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
 }
 
-p {
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+
+
+.circle {
+    width: clamp(30px, 15vw, 60px); // min 60px, max 120px, scales with screen
+    height: clamp(30px, 15vw, 60px);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
+.circle-row {
+    gap: 100px;
+    /* default for mobile */
+}
 
+@media (min-width: 768px) {
+    .circle-row {
+        gap: 200px;
+        /* tablets */
+    }
+}
+
+@media (min-width: 1024px) {
+    .circle-row {
+        gap: 400px;
+        /* desktop */
+    }
+}
+
+// #FFFAE7
 .main-content {
     background: #fff;
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
     margin-top: -20px;
     box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-    padding-bottom: 140px;
-    /* space for sticky RSVP */
+    padding-bottom: clamp(80px, 15vh, 140px); // space for sticky RSVP scales
 }
+
 
 .sticky-rsvp {
     position: fixed;
@@ -61,6 +84,33 @@ p {
     box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
 }
 
+.sticky-rsvp ion-card-content {
+    padding: clamp(8px, 2vw, 16px);
+}
+
+
+.item-entourage {
+    font-size: clamp(0.75rem, 1.8vw, 0.9rem);
+
+}
+
+.no-padding {
+    --ion-padding: 0;
+    padding: 0 !important;
+}
+
+.font {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-weight: bold;
+
+}
+
+
+p {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+
 ion-card {
     margin: 16px;
 }
@@ -71,8 +121,13 @@ ion-title {
 }
 
 
-ion-card-title {
-    // font-family: cursive;
+ion-button {
+
+    --border-color: #000;
+    --background-activated: #000;
+
+    --color-activated: #fff;
+    --color: #000
 }
 
 ion-card-subtitle {
@@ -80,6 +135,6 @@ ion-card-subtitle {
 }
 
 h2 {
-    font-size: 28px;
+    font-size: clamp(20px, 2.5vw, 28px);
     font-family: cursive;
 }

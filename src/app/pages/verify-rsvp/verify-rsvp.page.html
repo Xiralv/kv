@@ -1,29 +1,63 @@
 <ion-content [fullscreen]="true" class="ion-padding rsvp-background">
-  <div class="rsvp-container">
-    <ion-card class="rsvp-card">
-      <ion-card-header>
 
-        <ion-card-subtitle>Kamille and Vlarix Wedding</ion-card-subtitle>
-        <ion-card-title>RSVP</ion-card-title>
-        <div class="avatar-container">
-          <ion-avatar>
-            <img src="assets/images/avatar.png" />
-          </ion-avatar>
-        </div>
-      </ion-card-header>
 
-      <ion-card-content>
-        <form [formGroup]="rsvpForm" (ngSubmit)="onSubmit()">
-          <ion-item>
-            <ion-label position="floating">Full Name</ion-label>
-            <ion-input type="fullname" formControlName="fullname" required></ion-input>
-          </ion-item>
+  <swiper-container #swiperRef class="ion-margin-top swiper-progressbar" slides-per-view="1" space-between="10"
+    pagination='{"type": "progressbar"}' allow-touch-move="false">
 
-          <ion-button expand="block" type="submit" [disabled]="rsvpForm.invalid" class="ion-margin-top">
-            Submit
-          </ion-button>
-        </form>
-      </ion-card-content>
-    </ion-card>
-  </div>
+
+    <swiper-slide class="rsvp-container">
+      <ion-card class="rsvp-card">
+        <ion-card-header>
+
+          <p>You are invited to Kamille & Vlarix’s Special Day!</p>
+          <ion-card-title>RSVP</ion-card-title>
+          <div class="avatar-container">
+            <ion-avatar>
+              <img src="assets/images/imgbanner.png" />
+            </ion-avatar>
+          </div>
+        </ion-card-header>
+
+        <ion-card-content>
+          <form [formGroup]="rsvpForm" (ngSubmit)="onSubmit()">
+            <ion-item>
+              <ion-label position="floating">Full Name</ion-label>
+              <ion-input type="fullname" formControlName="fullname" required></ion-input>
+            </ion-item>
+            <ion-button fill='outline' expand="block" type="submit" [disabled]="rsvpForm.invalid"
+              class="ion-margin-top">
+              Submit
+            </ion-button>
+          </form>
+        </ion-card-content>
+      </ion-card>
+    </swiper-slide>
+
+    <swiper-slide>
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>Card 2</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          Content 2
+        </ion-card-content>
+      </ion-card>
+    </swiper-slide>
+
+    <swiper-slide>
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>Card 3</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          Content 3
+        </ion-card-content>
+
+      </ion-card>
+
+    </swiper-slide>
+
+
+  </swiper-container>
+
 </ion-content>
