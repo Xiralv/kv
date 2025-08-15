@@ -1,0 +1,100 @@
+<ion-header [translucent]="true">
+  <ion-toolbar class="transparent-toolbar">
+    <ion-title>K & V</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content fullscreen (ionScroll)="onScroll($event)" scrollEvents="true">
+
+
+  <!-- Collapsing Image -->
+  <div class="collapsing-image" [style.height.px]="bannerHeight">
+    <img src="assets/images/banner.png" alt="Wedding Banner" />
+  </div>
+
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <h2 style="text-align: center;"><strong>K</strong>amille & <strong>V</strong>larix</h2>
+
+    </ion-toolbar>
+  </ion-header>
+
+
+
+  <!-- Main Content -->
+  <div class="main-content ion-padding">
+    <p>
+      You're invited <b>{{user_fullname}}</b> to celebrate! Scroll to see the details!
+    </p>
+
+
+    <!-- Event Details Card -->
+    <ion-card>
+      <ion-card-header>
+        <p>Lorem Ipsum is simply dummy text of the printing and typesetting
+          industry.</p>
+        <ion-card-title>Event Details</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p><strong>Date:</strong> December 18, 2026</p>
+        <p><strong>Church:</strong> Sacred Heart of Jesus Parish</p>
+        <p><strong>Reception:</strong> Waterfront Insular Hotel Davao</p>
+        <p><strong>Dress Code:</strong> Pastel colors</p>
+        <swiper-container class="ion-margin-top" pagination="true" slides-per-view="3" space-between="10"
+          slides-per-group="3">
+          <swiper-slide style="background: pink; height: 150px;"></swiper-slide>
+          <swiper-slide style="background: #fddf7d; height: 150px;"></swiper-slide>
+          <swiper-slide style="background: pink; height: 150px;"></swiper-slide>
+          <swiper-slide style="background: pink; height: 150px;"></swiper-slide>
+          <swiper-slide style="background: #fddf7d; height: 150px;"></swiper-slide>
+          <swiper-slide style="background: pink; height: 150px;"></swiper-slide>
+        </swiper-container>
+        <br>
+        <p><strong>Please reserve the colors xxx for the family</strong></p>
+
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Other Info Card -->
+    <ion-card>
+      <ion-card-header>
+        <p>Lorem Ipsum is simply dummy text of the printing and typesetting
+          industry.</p>
+        <ion-card-title>Schedule</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p><strong>3:00 PM</strong> - Ceremony</p>
+        <p><strong>5:00 PM</strong> - Dinner Reception</p>
+        <p><strong>7:00 PM</strong> - Dance & Entertainment</p>
+      </ion-card-content>
+    </ion-card>
+
+
+
+
+    <ion-card>
+      <ion-card-header>
+        <p>Lorem Ipsum is simply dummy text of the printing and typesetting
+          industry.</p>
+        <ion-card-title>Donations</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        INPUT QR CODE
+      </ion-card-content>
+    </ion-card>
+
+
+  </div>
+</ion-content>
+
+<div class="sticky-rsvp">
+  <ion-card>
+    <ion-card-content>
+      <p>Save the date and celebrate with us.</p>
+      <ion-button expand="block" color="primary" routerLink="/rsvp">
+        RSVP Now
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+</div>

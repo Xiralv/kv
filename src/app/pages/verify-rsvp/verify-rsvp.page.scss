@@ -14,3 +14,14 @@
     max-width: 400px;
     padding: 1rem;
 }
+
+.avatar-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+ion-avatar {
+    width: 100px;
+    height: 100px;
+}

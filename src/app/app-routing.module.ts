@@ -9,13 +9,14 @@ const routes: Routes = [
   },
   {
     path: '',
-    loadChildren: () => import('./tabs/tabs.module').then(m => m.TabsPageModule)
+    loadChildren: () => import('./tabs-pages/tabs/tabs.module').then(m => m.TabsPageModule)
   },
   {
     path: 'verify-rsvp',
     loadChildren: () => import('./pages/verify-rsvp/verify-rsvp.module').then(m => m.VerifyRsvpPageModule)
   }
 ];
+
 @NgModule({
   imports: [
     RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })
