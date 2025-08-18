@@ -36,6 +36,11 @@
       <!-- Event Details Card -->
       <ion-card>
         <ion-card-header>
+
+          <p>You are one of the chosen few that are invited to our wedding. Thank you so much for being part of our
+            lives and we hope you can come!
+          </p>
+
           <ion-card-title>Event Details</ion-card-title>
         </ion-card-header>
         <ion-card-content>
@@ -59,12 +64,20 @@
 
           <!-- todo center -->
 
-          <p>Please reserve this color for the
+          <p style="font-weight:600">Please reserve this color for the
             family</p>
 
-          <div class="ion-text-center">
-            <div class="circle" style="background:#F7E6CA;"></div>
-          </div>
+
+          <ion-grid class="ion-text-center no-padding">
+            <ion-row class="ion-justify-content-center circle-row">
+              <ion-col size="auto" class="no-padding">
+                <div class="circle" style="background: #F7E6CA;"></div>
+              </ion-col>
+              <ion-col size="auto" class="no-padding">
+                <div class="circle" style="background: #fff;"></div>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
 
 
         </ion-card-content>
@@ -96,7 +109,7 @@
                 </ion-col>
 
                 <ion-col size="6" class="ion-text-center no-padding">
-                  <p class="item-entourage">Vladimir Samarista</p>
+                  <p class="item-entourage">Grzegorz Jozef Mazur</p>
                 </ion-col>
 
 
@@ -105,8 +118,9 @@
                 </ion-col>
 
                 <ion-col size="6" class="ion-text-center no-padding">
-                  <p class="item-entourage">Grzegorz Jozef Mazur</p>
+                  <p class="item-entourage">Vladimir Samarista</p>
                 </ion-col>
+
               </ion-row>
 
 
@@ -156,7 +170,7 @@
               <ion-row class="ion-text-center">
                 <ion-col size="6">
                   <p class="font">Maid of Honor</p>
-                  <p class="item-entourage">Alexandra Czarina Bocobo</p>
+                  <p class="item-entourage">Ma. Alexandra Czarina Bocobo</p>
                 </ion-col>
 
                 <ion-col size="6">
@@ -197,8 +211,8 @@
       <!-- Other Info Card -->
       <ion-card>
         <ion-card-header>
-          <p>Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry.</p>
+          <p>Please don’t be late! hehe
+          </p>
           <ion-card-title>Schedule</ion-card-title>
         </ion-card-header>
         <ion-card-content>
@@ -213,14 +227,74 @@
 
       <ion-card>
         <ion-card-header>
-          <p>Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry.</p>
-          <ion-card-title>Donations</ion-card-title>
+          <p>
+            We’re so grateful for your love and support! Since this is a destination wedding, we kindly request cash
+            gifts to make travel easier. Your presence is the greatest gift, and we can’t wait to celebrate with you!
+          </p>
+          <ion-card-title>Gifts</ion-card-title>
         </ion-card-header>
         <ion-card-content>
           INPUT QR CODE
         </ion-card-content>
       </ion-card>
+
+
+      <!-- <ion-card class="hotel-card">
+        <img src="https://www.waterfronthotels.com.ph/wp-content/uploads/2018/04/Grand-Lobby-elevator-landing.jpg"
+          alt="Waterfront Insular Hotel" />
+
+        <ion-card-header>
+          <ion-item lines="none" class="card-header-item">
+            <ion-icon name="pin" slot="start" color="primary"></ion-icon>
+            <a href="http://www.waterfronthotels.com.ph/waterfront/waterfront-insular-hotel-davao/" target="_blank"
+              class="hotel-link">
+              Waterfront Insular Hotel Davao
+            </a>
+          </ion-item>
+          <ion-card-title class="mt-2">Stay Here!</ion-card-title>
+        </ion-card-header>
+
+        <ion-card-content>
+          <p>
+            Please message us if you'll book here so we can give you the room rate discount process.
+          </p>
+        </ion-card-content>
+      </ion-card> -->
+
+      <ion-card class="hotel-card">
+
+        <ion-card-header>
+          <!-- <ion-item lines="none" class="card-header-item">
+            <ion-icon style="margin: 0;" name="pin" slot="start" color="danger"></ion-icon>
+            <a href="http://www.waterfronthotels.com.ph/waterfront/waterfront-insular-hotel-davao/" target="_blank"
+              class="hotel-link">
+              Waterfront Insular Hotel Davao
+            </a>
+          </ion-item> -->
+          <ion-card-title>Wedding Map</ion-card-title>
+        </ion-card-header>
+
+        <ion-card-content>
+          <!-- Embedded Google Map -->
+          <img style="height: 100%;" src="assets/images/map_venue.png" alt="map" />
+
+          <!-- <div class="map-container">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d62935.13050823882!2d125.647736!3d7.1064224!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x32f96c20fd514033%3A0x7a93efe6bfc0c342!2sWaterfront%20Insular%20Hotel%20Davao!5e0!3m2!1sen!2sph!4v1691501212345!5m2!1sen!2sph"
+              width="100%" height="200" style="border:0; border-radius: 12px; margin-top: 10px;" allowfullscreen=""
+              loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
+          </div> -->
+
+          <p style="font-weight:600">
+            Please message us if you'll book at Waterfront Insular so we can give you the room rate discount process.
+          </p>
+        </ion-card-content>
+      </ion-card>
+
+
+
+
 
 
     </div>

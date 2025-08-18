@@ -112,6 +112,9 @@ p {
 
 
 ion-card {
+    border-radius: 20px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
     margin: 16px;
 }
 
@@ -137,4 +140,42 @@ ion-card-subtitle {
 h2 {
     font-size: clamp(20px, 2.5vw, 28px);
     font-family: cursive;
+}
+
+
+
+.hotel-card {
+    border-radius: 20px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+}
+
+.hotel-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+
+.card-header-item {
+    --background: transparent;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.hotel-link {
+    text-decoration: none;
+    color: #0077b6;
+    /* modern blue */
+    font-weight: 600;
+}
+
+.hotel-link:hover {
+    text-decoration: underline;
+    color: #023e8a;
+}
+
+ion-card-title {
+    font-size: 1.4rem;
+    font-weight: bold;
+    margin-top: 8px;
 }
