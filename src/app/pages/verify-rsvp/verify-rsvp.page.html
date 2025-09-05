@@ -5,6 +5,8 @@
     pagination='{"type": "progressbar"}' allow-touch-move="false">
 
 
+    <!-- Slide 1 -->
+
     <swiper-slide class="rsvp-container">
       <ion-card class="rsvp-card">
         <ion-card-header>
@@ -33,25 +35,63 @@
       </ion-card>
     </swiper-slide>
 
+    <!-- Slide 2 -->
     <swiper-slide>
       <ion-card>
         <ion-card-header>
-          <ion-card-title>Card 2</ion-card-title>
+          <p>Friday, December 18, 2026</p>
+          <ion-card-title>Wedding Day</ion-card-title>
         </ion-card-header>
         <ion-card-content>
-          Content 2
+          @if (arrGuests) {
+          @for (guest of arrGuests; track guest) {
+          <ion-row class="ion-align-items-center">
+            <ion-col>
+              <p>{{ guest.full_name }}</p>
+            </ion-col>
+
+            <ion-col size="auto">
+              <ion-button (click)="selectButton(guest,'yes')" [ngClass]="{'yes': guest.attend === true}" fill="outline"
+                size="small">Accept</ion-button>
+              <ion-button (click)="selectButton(guest,'no')" [ngClass]="{'no': guest.attend === false}" fill="outline"
+                size="small">Decline</ion-button>
+            </ion-col>
+          </ion-row>
+          }
+          <ion-button (click)="onConfirmRSVP()" fill='outline' expand="block" type="submit" class="ion-margin-top">
+            Confirm
+          </ion-button>
+          } @else {
+          <ion-skeleton-text [animated]="true" style="width: 50%;"></ion-skeleton-text>
+          }
+
+
+
         </ion-card-content>
       </ion-card>
     </swiper-slide>
 
+
+    <!-- Slide 3-->
+
     <swiper-slide>
       <ion-card>
         <ion-card-header>
-          <ion-card-title>Card 3</ion-card-title>
+          <ion-card-title>Thank you!</ion-card-title>
         </ion-card-header>
-        <ion-card-content>
-          Content 3
+        <ion-card-content class="lottie-container">
+          <ng-lottie [options]="congratsOptions" style="width: 300px; height: 300px; pointer-events: none;">
+          </ng-lottie>
+
+          <div class="overlay-text">
+            <p>See you on our wedding!</p>
+            <ion-button (click)="closeModal()" fill="outline" expand="block" class="ion-margin-top">
+              See Event Details
+            </ion-button>
+          </div>
         </ion-card-content>
+
+
 
       </ion-card>
 

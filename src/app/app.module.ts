@@ -7,7 +7,7 @@ import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
-
+import { provideLottieOptions } from 'ngx-lottie';
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -28,8 +28,11 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 
   providers: [{
     provide: RouteReuseStrategy,
-    useClass: IonicRouteStrategy
-  }],
+    useClass: IonicRouteStrategy,
+  },
+  provideLottieOptions({
+    player: () => import('lottie-web'),
+  }),],
   bootstrap: [AppComponent],
 })
 export class AppModule { }

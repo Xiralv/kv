@@ -34,8 +34,6 @@ p {
     font-size: 18px;
 }
 
-
-
 ion-button {
     // --background: #fddf7d;
     // --border-color: #fddf7d;
@@ -49,4 +47,37 @@ ion-button {
 
     --color-activated: #fff;
     --color: #000
+}
+
+.lottie-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.overlay-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+
+
+
+.yes {
+    --background: #93e9be;
+    color: rgba(255, 255, 255, 0.88);
+}
+
+
+.no {
+    --background: #c5000f;
+    color: white;
+
 }

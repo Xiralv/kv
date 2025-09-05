@@ -31,6 +31,8 @@
     "@ionic/angular": "^8.0.0",
     "@supabase/supabase-js": "^2.52.1",
     "ionicons": "^7.0.0",
+    "lottie-web": "^5.13.0",
+    "ngx-lottie": "^20.0.0",
     "rxjs": "~7.8.0",
     "swiper": "^11.2.10",
     "tslib": "^2.3.0",

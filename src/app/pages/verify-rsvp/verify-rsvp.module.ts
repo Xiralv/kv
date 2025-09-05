@@ -7,7 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { VerifyRsvpPageRoutingModule } from './verify-rsvp-routing.module';
 
 import { VerifyRsvpPage } from './verify-rsvp.page';
-
+import { LottieComponent } from 'ngx-lottie';
 @NgModule({
   imports: [
     CommonModule,
@@ -15,6 +15,7 @@ import { VerifyRsvpPage } from './verify-rsvp.page';
     IonicModule,
     VerifyRsvpPageRoutingModule,
     ReactiveFormsModule,
+    LottieComponent
   ],
   declarations: [VerifyRsvpPage],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
