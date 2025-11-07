@@ -215,17 +215,33 @@ ion-card-title {
 }
 
 .transparent-toolbar {
-    // --background: transparent;
-    /* keep toolbar transparent */
-    display: flex;
-    justify-content: center;
-    align-items: center;
+//   --background: transparent;
+  display: flex;
+  justify-content: center;
+//   align-items: center;
+  height: 70px;
+}
+
+.logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0; /* remove extra space */
 }
 
 .logo-container img {
-    max-height: 140px;
-    padding-top: 10px;
-    /* adjusts logo height to fit toolbar */
-    width: auto;
-    /* keep aspect ratio */
+  max-height: 95px; /* adjust this value depending on your toolbar height */
+  width: auto;
+  object-fit: contain;
+}
+.map-container {
+    height: 500px;
+    width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.leaflet-container {
+    height: 300px !important;
+    width: 100% !important;
 }

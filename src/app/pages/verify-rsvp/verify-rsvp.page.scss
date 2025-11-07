@@ -27,20 +27,65 @@ ion-avatar {
     width: 100px;
     height: 100px;
 }
+.thankyou-slide {
+  height: 100vh; /* full screen height */
+  width: 100vw; /* full width */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f2f2f2; /* optional background */
+}
 
-p {
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+.thankyou-card {
+  width: 100%;
+  height: 100%;
+  max-width: none; /* remove default limit */
+  margin: 0;
+  border-radius: 0; /* edge-to-edge look */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
 
+.lottie-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.overlay-text {
+  position: absolute;
+  top: 25%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+
+  img {
+    padding: 10px;
+    width: 300px; /* make logo large */
+    max-width: 60vw;
+    height: auto;
+    object-fit: contain;
+  }
+
+  p {
     font-size: 18px;
+    color: #444;
+    margin-top: 10px;
+  }
+
+
+
 }
 
 ion-button {
-    // --background: #fddf7d;
-    // --border-color: #fddf7d;
-    // --background-activated: #f7d04e;
-
-    // --color-activated: #e91e63;
-    // --color: #e91e63
 
     --border-color: #000;
     --background-activated: #000;
@@ -48,25 +93,6 @@ ion-button {
     --color-activated: #fff;
     --color: #000
 }
-
-.lottie-container {
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.overlay-text {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-}
-
 
 
 

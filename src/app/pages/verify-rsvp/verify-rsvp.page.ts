@@ -60,14 +60,19 @@ export class VerifyRsvpPage implements OnInit {
 
 
   selectButton(guestData: Guest, button: string) {
-    console.log(guestData)
     guestData.attend = button == 'yes' ? true : false;
+
+    this.arrGuests = [...this.arrGuests];
   }
 
 
+  get isConfirmDisabled(): boolean {
+    // Return true if any guest has attend == null
+    return this.arrGuests.some((guest: Guest) => guest.attend === null);
+  }
+
   onConfirmRSVP() {
     this.swiperRef.nativeElement.swiper.slideNext();
-
   }
 
 
@@ -77,7 +82,9 @@ export class VerifyRsvpPage implements OnInit {
 
 
 
-
+  /**
+   * Submit button on inputting a Full name
+   */
   async onSubmit() {
     const { data, error } = await this.api.verifyUser(this.rsvpForm.value);
 
@@ -85,7 +92,6 @@ export class VerifyRsvpPage implements OnInit {
       this.global.presentToast(`See you on our special day!`, 'success', 'checkmark-circle-outline');
 
       this.swiperRef.nativeElement.swiper.slideNext();
-      console.log(this.rsvpForm.value)
       this.arrGuests = await this.api.getGuestWithRelations(this.rsvpForm.value.fullname);
 
 

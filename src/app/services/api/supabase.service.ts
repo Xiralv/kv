@@ -54,4 +54,16 @@ export class SupabaseService {
     return [guest, ...relatedGuests];
   }
 
+
+  async updateAttend(guestId: string, attend: boolean) {
+  const { data, error } = await supabase
+    .from('guests')
+    .update({ attend })
+    .eq('id', guestId)
+    .select(); // returns updated row
+
+  if (error) throw error;
+  return data;
+}
+
 }
