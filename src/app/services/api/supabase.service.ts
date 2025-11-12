@@ -58,8 +58,6 @@ export class SupabaseService {
 
 
 async updateAttend(guestId: string, attend: boolean) {
-  console.log('Updating guest ID:', guestId, 'to attend:', attend);
-
   const { data, error } = await supabase
     .from('guests')
     .update({ attend })
@@ -70,8 +68,6 @@ async updateAttend(guestId: string, attend: boolean) {
     console.error('Supabase error:', error);
     throw error;
   }
-
-  console.log('Updated data:', data);
   return data;
 }
 
