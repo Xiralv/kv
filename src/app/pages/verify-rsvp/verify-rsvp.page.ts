@@ -42,7 +42,6 @@ export class VerifyRsvpPage implements OnInit {
 
     private router: Router,
   ) {
-
     // fetch('assets/lottiefiles/two_people_waving.json')
     //   .then(res => res.json())
     //   .then(data => console.log('✅ Lottie JSON loaded', data))
@@ -52,8 +51,6 @@ export class VerifyRsvpPage implements OnInit {
       fullname: ['', [Validators.required,]],
     });
   }
-
-
 
   async ngOnInit() {
   }
@@ -66,56 +63,23 @@ export class VerifyRsvpPage implements OnInit {
   }
 
 
-  get isConfirmDisabled(): boolean {
-    // Return true if any guest has attend == null
-    return this.arrGuests.some((guest: Guest) => guest.attend === null);
-  }
+  async onConfirmRSVP() {
+    for (let guests of this.arrGuests) {
+      try {
+        const updated = await this.api.updateAttend(guests.id, guests.attend);
+        console.log('Attend updated:', updated);
+        this.swiperRef.nativeElement.swiper.slideNext();
+      } catch (err) {
+        console.error('Error updating attend:', err);
+      }
 
-  onConfirmRSVP() {
-    console.log(this.arrGuests);
-    this.swiperRef.nativeElement.swiper.slideNext();
+    }
   }
 
 
   closeModal() {
     this.modalCtrl.dismiss()
   }
-
-get guestCount(): number {
-  return this.arrGuests?.length || 0;
-}
-
-get hasDeclined(): boolean {
-  return this.arrGuests?.some((g: Guest) => g.attend === false);
-}
-
-get hasAccepted(): boolean {
-  return this.arrGuests?.some((g: Guest) => g.attend === true);
-}
-
-get messageText(): string {
-  // Handle single guest separately
-  if (this.guestCount === 1) {
-    const singleGuest = this.arrGuests[0];
-
-    if (singleGuest.attend) {
-      return "Thank you for confirming! We’re excited to celebrate with you! 💍";
-    } else {
-      return "Thanks for letting us know! We’re sad you can’t make it, but for any changes in the future, please don't hesitate to message us! 💛";
-    }
-  }
-
-  // Handle multiple guests
-  if (this.hasAccepted && this.hasDeclined) {
-    return "Thank you for confirming! We're excited to see those who can come, and we’ll miss the ones who can’t make it. 💛";
-  } else if (this.hasDeclined && !this.hasAccepted) {
-    return "Thanks for letting us know! It's sad that you'll not be able to join us, but for any changes in the future, please don't hesitate to message us!";
-  } else {
-    return "See you on our wedding day! 💍";
-  }
-}
-
-
 
 
   /**
@@ -138,4 +102,51 @@ get messageText(): string {
 
   }
 
+
+  get isConfirmDisabled(): boolean {
+    // Return true if any guest has attend == null
+    return this.arrGuests.some((guest: Guest) => guest.attend === null);
+  }
+
+
+  get guestCount(): number {
+    return this.arrGuests?.length || 0;
+  }
+
+  get hasDeclined(): boolean {
+    return this.arrGuests?.some((g: Guest) => g.attend === false);
+  }
+
+  get hasAccepted(): boolean {
+    return this.arrGuests?.some((g: Guest) => g.attend === true);
+  }
+
+  get messageText(): string {
+    // Handle single guest separately
+    if (this.guestCount === 1) {
+      const singleGuest = this.arrGuests[0];
+
+      if (singleGuest.attend) {
+        return "Thank you for confirming! We’re excited to celebrate with you! 💍";
+      } else {
+        return "Thanks for letting us know! We’re sad you can’t make it, but for any changes in the future, please don't hesitate to message us! 💛";
+      }
+    }
+
+    // Handle multiple guests
+    if (this.hasAccepted && this.hasDeclined) {
+      return "Thank you for confirming! We're excited to see those who can come, and we’ll miss the ones who can’t make it. 💛";
+    } else if (this.hasDeclined && !this.hasAccepted) {
+      return "Thanks for letting us know! It's sad that you'll not be able to join us, but for any changes in the future, please don't hesitate to message us!";
+    } else {
+      return "See you on our wedding day! 💍";
+    }
+  }
+
 }
+
+
+
+
+
+

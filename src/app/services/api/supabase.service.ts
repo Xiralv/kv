@@ -18,7 +18,9 @@ export class SupabaseService {
     return await supabase
       .from('guests')
       .select('*')
-      .ilike('full_name', fullname.trim());
+      .ilike('full_name', fullname.trim())
+      // .not('attend', 'is', null); // 👈 only get rows where attend IS NOT NULL
+      .is('attend', null); // ✅ only rows where attend IS NULL
   }
 
 
@@ -55,14 +57,21 @@ export class SupabaseService {
   }
 
 
-  async updateAttend(guestId: string, attend: boolean) {
+async updateAttend(guestId: string, attend: boolean) {
+  console.log('Updating guest ID:', guestId, 'to attend:', attend);
+
   const { data, error } = await supabase
     .from('guests')
     .update({ attend })
     .eq('id', guestId)
-    .select(); // returns updated row
+    .select('*');
 
-  if (error) throw error;
+  if (error) {
+    console.error('Supabase error:', error);
+    throw error;
+  }
+
+  console.log('Updated data:', data);
   return data;
 }
 
