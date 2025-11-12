@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
-import { IonRouterOutlet, ModalController } from '@ionic/angular';
+import { ActionSheetController, AlertController, IonRouterOutlet, ModalController } from '@ionic/angular';
 import { VerifyRsvpPage } from 'src/app/pages/verify-rsvp/verify-rsvp.page';
 import * as L from 'leaflet';
 
@@ -32,8 +32,9 @@ export class HomePage implements AfterViewInit {
 
   constructor(
     private modalCtrl: ModalController,
-    private routerOutlet: IonRouterOutlet
-
+    private routerOutlet: IonRouterOutlet,
+    private alertCtrl: AlertController
+ 
   ) { }
 
 
@@ -46,7 +47,7 @@ export class HomePage implements AfterViewInit {
 
   private initMap(): void {
     // Create the map centered between your two points
-    this.map = L.map('map').setView([7.0885, 125.6123], 14);
+    this.map = L.map('map').setView([7.0992912, 125.62745815], 13);
 
     // Add OpenStreetMap tiles (no API key needed)
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -87,14 +88,40 @@ export class HomePage implements AfterViewInit {
     const modal = await this.modalCtrl.create({
       component: VerifyRsvpPage,
       presentingElement: this.routerOutlet.nativeEl,
+      canDismiss: this.canDismiss.bind(this)
     });
     modal.present();
 
     const { data, role } = await modal.onWillDismiss();
 
-    // if (role === 'confirm') {
-    //   this.message = `Hello, ${data}!`;
-    // }
+    console.log(data)
+    console.log(role)
+  }
+
+
+  async canDismiss(): Promise<boolean> {
+    const alert = await this.alertCtrl.create({
+      header: 'Are you sure?',
+      message: 'Do you really want to close this modal?',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          handler: () => false,
+        },
+        {
+          text: 'Yes',
+          role: 'confirm',
+          handler: () => true,
+        },
+      ],
+    });
+
+    await alert.present();
+    const { role } = await alert.onWillDismiss();
+    
+    // Return true or false depending on user's choice
+    return role === 'confirm';
   }
 
 

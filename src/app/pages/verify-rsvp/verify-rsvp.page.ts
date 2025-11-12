@@ -72,6 +72,7 @@ export class VerifyRsvpPage implements OnInit {
   }
 
   onConfirmRSVP() {
+    console.log(this.arrGuests);
     this.swiperRef.nativeElement.swiper.slideNext();
   }
 
@@ -79,6 +80,41 @@ export class VerifyRsvpPage implements OnInit {
   closeModal() {
     this.modalCtrl.dismiss()
   }
+
+get guestCount(): number {
+  return this.arrGuests?.length || 0;
+}
+
+get hasDeclined(): boolean {
+  return this.arrGuests?.some((g: Guest) => g.attend === false);
+}
+
+get hasAccepted(): boolean {
+  return this.arrGuests?.some((g: Guest) => g.attend === true);
+}
+
+get messageText(): string {
+  // Handle single guest separately
+  if (this.guestCount === 1) {
+    const singleGuest = this.arrGuests[0];
+
+    if (singleGuest.attend) {
+      return "Thank you for confirming! We’re excited to celebrate with you! 💍";
+    } else {
+      return "Thanks for letting us know! We’re sad you can’t make it, but for any changes in the future, please don't hesitate to message us! 💛";
+    }
+  }
+
+  // Handle multiple guests
+  if (this.hasAccepted && this.hasDeclined) {
+    return "Thank you for confirming! We're excited to see those who can come, and we’ll miss the ones who can’t make it. 💛";
+  } else if (this.hasDeclined && !this.hasAccepted) {
+    return "Thanks for letting us know! It's sad that you'll not be able to join us, but for any changes in the future, please don't hesitate to message us!";
+  } else {
+    return "See you on our wedding day! 💍";
+  }
+}
+
 
 
 

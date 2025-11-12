@@ -1,247 +1,199 @@
 :host {
-    --banner-max-height: 30vh; // ~30% of screen height
-    --banner-min-height: 56px; // keep toolbar collapse height fixed
+  --banner-max-height: 35vh;
+  --banner-min-height: 56px;
 }
 
+/* Header + Logo */
 .transparent-toolbar {
-    position: absolute;
-
-    top: 0;
-    left: 0;
-    width: 100%;
-    // color: white;
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-    z-index: 10;
-}
-
-
-.collapsing-image {
-    height: var(--banner-max-height);
-}
-
-.collapsing-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.main-content {
-    background: #F0EADB;
-    border-top-left-radius: 20px;
-    border-top-right-radius: 20px;
-    margin-top: -20px;
-    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-}
-
-
-
-.circle {
-    width: clamp(30px, 15vw, 60px); // min 60px, max 120px, scales with screen
-    height: clamp(30px, 15vw, 60px);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.circle-row {
-    gap: 100px;
-    /* default for mobile */
-}
-
-@media (min-width: 768px) {
-    .circle-row {
-        gap: 200px;
-        /* tablets */
-    }
-}
-
-@media (min-width: 1024px) {
-    .circle-row {
-        gap: 400px;
-        /* desktop */
-    }
-}
-
-// #FFFAE7
-.main-content {
-    background: #fff;
-    border-top-left-radius: 20px;
-    border-top-right-radius: 20px;
-    margin-top: -20px;
-    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-    padding-bottom: clamp(80px, 15vh, 140px); // space for sticky RSVP scales
-}
-
-
-.sticky-rsvp {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    z-index: 11;
-    background: #fff;
-    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.sticky-rsvp ion-card-content {
-    padding: clamp(8px, 2vw, 16px);
-}
-
-
-.item-entourage {
-    font-size: clamp(0.75rem, 1.8vw, 0.9rem);
-
-}
-
-.no-padding {
-    --ion-padding: 0;
-    padding: 0 !important;
-}
-
-.font {
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-    font-weight: bold;
-
-}
-
-
-p {
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-}
-
-
-ion-card {
-    border-radius: 20px;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
-    overflow: hidden;
-    margin: 16px;
-}
-
-ion-title {
-    font-family: cursive;
-
-}
-
-
-ion-button {
-
-    --border-color: #000;
-    --background-activated: #000;
-
-    --color-activated: #fff;
-    --color: #000
-}
-
-ion-card-subtitle {
-    font-family: Verdana, Geneva, Tahoma, sans-serif
-}
-
-h2 {
-    font-size: clamp(20px, 2.5vw, 28px);
-    font-family: cursive;
-}
-
-
-
-.hotel-card {
-    border-radius: 20px;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
-    overflow: hidden;
-}
-
-.hotel-card img {
-    width: 100%;
-    height: 180px;
-    object-fit: cover;
-}
-
-.card-header-item {
-    --background: transparent;
-    font-size: 1rem;
-    font-weight: 500;
-}
-
-.hotel-link {
-    text-decoration: none;
-    color: #0077b6;
-    /* modern blue */
-    font-weight: 600;
-}
-
-.hotel-link:hover {
-    text-decoration: underline;
-    color: #023e8a;
-}
-
-ion-card-title {
-    font-size: 1.4rem;
-    font-weight: bold;
-    margin-top: 8px;
-}
-
-
-.map-wrapper {
-    position: relative;
-    width: 100%;
-    padding-top: 56.25%;
-    /* 16:9 Aspect Ratio (adjust if needed) */
-    border-radius: 12px;
-    overflow: hidden;
-    margin-bottom: 12px;
-    justify-content: center;
-    /* centers horizontally */
-    align-items: center;
-    /* centers vertically (if needed) */
-}
-
-.map-wrapper img {
-    position: absolute;
-    top: 0;
-    left: 0;
-    max-width: 600px;
-    /* prevents it from being too big on desktop */
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    /* keeps image/map nicely scaled */
-    border: 0;
-}
-
-.map-note {
-    font-weight: 600;
-    font-size: 0.95rem;
-    line-height: 1.4;
-}
-
-.transparent-toolbar {
-//   --background: transparent;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 10;
   display: flex;
   justify-content: center;
-//   align-items: center;
-  height: 70px;
+  height: clamp(60px, 10vh, 90px);
+  background: transparent;
 }
 
 .logo-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 0; /* remove extra space */
+  padding: 0;
 }
 
 .logo-container img {
-  max-height: 95px; /* adjust this value depending on your toolbar height */
+  max-height: clamp(60px, 10vh, 100px);
   width: auto;
   object-fit: contain;
 }
-.map-container {
-    height: 500px;
-    width: 100%;
-    border-radius: 12px;
-    overflow: hidden;
+
+/* Collapsing Banner */
+.collapsing-image {
+  height: var(--banner-max-height);
 }
 
-.leaflet-container {
-    height: 300px !important;
-    width: 100% !important;
+.collapsing-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Main Content */
+.main-content {
+  background: #fff;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  margin-top: -20px;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+  padding-bottom: clamp(80px, 15vh, 140px);
+  font-size: clamp(0.9rem, 1.8vw, 1rem);
+  line-height: 1.5;
+}
+
+/* Circles */
+.circle {
+  width: clamp(25px, 10vw, 60px);
+  height: clamp(25px, 10vw, 60px);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.circle-row {
+  gap: clamp(40px, 10vw, 200px);
+  justify-content: center;
+}
+
+/* Entourage Section */
+.item-entourage {
+  font-size: clamp(0.8rem, 1.8vw, 1rem);
+  margin: 4px 0;
+}
+
+.font {
+  font-weight: bold;
+  font-size: clamp(1rem, 2vw, 1.3rem);
+}
+
+/* Text and Paragraphs */
+p {
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  line-height: 1.5;
+  text-align: center;
+}
+
+/* Cards */
+ion-card {
+  border-radius: 20px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  margin: clamp(8px, 2vw, 16px);
+}
+
+ion-card-title {
+  font-size: clamp(1.1rem, 2vw, 1.4rem);
+  font-weight: bold;
+  margin-top: 8px;
+  text-align: center;
+}
+
+/* Hotel Card & Map */
+.hotel-card img {
+  width: 100%;
+  height: clamp(150px, 30vh, 250px);
+  object-fit: cover;
+}
+
+.map-container {
+  height: clamp(250px, 40vh, 500px);
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* Sticky RSVP */
+.sticky-rsvp {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 11;
+  background: #fff;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Centered Sticky RSVP */
+.sticky-rsvp {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 11;
+  background: #fff;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: center;
+}
+
+.sticky-rsvp ion-card {
+  width: 100%;
+  max-width: 600px; /* keeps it elegant on large screens */
+  margin: 0 auto;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.sticky-rsvp ion-card-content {
+  text-align: center;
+  padding: clamp(8px, 2vw, 16px);
+}
+
+.sticky-rsvp ion-button {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  display: block;
+  border-radius: 12px;
+}
+ion-button {
+  --border-color: #000;
+  --background-activated: #000;
+  --color-activated: #fff;
+  --color: #000;
+  font-size: clamp(0.9rem, 2vw, 1rem);
+}
+
+/* Responsive Tweaks */
+@media (min-width: 768px) {
+  .main-content {
+    padding: 2rem 3rem;
+  }
+
+  p {
+    text-align: center;
+  }
+}
+
+@media (min-width: 1024px) {
+  .main-content {
+    padding: 3rem 6rem;
+  }
+
+  .logo-container img {
+    max-height: 100px;
+  }
+
+  ion-card {
+    max-width: 800px;
+    margin: 24px auto;
+  }
+}
+
+
+.ion-text-center {
+  text-align: center !important;
+  padding: 0;
 }

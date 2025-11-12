@@ -58,7 +58,8 @@
             </ion-col>
           </ion-row>
           }
-          <ion-button  [disabled]="isConfirmDisabled" (click)="onConfirmRSVP()" fill='outline' expand="block" type="submit" class="ion-margin-top">
+          <ion-button [disabled]="isConfirmDisabled" (click)="onConfirmRSVP()" fill='outline' expand="block"
+            type="submit" class="ion-margin-top">
             Confirm
           </ion-button>
           } @else {
@@ -75,61 +76,66 @@
     <!-- Slide 3-->
 
     <swiper-slide class="thankyou-slide">
-  <ion-card class="thankyou-card">
-    <ion-card-header>
-      <ion-card-title>Thank you!</ion-card-title>
-    </ion-card-header>
-
-    <ion-card-content class="lottie-container">
-
-      <div class="overlay-text">
-        <img style="zoom:1.8" src="assets/images/kvlogofinal.png" alt="KV Logo" />
-        <p>See you on our wedding!</p>
-        <ion-button
-          (click)="closeModal()"
-          fill="outline"
-          expand="block"
-          class="ion-margin-top"
-        >
-          See Event Details
-        </ion-button>
-      </div>
-            <ng-lottie
-        [options]="congratsOptions"
-        style="width: 100%; height: 100%; pointer-events: none;"
-      ></ng-lottie>
-
-    </ion-card-content>
-  </ion-card>
-</swiper-slide>
-
-
-    <!-- <swiper-slide>
-      <ion-card>
-        <ion-card-header>
-          <ion-card-title>Thank you!</ion-card-title>
-        </ion-card-header>
+      <ion-card class="thankyou-card">
         <ion-card-content class="lottie-container">
-          <ng-lottie [options]="congratsOptions" style="width: 300px; height: 300px; pointer-events: none;">
-          </ng-lottie>
-
-        <img style="zoom:1.5" src="assets/images/kvlogofinal.png" alt="KV Logo" />
-
           <div class="overlay-text">
+            <img style="zoom:1.6" src="assets/images/kvlogofinal.png" alt="KV Logo" />
+            <p>{{ messageText }}</p>
 
-            <p>See you on our wedding!</p>
+            @if (guestCount === 1) {
+            @if (arrGuests[0].attend === false) {
+            <p>{{ arrGuests[0].full_name }} can’t attend.</p>
+            } @else {
+            <p>{{ arrGuests[0].full_name }}</p>
+            }
+            }
+            @else if (hasAccepted && hasDeclined) {
+            <!-- Mixed -->
+            <p>The following guest(s) can’t attend:</p>
+            <ul>
+              @for (g of arrGuests; track g) {
+              @if (!g.attend) {
+              <li>{{ g.full_name }}</li>
+              }
+              }
+            </ul>
+            }
+            @else if (hasDeclined && !hasAccepted) {
+            <!-- Everyone declined -->
+            <p>The following guest(s) can’t attend:</p>
+            <ul>
+              @for (g of arrGuests; track g) {
+              @if (!g.attend) {
+              <li>{{ g.full_name }}</li>
+              }
+              }
+            </ul>
+            }
+            @else if (hasAccepted && !hasDeclined) {
+            <!-- Everyone accepted -->
+            <p>We’re happy that all guest(s) can join!</p>
+            <ul>
+              @for (g of arrGuests; track g) {
+              @if (g.attend) {
+              <li>{{ g.full_name }}</li>
+              }
+              }
+            </ul>
+            }
+
+
             <ion-button (click)="closeModal()" fill="outline" expand="block" class="ion-margin-top">
               See Event Details
             </ion-button>
           </div>
+          <ng-lottie [options]="hasDeclined ? wavingOptions : congratsOptions"
+            style="width: 100%; height: 100%; pointer-events: none;"></ng-lottie>
+
+
+
         </ion-card-content>
-
-
-
       </ion-card>
-
-    </swiper-slide> -->
-
+    </swiper-slide>
 
   </swiper-container>
 
