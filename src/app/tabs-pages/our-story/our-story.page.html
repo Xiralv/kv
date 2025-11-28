@@ -16,11 +16,27 @@
   <ion-grid>
     <ion-row>
       @for (image of images; track $index) {
-      <ion-col size="12" size-sm="6" size-md="4" size-lg="3">
-        <ion-card>
-          <img [src]="image" alt="Gallery Image" />
-        </ion-card>
-      </ion-col>
+<ion-col size="12" size-sm="6" size-md="4" size-lg="3">
+  <ion-card class="img-wrapper">
+
+    <!-- skeleton ONLY hides when loaded -->
+    @if (!loadedImages[$index]) {
+      <ion-skeleton-text animated="true" class="img-skeleton"></ion-skeleton-text>
+    }
+
+    <!-- image ALWAYS exists in the DOM -->
+    <img
+      [src]="image"
+      alt="Gallery Image"
+      class="gallery-img"
+      [class.loaded]="loadedImages[$index]"
+      (load)="onImageLoad($index)"
+    />
+
+  </ion-card>
+</ion-col>
+
+
       }
     </ion-row>
   </ion-grid>

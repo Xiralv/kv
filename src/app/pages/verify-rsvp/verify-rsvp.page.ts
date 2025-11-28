@@ -34,6 +34,9 @@ export class VerifyRsvpPage implements OnInit {
     path: 'assets/lottiefiles/two_people_waving.json', // 👈 direct path
   };
 
+  isAlreadyAnswered: boolean = false;
+
+
   constructor(
     private fb: FormBuilder,
     private api: SupabaseService,
@@ -50,6 +53,7 @@ export class VerifyRsvpPage implements OnInit {
     this.rsvpForm = this.fb.group({
       fullname: ['', [Validators.required,]],
     });
+
   }
 
   async ngOnInit() {
@@ -89,10 +93,18 @@ export class VerifyRsvpPage implements OnInit {
     const { data, error } = await this.api.verifyUser(this.rsvpForm.value);
 
     if (data && data.length > 0 && data[0].full_name) {
-      this.global.presentToast(`See you on our special day!`, 'success', 'checkmark-circle-outline');
+      // this.global.presentToast(`See you on our special day!`, 'success', 'checkmark-circle-outline');
 
-      this.swiperRef.nativeElement.swiper.slideNext();
-      this.arrGuests = await this.api.getGuestWithRelations(this.rsvpForm.value.fullname);
+      if (!data[0].attend) {
+        this.swiperRef.nativeElement.swiper.slideNext();
+        this.arrGuests = await this.api.getGuestWithRelations(this.rsvpForm.value.fullname);
+      } else {
+        this.isAlreadyAnswered = true;
+        const swiper = this.swiperRef.nativeElement.swiper;
+        swiper.slideTo(swiper.activeIndex + 2);
+
+        // this.swiperRef.nativeElement.swiper.slideNext();
+      }
 
 
     } else {

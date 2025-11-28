@@ -80,7 +80,9 @@
         <ion-card-content class="lottie-container">
           <div class="overlay-text">
             <img style="zoom:1.6" src="assets/images/kvlogofinal.png" alt="KV Logo" />
+            @if(!isAlreadyAnswered){
             <p>{{ messageText }}</p>
+            }
 
             @if (guestCount === 1) {
             @if (arrGuests[0].attend === false) {
@@ -121,6 +123,11 @@
               }
               }
             </ul>
+            } @else if (isAlreadyAnswered) {
+            <!-- Everyone accepted -->
+            <p>You already response to this</p>
+            <p>If any changes please contact us</p>
+            
             }
 
 
@@ -128,7 +135,7 @@
               See Event Details
             </ion-button>
           </div>
-          <ng-lottie [options]="hasDeclined ? wavingOptions : congratsOptions"
+          <ng-lottie [options]="(hasDeclined || isAlreadyAnswered ) ? wavingOptions : congratsOptions"
             style="width: 100%; height: 100%; pointer-events: none;"></ng-lottie>
 
 

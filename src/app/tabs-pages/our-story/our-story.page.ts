@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-our-story',
@@ -6,8 +6,8 @@ import { Component } from '@angular/core';
   styleUrls: ['our-story.page.scss'],
   standalone: false,
 })
-export class OurStoryPage {
-
+export class OurStoryPage implements OnInit {
+  loadedImages: boolean[] = [];
   images: string[] = [
     'assets/images/ourstory/1.png',
     'assets/images/ourstory/2.png',
@@ -22,5 +22,19 @@ export class OurStoryPage {
   ];
 
   constructor() { }
+
+  ngOnInit() {
+    this.loadedImages = Array(this.images.length).fill(false);
+  }
+
+  onImageLoad(index: number) {
+      console.log('here')
+      this.loadedImages[index] = true;
+      // Add a small guard in case you want to toggle a CSS class on the image element:
+      // (not required if you use CSS : [class.loaded] binding in template)
+      const img = document.querySelector(`img[data-index="${index}"]`);
+      if (img) img.classList.add('loaded');
+
+  }
 
 }

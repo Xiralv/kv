@@ -20,7 +20,7 @@ export class SupabaseService {
       .select('*')
       .ilike('full_name', fullname.trim())
       // .not('attend', 'is', null); // 👈 only get rows where attend IS NOT NULL
-      .is('attend', null); // ✅ only rows where attend IS NULL
+      // .is('attend', null); // ✅ only rows where attend IS NULL
   }
 
 

@@ -88,7 +88,7 @@ export class HomePage implements AfterViewInit {
     const modal = await this.modalCtrl.create({
       component: VerifyRsvpPage,
       presentingElement: this.routerOutlet.nativeEl,
-      canDismiss: this.canDismiss.bind(this)
+      // canDismiss: this.canDismiss.bind(this)
     });
     modal.present();
 
