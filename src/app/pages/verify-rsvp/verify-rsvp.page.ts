@@ -36,6 +36,8 @@ export class VerifyRsvpPage implements OnInit {
 
   isAlreadyAnswered: boolean = false;
 
+  isLoading = false;
+
 
   constructor(
     private fb: FormBuilder,
@@ -90,8 +92,8 @@ export class VerifyRsvpPage implements OnInit {
    * Submit button on inputting a Full name
    */
   async onSubmit() {
+    this.isLoading = true;
     const { data, error } = await this.api.verifyUser(this.rsvpForm.value);
-
     if (data && data.length > 0 && data[0].full_name) {
       // this.global.presentToast(`See you on our special day!`, 'success', 'checkmark-circle-outline');
 
@@ -102,13 +104,14 @@ export class VerifyRsvpPage implements OnInit {
         this.isAlreadyAnswered = true;
         const swiper = this.swiperRef.nativeElement.swiper;
         swiper.slideTo(swiper.activeIndex + 2);
-
         // this.swiperRef.nativeElement.swiper.slideNext();
       }
+      this.isLoading = false;
 
 
     } else {
       this.global.presentToast(`Oh no! There seems to be an error please contact Kamille / Vlarix`, 'warning', 'alert-circle-outline');
+      this.isLoading = false;
 
     }
 

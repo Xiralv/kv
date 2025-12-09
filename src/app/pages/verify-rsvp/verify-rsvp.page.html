@@ -26,9 +26,9 @@
               <ion-label position="floating">Full Name</ion-label>
               <ion-input type="fullname" formControlName="fullname" required></ion-input>
             </ion-item>
-            <ion-button fill='outline' expand="block" type="submit" [disabled]="rsvpForm.invalid"
+            <ion-button fill='outline' expand="block" type="submit" [disabled]="rsvpForm.invalid || isLoading"
               class="ion-margin-top">
-              Submit
+              {{!isLoading ? 'Submit' : 'Loading...'}}
             </ion-button>
           </form>
         </ion-card-content>
@@ -127,7 +127,6 @@
             <!-- Everyone accepted -->
             <p>You already response to this</p>
             <p>If any changes please contact us</p>
-            
             }
 
 
