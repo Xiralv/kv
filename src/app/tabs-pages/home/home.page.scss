@@ -80,7 +80,7 @@
 
 /* Text and Paragraphs */
 p {
-  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; 
   line-height: 1.5;
   text-align: center;
 }
@@ -217,4 +217,110 @@ ion-button {
 ion-col {
   padding: 2px 4px;
 }
+
+
+.date-label {
+  display: block;     /* ⬅️ THIS is the missing piece */
+  width: 100%;        /* ⬅️ allows true centering */
+  margin: 16px 0;
+}
+
+.date-label p {
+  font-weight: 600;
+  font-size: 16px;
+
+}
+
+
+.date-label span {
+  display: block;
+  font-style: italic;
+  font-size: 15px;
+  opacity: 0.7;
+}
+
+
+.circle-gap {
+  gap: 16px; /* space between circles */
+}
+
+.circle-text-wrapper {
+  text-align: center;
+  margin-top: 12px;
+}
+
+.circle-text {
+  display: block;
+  font-style: italic;
+  font-size: 14px;
+  opacity: 0.7;
+  font-weight: 600;
+}
+
+
+.circle-text small {
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+
+
+
+.dress-code {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.dress-row {
+  display: grid;
+  grid-template-columns: 100px 1fr; /* fixed label width */
+  gap: 12px;
+  align-items: start;
+  margin-bottom: 6px;
+}
+
+.dress-row .label {
+  font-weight: 700;
+  text-align: right;
+}
+
+.dress-row .value {
+  text-align: left;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; 
+  line-height: 1.5;
+  text-align: center;
+}
+
+/* Mobile — stack */
+.gift-images {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.gift-images img {
+  width: 70%;
+  max-width: 220px;
+  height: auto;
+  object-fit: contain;
+}
+
+/* Tablets & Desktop — inline + bigger */
+@media (min-width: 600px) {
+  .gift-images {
+    flex-direction: row;
+    justify-content: center;
+    gap: 24px;
+  }
+
+  .gift-images img {
+    width: clamp(120px, 18vw, 180px); /* ⬅️ bigger */
+    max-width: none;
+  }
+}
+
+
+
+
 

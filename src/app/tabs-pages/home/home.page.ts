@@ -6,12 +6,24 @@ import * as L from 'leaflet';
 // Fix default icon path issue
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: 'assets/leaflet/marker-icon.png',
-  iconUrl: 'assets/leaflet/marker-icon.png',
-  shadowUrl: 'assets/leaflet/marker-shadow.png',
+
+const churchIcon = L.icon({
+  iconUrl: 'assets/leaflet/3.png',
   iconSize: [38, 65],
 });
+
+const receptionIcon = L.icon({
+  iconUrl: 'assets/leaflet/2.png',
+  iconSize: [38, 65],
+});
+
+
+// L.Icon.Default.mergeOptions({
+//   iconRetinaUrl: 'assets/leaflet/marker-icon.png',
+//   iconUrl: 'assets/leaflet/marker-icon.png',
+//   shadowUrl: 'assets/leaflet/marker-shadow.png',
+//   iconSize: [38, 65],
+// });
 
 @Component({
   selector: 'app-home',
@@ -29,12 +41,12 @@ export class HomePage implements AfterViewInit {
 
   receptionImage = "https://cf.bstatic.com/xdata/images/hotel/max1024x768/702406430.jpg?k=23c7108d3cbaaefe1151a0cbe2e8deed01eb26e1ff8654468db1a7b0c3aa217d&o=";
   receptionLink = "https://www.waterfronthotels.com.ph/waterfront-insular-hotel-davao/";
-
+  selectedImage: string | null = null;
   constructor(
     private modalCtrl: ModalController,
     private routerOutlet: IonRouterOutlet,
     private alertCtrl: AlertController
- 
+
   ) { }
 
 
@@ -59,7 +71,7 @@ export class HomePage implements AfterViewInit {
     const receptionCoords: L.LatLngExpression = [7.1064277, 125.647736];
 
     // Add markers
-    L.marker(churchCoords).addTo(this.map).bindPopup(`
+    L.marker(churchCoords, { icon: churchIcon }).addTo(this.map).bindPopup(`
     <div style="text-align:center;">
       <b>Ceremony</b><br>
       Our Mother of Perpetual Help Parish<br>
@@ -67,7 +79,7 @@ export class HomePage implements AfterViewInit {
       <img src="${this.churchImage}" style="width:170px; margin-top:5px; border-radius:8px;">
     </div>
   `);
-    L.marker(receptionCoords).addTo(this.map).bindPopup(`<div style="text-align:center;">
+    L.marker(receptionCoords, { icon: receptionIcon }).addTo(this.map).bindPopup(`<div style="text-align:center;">
       <b>Reception</b><br>
       Waterfront Insular Hotel Davao<br>
       <a href="${this.receptionLink}" target="_blank">
@@ -119,7 +131,7 @@ export class HomePage implements AfterViewInit {
 
     await alert.present();
     const { role } = await alert.onWillDismiss();
-    
+
     // Return true or false depending on user's choice
     return role === 'confirm';
   }
@@ -132,6 +144,16 @@ export class HomePage implements AfterViewInit {
     const minHeight = 56;
 
     this.bannerHeight = Math.max(maxHeight - scrollTop, minHeight);
+  }
+
+
+
+  openImage(img: string) {
+    this.selectedImage = img;
+  }
+
+  closeImage() {
+    this.selectedImage = null;
   }
 
 }
