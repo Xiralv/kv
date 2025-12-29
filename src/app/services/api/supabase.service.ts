@@ -60,7 +60,10 @@ export class SupabaseService {
 async updateAttend(guestId: string, attend: boolean) {
   const { data, error } = await supabase
     .from('guests')
-    .update({ attend })
+    .update({ 
+      attend,
+      updated_at: new Date().toISOString(),
+    })
     .eq('id', guestId)
     .select('*');
 
