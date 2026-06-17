@@ -1,49 +1,105 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>
-      Our Story!
-    </ion-title>
+    <ion-title>Our Story</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
+
+  <!-- Condense header (iOS large-title scroll effect) -->
   <ion-header collapse="condense">
     <ion-toolbar>
       <ion-title size="large">Our Story</ion-title>
     </ion-toolbar>
   </ion-header>
 
-  <ion-grid>
-    <ion-row>
-      @for (image of images; track $index) {
-<ion-col size="12" size-sm="6" size-md="4" size-lg="3">
-  <ion-card class="img-wrapper">
+  <!-- Intro -->
+  <div class="story-intro">
+    <p class="story-intro__tagline">Kamille &amp; Vlarix</p>
+    <p class="story-intro__sub">A love story, told in moments.</p>
+  </div>
 
-    <!-- skeleton ONLY hides when loaded -->
-    @if (!loadedImages[$index]) {
-      <ion-skeleton-text animated="true" class="img-skeleton"></ion-skeleton-text>
+  <!-- Timeline -->
+  <div class="timeline">
+
+    @for (moment of moments; track $index) {
+
+      <!-- Year marker — only show when the year changes -->
+      @if ($index === 0 || moments[$index - 1].year !== moment.year) {
+        <div class="year-marker">
+          <span>{{ moment.year }}</span>
+        </div>
+      }
+
+      <!-- Story card — alternates left/right on wide screens -->
+      <div class="timeline-item" [class.right]="$index % 2 === 1"
+           (click)="openLightbox(moment)">
+
+        <div class="timeline-connector">
+          <div class="timeline-dot"></div>
+        </div>
+
+        <div class="story-card">
+
+          <!-- Image -->
+          <div class="story-card__img-wrap">
+            @if (!loadedImages[$index]) {
+              <ion-skeleton-text animated="true" class="story-card__skeleton"></ion-skeleton-text>
+            }
+            <img
+              [src]="moment.src"
+              [alt]="moment.caption"
+              class="story-card__img"
+              [class.loaded]="loadedImages[$index]"
+              (load)="onImageLoad($index)"
+              loading="lazy"
+            />
+            <!-- Tap hint overlay -->
+            <div class="story-card__overlay">
+              <ion-icon name="expand-outline"></ion-icon>
+            </div>
+          </div>
+
+          <!-- Caption -->
+          <div class="story-card__body">
+            <p class="story-card__caption">{{ moment.caption }}</p>
+            <p class="story-card__detail-hint">Tap to read more</p>
+          </div>
+
+        </div>
+      </div>
+
     }
 
-    <!-- image ALWAYS exists in the DOM -->
-    <img
-      [src]="image"
-      alt="Gallery Image"
-      class="gallery-img"
-      [class.loaded]="loadedImages[$index]"
-      (load)="onImageLoad($index)"
-    />
+    <!-- End dot -->
+    <div class="timeline-end">
+      <div class="timeline-end__dot">💍</div>
+      <p class="timeline-end__label">December 18, 2026</p>
+    </div>
 
-  </ion-card>
-</ion-col>
+  </div>
 
 
-      }
-    </ion-row>
-  </ion-grid>
+  <!-- ── Lightbox ──────────────────────────────────────────────────────────── -->
+  @if (selectedMoment) {
+    <div class="lightbox-backdrop" (click)="closeLightbox()">
+      <div class="lightbox" (click)="$event.stopPropagation()">
 
+        <button class="lightbox__close" (click)="closeLightbox()" aria-label="Close">
+          <ion-icon name="close-outline"></ion-icon>
+        </button>
 
+        <img [src]="selectedMoment.src" [alt]="selectedMoment.caption"
+             class="lightbox__img" />
 
+        <div class="lightbox__body">
+          <p class="lightbox__year">{{ selectedMoment.year }}</p>
+          <p class="lightbox__caption">{{ selectedMoment.caption }}</p>
+          <p class="lightbox__detail">{{ selectedMoment.detail }}</p>
+        </div>
 
-
+      </div>
+    </div>
+  }
 
 </ion-content>

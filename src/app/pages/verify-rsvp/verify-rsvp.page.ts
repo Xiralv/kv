@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ModalController } from '@ionic/angular';
@@ -7,161 +7,226 @@ import { SupabaseService } from 'src/app/services/api/supabase.service';
 import { GlobalService } from 'src/app/services/global/global.service';
 
 interface Guest {
-  id: string,
-  attend: boolean
-  full_name: string
+  id: string;
+  attend: boolean;
+  full_name: string;
 }
+
+const RSVP_SUBMITTED_KEY = 'rsvp_submitted_ids';
+
 @Component({
   selector: 'app-verify-rsvp',
   templateUrl: './verify-rsvp.page.html',
   styleUrls: ['./verify-rsvp.page.scss'],
   standalone: false
 })
-
-
 export class VerifyRsvpPage implements OnInit {
   @ViewChild('swiperRef', { static: false }) swiperRef!: ElementRef;
+
   rsvpForm: FormGroup;
-  arrGuests: Array<Guest> | any;
-  // arrGuests = [{ id: 1, fullname: 'person1' }, { id: 2, full_name: 'person2' }]
+  arrGuests: Guest[] = [];
+
   congratsOptions: AnimationOptions = {
     path: 'assets/lottiefiles/congratulation.json',
     loop: true,
     autoplay: true,
   };
 
-  wavingOptions: AnimationOptions = {
-    path: 'assets/lottiefiles/two_people_waving.json', // 👈 direct path
-  };
 
-  isAlreadyAnswered: boolean = false;
-
+  /** True when the guest re-opens the RSVP and we detected an existing answer in the DB */
+  isAlreadyAnswered = false;
   isLoading = false;
 
+  /**
+   * Passed by the home page when hasSubmittedRsvp is true.
+   * When present, ngOnInit skips the name-input slide and loads the
+   * guest's existing answers directly from Supabase.
+   */
+  @Input() autoLoadName: string | null = null;
 
   constructor(
     private fb: FormBuilder,
     private api: SupabaseService,
     private global: GlobalService,
     private modalCtrl: ModalController,
-
     private router: Router,
   ) {
-    // fetch('assets/lottiefiles/two_people_waving.json')
-    //   .then(res => res.json())
-    //   .then(data => console.log('✅ Lottie JSON loaded', data))
-    //   .catch(err => console.error('❌ Lottie JSON missing', err));
-
     this.rsvpForm = this.fb.group({
-      fullname: ['', [Validators.required,]],
+      fullname: ['', [Validators.required]],
     });
-
   }
 
   async ngOnInit() {
+    // Home page passed the stored name → skip slide 1 and show summary directly
+    if (this.autoLoadName) {
+      await this.loadAndShowSummary(this.autoLoadName);
+    }
   }
 
+  /**
+   * Fetches the guest group by name and jumps to the read-only summary slide.
+   * Used both by the auto-load path (View My RSVP) and onSubmit when the DB
+   * already has answers for the group.
+   */
+  private async loadAndShowSummary(fullname: string): Promise<void> {
+    this.isLoading = true;
+    try {
+      const allGuests = await this.api.getGuestWithRelations(fullname);
+      this.arrGuests = allGuests;
+      this.isAlreadyAnswered = true;
+      // Small delay so the swiper is fully initialised before we slide
+      setTimeout(() => this.skipToThankYou(), 150);
+    } catch (err) {
+      this.global.presentToast(
+        `Couldn't load your RSVP — please try again or contact Kamille / Vlarix`,
+        'warning',
+        'alert-circle-outline'
+      );
+    } finally {
+      this.isLoading = false;
+    }
+  }
+
+  // ─── localStorage helpers (device-side fast-path only) ──────────────────────
+
+  private getSubmittedIds(): Set<string> {
+    try {
+      const raw = localStorage.getItem(RSVP_SUBMITTED_KEY);
+      return new Set(raw ? JSON.parse(raw) : []);
+    } catch {
+      return new Set();
+    }
+  }
+
+  private markAsSubmitted(ids: string[]): void {
+    const existing = this.getSubmittedIds();
+    ids.forEach(id => existing.add(id));
+    localStorage.setItem(RSVP_SUBMITTED_KEY, JSON.stringify([...existing]));
+  }
+
+  // ─── slide 1: name lookup + already-answered check ──────────────────────────
+
+  async onSubmit() {
+    this.isLoading = true;
+
+    const { data, error } = await this.api.verifyUser(this.rsvpForm.value);
+
+    if (!data || data.length === 0 || !data[0].full_name) {
+      this.global.presentToast(
+        `Oh no! We couldn't find your name — please contact Kamille or Vlarix`,
+        'warning',
+        'alert-circle-outline'
+      );
+      this.isLoading = false;
+      return;
+    }
+
+    // Save name for personalised home page welcome
+    localStorage.setItem('user_fullname', data[0].full_name);
+
+    // Fetch full group from Supabase (primary guest + all related guests)
+    let allGuests: Guest[];
+    try {
+      allGuests = await this.api.getGuestWithRelations(this.rsvpForm.value.fullname);
+    } catch (err) {
+      this.global.presentToast(
+        `Something went wrong — please try again or contact Kamille / Vlarix`,
+        'warning',
+        'alert-circle-outline'
+      );
+      this.isLoading = false;
+      return;
+    }
+
+    this.arrGuests = allGuests;
+
+    // ── DB check: has every guest in this group already answered? ────────────
+    // attend === true  → confirmed attending
+    // attend === false → declined
+    // attend === null  → not yet answered  ← the only state that reaches slide 2
+    const everyoneAnswered = allGuests.every(g => g.attend !== null && g.attend !== undefined);
+
+    if (everyoneAnswered) {
+      // Already answered — show read-only summary, skip slide 2 entirely
+      this.isAlreadyAnswered = true;
+      this.skipToThankYou();
+    } else {
+      // First time answering — proceed to slide 2
+      this.isAlreadyAnswered = false;
+      this.swiperRef.nativeElement.swiper.slideNext();
+    }
+
+    this.isLoading = false;
+  }
+
+  private skipToThankYou(): void {
+    // From slide 0, slideTo(2) jumps over slide 1 straight to the thank-you screen
+    this.swiperRef.nativeElement.swiper.slideTo(2);
+  }
+
+  // ─── slide 2: accept / decline ──────────────────────────────────────────────
 
   selectButton(guestData: Guest, button: string) {
-    guestData.attend = button == 'yes' ? true : false;
-
+    guestData.attend = button === 'yes';
     this.arrGuests = [...this.arrGuests];
   }
 
-
   async onConfirmRSVP() {
-    for (let guests of this.arrGuests) {
+    for (const guest of this.arrGuests) {
       try {
-        const updated = await this.api.updateAttend(guests.id, guests.attend);
-        console.log('Attend updated:', updated);
-        this.swiperRef.nativeElement.swiper.slideNext();
+        await this.api.updateAttend(guest.id, guest.attend);
       } catch (err) {
         console.error('Error updating attend:', err);
+        this.global.presentToast(
+          `Something went wrong — please try again or contact Kamille / Vlarix`,
+          'warning',
+          'alert-circle-outline'
+        );
+        return; // stop on first failure — do not advance or mark submitted
       }
-
     }
+
+    // All DB writes succeeded — record on device as fast-path for next open
+    this.markAsSubmitted(this.arrGuests.map(g => g.id));
+    this.swiperRef.nativeElement.swiper.slideNext();
   }
 
+  // ─── modal ──────────────────────────────────────────────────────────────────
 
   closeModal() {
-    this.modalCtrl.dismiss()
+    this.modalCtrl.dismiss();
   }
 
-
-  /**
-   * Submit button on inputting a Full name
-   */
-  async onSubmit() {
-    this.isLoading = true;
-    const { data, error } = await this.api.verifyUser(this.rsvpForm.value);
-    if (data && data.length > 0 && data[0].full_name) {
-      // this.global.presentToast(`See you on our special day!`, 'success', 'checkmark-circle-outline');
-
-      if (!data[0].attend) {
-        this.swiperRef.nativeElement.swiper.slideNext();
-        this.arrGuests = await this.api.getGuestWithRelations(this.rsvpForm.value.fullname);
-      } else {
-        this.isAlreadyAnswered = true;
-        const swiper = this.swiperRef.nativeElement.swiper;
-        swiper.slideTo(swiper.activeIndex + 2);
-        // this.swiperRef.nativeElement.swiper.slideNext();
-      }
-      this.isLoading = false;
-
-
-    } else {
-      this.global.presentToast(`Oh no! There seems to be an error please contact Kamille / Vlarix`, 'warning', 'alert-circle-outline');
-      this.isLoading = false;
-
-    }
-
-  }
-
+  // ─── computed getters ───────────────────────────────────────────────────────
 
   get isConfirmDisabled(): boolean {
-    // Return true if any guest has attend == null
-    return this.arrGuests.some((guest: Guest) => guest.attend === null);
+    return this.arrGuests?.some(g => g.attend === null || g.attend === undefined);
   }
-
 
   get guestCount(): number {
     return this.arrGuests?.length || 0;
   }
 
   get hasDeclined(): boolean {
-    return this.arrGuests?.some((g: Guest) => g.attend === false);
+    return this.arrGuests?.some(g => g.attend === false);
   }
 
   get hasAccepted(): boolean {
-    return this.arrGuests?.some((g: Guest) => g.attend === true);
+    return this.arrGuests?.some(g => g.attend === true);
   }
 
   get messageText(): string {
-    // Handle single guest separately
     if (this.guestCount === 1) {
-      const singleGuest = this.arrGuests[0];
-
-      if (singleGuest.attend) {
-        return "Thank you for confirming! We’re excited to celebrate with you! 💍";
-      } else {
-        return "Thanks for letting us know! We’re sad you can’t make it, but for any changes in the future, please don't hesitate to message us! 💛";
-      }
+      return this.arrGuests[0].attend
+        ? "Thank you for confirming! We're excited to celebrate with you! 💍"
+        : "Thanks for letting us know! We're sad you can't make it, but for any changes in the future, please don't hesitate to message us! 💛";
     }
-
-    // Handle multiple guests
     if (this.hasAccepted && this.hasDeclined) {
-      return "Thank you for confirming! We're excited to see those who can come, and we’ll miss the ones who can’t make it. 💛";
+      return "Thank you for confirming! We're excited to see those who can come, and we'll miss the ones who can't make it. 💛";
     } else if (this.hasDeclined && !this.hasAccepted) {
-      return "Thanks for letting us know! It's sad that you'll not be able to join us, but for any changes in the future, please don't hesitate to message us!";
+      return "Thanks for letting us know! It's sad that you'll not be able to join us, but for any changes please don't hesitate to message us!";
     } else {
       return "See you on our wedding day! 💍";
     }
   }
-
 }
-
-
-
-
-
-

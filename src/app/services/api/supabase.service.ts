@@ -52,7 +52,11 @@ export class SupabaseService {
     if (relationError) throw relationError;
 
     // 3. Merge: guest + their relations
-    const relatedGuests = relations.map(r => r.guests);
+    // Supabase types r.guests as Guest | Guest[] for FK joins — flatten to always get a flat array
+    const relatedGuests = relations
+      .map(r => r.guests)
+      .flatMap(g => (Array.isArray(g) ? g : g ? [g] : [])) as { id: string; full_name: string; attend: boolean }[];
+
     return [guest, ...relatedGuests];
   }
 

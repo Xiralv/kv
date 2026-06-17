@@ -1,72 +1,339 @@
-ion-card {
-    --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    border-radius: 12px;
-    overflow: hidden;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+// ── Design tokens (matching home page palette) ────────────────────────────────
+$gold:        #fddf7d;
+$gold-dark:   #5a3e00;
+$gold-mid:    #a07800;
+$gold-bg:     #fffbef;
+$gold-border: rgba(253, 223, 125, 0.5);
+$font:        'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 
-    &:hover {
-        transform: translateY(-20px);
-        --box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+// ── Intro ─────────────────────────────────────────────────────────────────────
+.story-intro {
+  text-align: center;
+  padding: 28px 24px 8px;
+}
+
+.story-intro__tagline {
+  font-family: $font;
+  font-size: clamp(20px, 5vw, 26px);
+  font-weight: 700;
+  color: $gold-dark;
+  margin: 0 0 4px;
+}
+
+.story-intro__sub {
+  font-family: $font;
+  font-size: clamp(13px, 3vw, 15px);
+  color: $gold-mid;
+  font-style: italic;
+  margin: 0;
+}
+
+// ── Timeline container ────────────────────────────────────────────────────────
+.timeline {
+  position: relative;
+  padding: 24px 16px 40px;
+  max-width: 680px;
+  margin: 0 auto;
+
+  // Vertical line
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 28px;           // single-column default: line on the left
+    width: 2px;
+    background: linear-gradient(to bottom, transparent, $gold 8%, $gold 92%, transparent);
+
+    @media (min-width: 600px) {
+      left: 50%;
+      transform: translateX(-50%);
     }
+  }
 }
 
-ion-card img {
-    width: 100%;
-    height: auto;
-    display: block;
-    object-fit: cover;
+// ── Year marker ───────────────────────────────────────────────────────────────
+.year-marker {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: flex-start;
+  padding-left: 52px;
+  margin: 24px 0 8px;
+
+  @media (min-width: 600px) {
+    justify-content: center;
+    padding-left: 0;
+  }
+
+  span {
+    font-family: $font;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: $gold-dark;
+    background: $gold;
+    padding: 3px 14px;
+    border-radius: 20px;
+  }
 }
 
+// ── Timeline item ─────────────────────────────────────────────────────────────
+.timeline-item {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 20px;
+  cursor: pointer;
 
-.img-skeleton {
-  width: 100%;
-  height: 200px;
-  border-radius: 12px;
+  // On wide screens: even items shift right
+  @media (min-width: 600px) {
+    width: 45%;
+
+    &.right {
+      margin-left: auto;
+      flex-direction: row-reverse;
+
+      .timeline-connector { order: 1; }
+      .story-card         { order: 0; }
+    }
+  }
 }
 
-.fade-in {
-  width: 100%;
-  height: 200px;
-  border-radius: 12px;
-  object-fit: cover;
-  opacity: 0;
-  transition: opacity 0.6s ease-in-out;
+// ── Connector dot ─────────────────────────────────────────────────────────────
+.timeline-connector {
+  flex-shrink: 0;
+  width: 20px;
+  display: flex;
+  justify-content: center;
+  padding-top: 16px;
 }
 
-.fade-in:not([hidden]) {
-  opacity: 1;
+.timeline-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: $gold;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 2px $gold;
+  transition: transform 0.2s;
+
+  .timeline-item:hover & {
+    transform: scale(1.35);
+  }
 }
 
+// ── Story card ────────────────────────────────────────────────────────────────
+.story-card {
+  flex: 1;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  border: 1px solid $gold-border;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 
-.card-img-wrap {
+  .timeline-item:hover & {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.story-card__img-wrap {
   position: relative;
   overflow: hidden;
-  border-radius: 12px;
+  height: clamp(160px, 40vw, 220px);
+}
 
-  .img-skeleton {
-    display: block;
-    width: 100%;
-    height: 200px;
-    border-radius: 12px;
-  }
+.story-card__skeleton {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
 
-  .gallery-img {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-    border-radius: 12px;
+.story-card__img {
+  width: 100%;
+  height: 100%;
+  object-fit: scale-down;
+  display: block;
+  opacity: 0;
+  transition: opacity 0.4s ease-in-out;
 
-    /* start invisible, fade in when loaded */
+  &.loaded { opacity: 1; }
+}
+
+// Expand-icon overlay on hover/tap
+.story-card__overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+
+  ion-icon {
+    font-size: 28px;
+    color: #fff;
     opacity: 0;
-    transition: opacity 400ms ease-in-out;
-    will-change: opacity;
-    display: block;
+    transition: opacity 0.2s;
   }
 
-  /* when loaded set opacity to 1 via class injection from TS */
-  /* We'll toggle a class in TS or rely on attribute -> below example uses [class.loaded] */
-  .gallery-img.loaded {
-    opacity: 1;
+  .timeline-item:hover & {
+    background: rgba(0, 0, 0, 0.2);
+    ion-icon { opacity: 1; }
   }
 }
 
+.story-card__body {
+  padding: 10px 14px 12px;
+}
+
+.story-card__caption {
+  font-family: $font;
+  font-size: clamp(13px, 3.2vw, 15px);
+  font-weight: 600;
+  color: $gold-dark;
+  margin: 0 0 2px;
+  text-align: left;
+}
+
+.story-card__detail-hint {
+  font-family: $font;
+  font-size: 11px;
+  color: #bbb;
+  margin: 0;
+  text-align: left;
+  font-style: italic;
+}
+
+// ── Timeline end marker ───────────────────────────────────────────────────────
+.timeline-end {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding-left: 18px;
+  margin-top: 8px;
+
+  @media (min-width: 600px) {
+    align-items: center;
+    padding-left: 0;
+  }
+}
+
+.timeline-end__dot {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: $gold;
+  border: 3px solid #fff;
+  box-shadow: 0 0 0 2px $gold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.timeline-end__label {
+  font-family: $font;
+  font-size: 12px;
+  color: $gold-mid;
+  font-style: italic;
+  margin: 6px 0 0;
+  text-align: center;
+}
+
+// ── Lightbox ──────────────────────────────────────────────────────────────────
+.lightbox-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: backdropIn 0.2s ease both;
+}
+
+.lightbox {
+  position: relative;
+  background: #fff;
+  border-radius: 20px;
+  overflow: hidden;
+  max-width: 420px;
+  width: 100%;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.4);
+  animation: lightboxIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.lightbox__close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 10;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.45);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+
+  ion-icon {
+    font-size: 20px;
+    color: #fff;
+  }
+}
+
+.lightbox__img {
+  width: 100%;
+  height: clamp(270px, 60vw, 320px);
+  object-fit: scale-down;
+  display: block;
+}
+
+.lightbox__body {
+  padding: 16px 20px 22px;
+}
+
+.lightbox__year {
+  font-family: $font;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: $gold-mid;
+  margin: 0 0 4px;
+}
+
+.lightbox__caption {
+  font-family: $font;
+  font-size: clamp(16px, 4vw, 19px);
+  font-weight: 700;
+  color: $gold-dark;
+  margin: 0 0 8px;
+}
+
+.lightbox__detail {
+  font-family: $font;
+  font-size: clamp(13px, 3vw, 14px);
+  color: #555;
+  line-height: 1.65;
+  margin: 0;
+}
+
+@keyframes backdropIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes lightboxIn {
+  from { opacity: 0; transform: scale(0.88); }
+  to   { opacity: 1; transform: scale(1); }
+}

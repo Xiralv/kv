@@ -5,41 +5,35 @@ ion-content, .swiper, .swiper-slide, .thankyou-slide {
 }
 
 .rsvp-background {
-    --background: #f2f2f2;
+  --background: #f2f2f2;
 }
 
 .rsvp-container {
-    height: 100%;
+  height: 100%;
 }
 
-// .rsvp-card {
-//     width: 100%;
-//     max-width: 400px;
-//     padding: 1rem;
-// }
-
 .avatar-container {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
 }
 
 .swiper-progressbar {
-    --swiper-pagination-color: #fddf7d;
-
+  --swiper-pagination-color: #fddf7d;
 }
 
 ion-avatar {
-    width: 100px;
-    height: 100px;
+  width: 100px;
+  height: 100px;
 }
+
 .thankyou-slide {
-  height: 100vh; /* full screen height */
-  width: 100vw; /* full width */
+  height: 100vh;
+  width: 100vw;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #f2f2f2; /* optional background */
+  background: #f2f2f2;
 }
 
 .thankyou-card {
@@ -77,7 +71,6 @@ ion-avatar {
   text-align: center;
   color: #333;
 
-
   img {
     width: 260px;
     max-width: 85vw;
@@ -92,46 +85,123 @@ ion-avatar {
     margin-bottom: 8px;
   }
 
-
-
-    ul {
+  ul {
     list-style-type: disc;
     padding-left: 1.2rem;
     text-align: left;
     color: #777;
-    font-size: 15px;  /* 👈 slightly smaller font */
+    font-size: 15px;
     line-height: 1.4;
     margin-top: 4px;
   }
-
-
-
 }
+
+// ── Already-answered read-only summary ────────────────────────────────────────
+
+.already-answered-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #666;
+  background: #efefef;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  padding: 4px 12px;
+  margin-bottom: 12px;
+
+  ion-icon {
+    font-size: 14px;
+    color: #888;
+  }
+}
+
+.already-answered-msg {
+  font-size: 14px !important;
+  color: #666 !important;
+  margin-bottom: 14px !important;
+}
+
+.rsvp-summary {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 14px;
+  text-align: left;
+}
+
+.summary-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 10px;
+  padding: 10px 14px;
+}
+
+.summary-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+}
+
+.summary-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: 14px;
+  background: #f2f2f2;
+  color: #888;
+
+  ion-icon { font-size: 15px; }
+
+  &.attending {
+    background: #e6f9f0;
+    color: #2a9d5c;
+    ion-icon { color: #2a9d5c; }
+  }
+
+  &.declined {
+    background: #fdecea;
+    color: #c5000f;
+    ion-icon { color: #c5000f; }
+  }
+}
+
+.already-answered-contact {
+  font-size: 13px !important;
+  color: #999 !important;
+  margin-top: 4px !important;
+}
+
+// ── Button & selection styles ─────────────────────────────────────────────────
 
 ion-button {
-
-    --border-color: #000;
-    --background-activated: #000;
-
-    --color-activated: #fff;
-    --color: #000
+  --border-color: #000;
+  --background-activated: #000;
+  --color-activated: #fff;
+  --color: #000;
 }
-
-
 
 .yes {
-    --background: #93e9be;
-    color: rgba(255, 255, 255, 0.88);
+  --background: #93e9be;
+  color: rgba(255, 255, 255, 0.88);
 }
-
 
 .no {
-    --background: #c5000f;
-    color: white;
-
+  --background: #c5000f;
+  color: white;
 }
 
-/* Optional: prevent whole page scroll in Ionic wrapper */
+/* Prevent whole-page scroll in Ionic wrapper */
 html, body, ion-app, ion-content {
   height: 100%;
   overflow: hidden;

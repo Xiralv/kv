@@ -1,17 +1,13 @@
 <ion-content [fullscreen]="true" class="ion-padding rsvp-background">
 
-
   <swiper-container #swiperRef class="ion-margin-top swiper-progressbar" slides-per-view="1" space-between="10"
     pagination='{"type": "progressbar"}' allow-touch-move="false">
 
-
-    <!-- Slide 1 -->
-
+    <!-- ─── Slide 1: Name lookup ─────────────────────────────────────────── -->
     <swiper-slide class="rsvp-container">
       <ion-card class="rsvp-card">
         <ion-card-header>
-
-          <p>You are invited to Kamille & Vlarix’s Special Day!</p>
+          <p>You are invited to Kamille &amp; Vlarix's Special Day!</p>
           <ion-card-title>RSVP</ion-card-title>
           <div class="avatar-container">
             <ion-avatar>
@@ -24,18 +20,18 @@
           <form [formGroup]="rsvpForm" (ngSubmit)="onSubmit()">
             <ion-item>
               <ion-label position="floating">Full Name</ion-label>
-              <ion-input type="fullname" formControlName="fullname" required></ion-input>
+              <ion-input type="text" formControlName="fullname" required></ion-input>
             </ion-item>
-            <ion-button fill='outline' expand="block" type="submit" [disabled]="rsvpForm.invalid || isLoading"
-              class="ion-margin-top">
-              {{!isLoading ? 'Submit' : 'Loading...'}}
+            <ion-button fill="outline" expand="block" type="submit"
+              [disabled]="rsvpForm.invalid || isLoading" class="ion-margin-top">
+              {{ isLoading ? 'Checking...' : 'Submit' }}
             </ion-button>
           </form>
         </ion-card-content>
       </ion-card>
     </swiper-slide>
 
-    <!-- Slide 2 -->
+    <!-- ─── Slide 2: Accept / Decline ───────────────────────────────────── -->
     <swiper-slide>
       <ion-card>
         <ion-card-header>
@@ -43,101 +39,110 @@
           <ion-card-title>Wedding Day</ion-card-title>
         </ion-card-header>
         <ion-card-content>
-          @if (arrGuests) {
-          @for (guest of arrGuests; track guest) {
-          <ion-row class="ion-align-items-center">
-            <ion-col>
-              <p>{{ guest.full_name }}</p>
-            </ion-col>
-
-            <ion-col size="auto">
-              <ion-button (click)="selectButton(guest,'yes')" [ngClass]="{'yes': guest.attend === true}" fill="outline"
-                size="small">Accept</ion-button>
-              <ion-button (click)="selectButton(guest,'no')" [ngClass]="{'no': guest.attend === false}" fill="outline"
-                size="small">Decline</ion-button>
-            </ion-col>
-          </ion-row>
-          }
-          <ion-button [disabled]="isConfirmDisabled" (click)="onConfirmRSVP()" fill='outline' expand="block"
-            type="submit" class="ion-margin-top">
-            Confirm
-          </ion-button>
+          @if (arrGuests && arrGuests.length > 0) {
+            @for (guest of arrGuests; track guest.id) {
+              <ion-row class="ion-align-items-center">
+                <ion-col>
+                  <p>{{ guest.full_name }}</p>
+                </ion-col>
+                <ion-col size="auto">
+                  <ion-button (click)="selectButton(guest, 'yes')"
+                    [ngClass]="{'yes': guest.attend === true}"
+                    fill="outline" size="small">Accept</ion-button>
+                  <ion-button (click)="selectButton(guest, 'no')"
+                    [ngClass]="{'no': guest.attend === false}"
+                    fill="outline" size="small">Decline</ion-button>
+                </ion-col>
+              </ion-row>
+            }
+            <ion-button [disabled]="isConfirmDisabled" (click)="onConfirmRSVP()"
+              fill="outline" expand="block" class="ion-margin-top">
+              Confirm
+            </ion-button>
           } @else {
-          <ion-skeleton-text [animated]="true" style="width: 50%;"></ion-skeleton-text>
+            <ion-skeleton-text [animated]="true" style="width: 50%;"></ion-skeleton-text>
           }
-
-
-
         </ion-card-content>
       </ion-card>
     </swiper-slide>
 
-
-    <!-- Slide 3-->
-
+    <!-- ─── Slide 3: Thank you / Already answered ────────────────────────── -->
     <swiper-slide class="thankyou-slide">
       <ion-card class="thankyou-card">
         <ion-card-content class="lottie-container">
+
           <div class="overlay-text">
             <img style="zoom:1.6" src="assets/images/kvlogofinal.png" alt="KV Logo" />
-            @if(!isAlreadyAnswered){
-            <p>{{ messageText }}</p>
+
+            <!-- ══ Already answered: read-only summary from DB ══ -->
+            @if (isAlreadyAnswered) {
+              <div class="already-answered-badge">
+                <ion-icon name="checkmark-circle-outline"></ion-icon>
+                RSVP already submitted
+              </div>
+              <p class="already-answered-msg">
+                We've already received your response. Here's what we have on record:
+              </p>
+              <div class="rsvp-summary">
+                @for (g of arrGuests; track g.id) {
+                  <div class="summary-row">
+                    <span class="summary-name">{{ g.full_name }}</span>
+                    <span class="summary-status" [class.attending]="g.attend === true"
+                      [class.declined]="g.attend === false">
+                      <ion-icon [name]="g.attend ? 'checkmark-circle' : 'close-circle'"></ion-icon>
+                      {{ g.attend ? 'Attending' : 'Not attending' }}
+                    </span>
+                  </div>
+                }
+              </div>
+              <p class="already-answered-contact">
+                Need to make a change? Message Kamille or Vlarix directly.
+              </p>
             }
 
-            @if (guestCount === 1) {
-            @if (arrGuests[0].attend === false) {
-            <p>{{ arrGuests[0].full_name }} can’t attend.</p>
-            } @else {
-            <p>{{ arrGuests[0].full_name }}</p>
-            }
-            }
-            @else if (hasAccepted && hasDeclined) {
-            <!-- Mixed -->
-            <p>The following guest(s) can’t attend:</p>
-            <ul>
-              @for (g of arrGuests; track g) {
-              @if (!g.attend) {
-              <li>{{ g.full_name }}</li>
-              }
-              }
-            </ul>
-            }
-            @else if (hasDeclined && !hasAccepted) {
-            <!-- Everyone declined -->
-            <p>The following guest(s) can’t attend:</p>
-            <ul>
-              @for (g of arrGuests; track g) {
-              @if (!g.attend) {
-              <li>{{ g.full_name }}</li>
-              }
-              }
-            </ul>
-            }
-            @else if (hasAccepted && !hasDeclined) {
-            <!-- Everyone accepted -->
-            <p>We’re happy that all guest(s) can join!</p>
-            <ul>
-              @for (g of arrGuests; track g) {
-              @if (g.attend) {
-              <li>{{ g.full_name }}</li>
-              }
-              }
-            </ul>
-            } @else if (isAlreadyAnswered) {
-            <!-- Everyone accepted -->
-            <p>You already response to this</p>
-            <p>If any changes please contact us</p>
-            }
+            <!-- ══ Fresh submission: original thank-you message ══ -->
+            @if (!isAlreadyAnswered) {
+              <p>{{ messageText }}</p>
 
+              @if (guestCount === 1) {
+                @if (arrGuests[0].attend === false) {
+                  <p>{{ arrGuests[0].full_name }} can't attend.</p>
+                } @else {
+                  <p>{{ arrGuests[0].full_name }}</p>
+                }
+              } @else if (hasAccepted && hasDeclined) {
+                <p>The following guest(s) can't attend:</p>
+                <ul>
+                  @for (g of arrGuests; track g.id) {
+                    @if (!g.attend) { <li>{{ g.full_name }}</li> }
+                  }
+                </ul>
+              } @else if (hasDeclined && !hasAccepted) {
+                <p>The following guest(s) can't attend:</p>
+                <ul>
+                  @for (g of arrGuests; track g.id) {
+                    @if (!g.attend) { <li>{{ g.full_name }}</li> }
+                  }
+                </ul>
+              } @else if (hasAccepted && !hasDeclined) {
+                <p>We're happy that all guest(s) can join!</p>
+                <ul>
+                  @for (g of arrGuests; track g.id) {
+                    @if (g.attend) { <li>{{ g.full_name }}</li> }
+                  }
+                </ul>
+              }
+            }
 
             <ion-button (click)="closeModal()" fill="outline" expand="block" class="ion-margin-top">
               See Event Details
             </ion-button>
           </div>
-          <ng-lottie [options]="(hasDeclined || isAlreadyAnswered ) ? wavingOptions : congratsOptions"
-            style="width: 100%; height: 100%; pointer-events: none;"></ng-lottie>
 
-
+          <ng-lottie
+            [options]="congratsOptions"
+            style="width:100%;height:100%;pointer-events:none;">
+          </ng-lottie>
 
         </ion-card-content>
       </ion-card>

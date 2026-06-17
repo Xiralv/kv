@@ -22,12 +22,92 @@
 
     <!-- Main Content -->
     <div class="main-content ion-padding">
-      <p>
-        Thank you for joining us to celebrate! Scroll to see the details!
-      </p>
+
+      <!-- Personalised welcome banner — shown once user_fullname is known -->
+      @if (user_fullname) {
+        <div class="welcome-banner">
+          <div class="welcome-banner__inner">
+            <span class="welcome-banner__emoji">💍</span>
+            <div class="welcome-banner__text">
+              <p class="welcome-banner__greeting">Welcome, {{ user_fullname }}!</p>
+              <p class="welcome-banner__sub">
+                {{ hasSubmittedRsvp ? "We've received your RSVP — we can't wait to see you!" : "Don't forget to RSVP below! 👇" }}
+              </p>
+            </div>
+          </div>
+        </div>
+      } @else {
+        <p>
+          Thank you for joining us to celebrate! Scroll to see the details!
+        </p>
+      }
 
 
 
+
+      <!-- Countdown / Wedding Day Card -->
+      <ion-card class="countdown-card">
+        <ion-card-content>
+
+          @if (!weddingDayPassed) {
+
+            <!-- Pre-wedding: label + unit blocks -->
+            <p class="countdown-title">
+              {{ isWeddingDay ? '🎊 Today is the big day!' : 'Counting down to the big day' }}
+            </p>
+
+            @if (!isWeddingDay) {
+              <div class="countdown-grid">
+                <div class="countdown-unit">
+                  <span class="countdown-num">{{ countdown.days }}</span>
+                  <span class="countdown-label">days</span>
+                </div>
+                <div class="countdown-sep">:</div>
+                <div class="countdown-unit">
+                  <span class="countdown-num">{{ countdown.hours }}</span>
+                  <span class="countdown-label">hrs</span>
+                </div>
+                <div class="countdown-sep">:</div>
+                <div class="countdown-unit">
+                  <span class="countdown-num">{{ countdown.minutes }}</span>
+                  <span class="countdown-label">min</span>
+                </div>
+                <div class="countdown-sep">:</div>
+                <div class="countdown-unit">
+                  <span class="countdown-num">{{ countdown.seconds }}</span>
+                  <span class="countdown-label">sec</span>
+                </div>
+              </div>
+
+              <p class="countdown-date">December 18, 2026 · 3:00 PM</p>
+            }
+
+            @if (isWeddingDay) {
+              <!-- Wedding-day live schedule -->
+              <div class="wedding-schedule">
+                @for (event of schedule; track event.label) {
+                  <div class="schedule-row" [class.active]="event.isNow" [class.past]="event.isPast">
+                    <div class="schedule-dot"></div>
+                    <div class="schedule-info">
+                      <span class="schedule-time">{{ event.time }}</span>
+                      <span class="schedule-label">{{ event.label }}</span>
+                    </div>
+                    @if (event.isNow) {
+                      <span class="schedule-now-badge">Now</span>
+                    }
+                  </div>
+                }
+              </div>
+            }
+
+          } @else {
+            <!-- Post-wedding: memory message -->
+            <p class="countdown-title">💍 Kamille &amp; Vlarix are married!</p>
+            <p class="countdown-sub">Thank you for celebrating with us. ❤️</p>
+          }
+
+        </ion-card-content>
+      </ion-card>
 
       <!-- Event Details Card -->
       <ion-card>
@@ -423,10 +503,10 @@
     <ion-card>
       <ion-card-content>
         <p>
-          Save the date and celebrate with us.
+          {{ hasSubmittedRsvp ? 'Need to make a change? Reach out to Kamille or Vlarix.' : 'Save the date and celebrate with us.' }}
         </p>
-        <ion-button expand="block" fill="outline" (click)="rsvp()" routerLink="/rsvp">
-          RSVP Now
+        <ion-button expand="block" fill="outline" (click)="rsvp()">
+          {{ hasSubmittedRsvp ? 'View My RSVP' : 'RSVP Now' }}
         </ion-button>
       </ion-card-content>
     </ion-card>
