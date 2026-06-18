@@ -1,0 +1,253 @@
+$gold:        #fddf7d;
+$gold-dark:   #5a3e00;
+$gold-mid:    #a07800;
+$gold-bg:     #fffbef;
+$gold-border: rgba(253, 223, 125, 0.45);
+$font:        'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+
+// ── Intro banner ──────────────────────────────────────────────────────────────
+.prog-intro {
+  text-align: center;
+  padding: 24px 20px 16px;
+  border-bottom: 0.5px solid $gold-border;
+  margin-bottom: 4px;
+}
+
+.prog-intro__date {
+  font-family: $font;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: $gold-mid;
+  margin: 0 0 4px;
+}
+
+.prog-intro__names {
+  font-family: $font;
+  font-size: clamp(22px, 5.5vw, 28px);
+  font-weight: 700;
+  color: $gold-dark;
+  margin: 0 0 10px;
+}
+
+.prog-intro__sub {
+  font-family: $font;
+  font-size: 13px;
+  color: #999;
+  font-style: italic;
+  margin: 8px 0 0;
+}
+
+// Live "Now" pill
+.prog-now-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: $font;
+  font-size: 13px;
+  font-weight: 600;
+  color: $gold-dark;
+  background: $gold;
+  padding: 5px 14px;
+  border-radius: 20px;
+  margin-top: 4px;
+  animation: pillPulse 2s ease-in-out infinite;
+}
+
+.prog-now-pill__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: $gold-dark;
+  flex-shrink: 0;
+}
+
+@keyframes pillPulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.75; }
+}
+
+// ── Section ───────────────────────────────────────────────────────────────────
+.prog-section {
+  padding: 0 16px;
+  margin-top: 20px;
+}
+
+.prog-section__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+  padding-bottom: 8px;
+  border-bottom: 1.5px solid $gold;
+}
+
+.prog-section__icon {
+  font-size: 18px;
+  color: $gold-mid;
+}
+
+.prog-section__label {
+  font-family: $font;
+  font-size: 16px;
+  font-weight: 700;
+  color: $gold-dark;
+  letter-spacing: 0.02em;
+}
+
+// ── Programme list ────────────────────────────────────────────────────────────
+.prog-list {
+  display: flex;
+  flex-direction: column;
+}
+
+// ── Individual item ───────────────────────────────────────────────────────────
+.prog-item {
+  display: flex;
+  gap: 0;
+  opacity: 1;
+  transition: opacity 0.3s;
+
+  &--past {
+    opacity: 0.38;
+  }
+}
+
+// Spine: dot + vertical line
+.prog-item__spine {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 28px;
+  flex-shrink: 0;
+}
+
+.prog-item__dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid $gold;
+  background: #fff;
+  flex-shrink: 0;
+  margin-top: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+
+  .prog-item--now & {
+    background: $gold;
+    border-color: $gold-dark;
+  }
+
+  .prog-item--past & {
+    background: #e0e0e0;
+    border-color: #ccc;
+  }
+}
+
+.prog-item__dot-live {
+  font-size: 7px;
+  color: $gold-dark;
+  animation: livePulse 1.2s ease-in-out infinite;
+}
+
+@keyframes livePulse {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.4); }
+}
+
+.prog-item__line {
+  flex: 1;
+  width: 2px;
+  background: $gold-border;
+  min-height: 12px;
+
+  .prog-item:last-child & { display: none; }
+}
+
+// Content
+.prog-item__content {
+  flex: 1;
+  padding: 0 0 18px 10px;
+}
+
+.prog-item__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.prog-item__icon {
+  font-size: 16px;
+  color: $gold-mid;
+  flex-shrink: 0;
+
+  .prog-item--past & { color: #bbb; }
+  .prog-item--now  & { color: $gold-dark; }
+}
+
+.prog-item__meta {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.prog-item__time {
+  font-family: $font;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: $gold-mid;
+  text-transform: uppercase;
+
+  .prog-item--past & { color: #bbb; }
+  .prog-item--now  & { color: $gold-dark; }
+}
+
+.prog-item__title {
+  font-family: $font;
+  font-size: clamp(14px, 3.5vw, 15px);
+  font-weight: 600;
+  color: #2c2c2c;
+
+  .prog-item--past & { color: #aaa; }
+  .prog-item--now  & { color: $gold-dark; font-weight: 700; }
+}
+
+.prog-item__now-badge {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: $gold-dark;
+  background: $gold;
+  padding: 2px 9px;
+  border-radius: 20px;
+  flex-shrink: 0;
+  animation: pillPulse 2s ease-in-out infinite;
+}
+
+.prog-item__desc {
+  font-family: $font;
+  font-size: clamp(12px, 2.8vw, 13px);
+  color: #777;
+  margin: 0;
+  line-height: 1.55;
+
+  .prog-item--past & { color: #bbb; }
+  .prog-item--now  & { color: #555; }
+}
+
+// ── Footer ────────────────────────────────────────────────────────────────────
+.prog-footer {
+  text-align: center;
+  padding: 24px 16px 40px;
+  font-family: $font;
+  font-size: 14px;
+  font-style: italic;
+  color: $gold-mid;
+}

@@ -1,0 +1,88 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Programme</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Programme</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <!-- Intro banner -->
+  <div class="prog-intro">
+    <p class="prog-intro__date">{{ weddingDateLabel }}</p>
+    <p class="prog-intro__names">Kamille &amp; Vlarix</p>
+
+    <!-- Live "happening now" pill — only shown on wedding day -->
+    @if (isWeddingDay && currentItemTitle) {
+      <div class="prog-now-pill">
+        <span class="prog-now-pill__dot"></span>
+        Now: {{ currentItemTitle }}
+      </div>
+    }
+
+    @if (weddingDayPassed) {
+      <p class="prog-intro__sub">What a beautiful day it was. 💍</p>
+    } @else if (!isWeddingDay) {
+      <p class="prog-intro__sub">Here's what to expect on the day.</p>
+    }
+  </div>
+
+  <!-- Programme sections -->
+  @for (section of sections; track section.label) {
+    <div class="prog-section">
+
+      <!-- Section header -->
+      <div class="prog-section__header">
+        <ion-icon [name]="section.icon" class="prog-section__icon"></ion-icon>
+        <span class="prog-section__label">{{ section.label }}</span>
+      </div>
+
+      <!-- Items -->
+      <div class="prog-list">
+        @for (item of section.items; track item.time) {
+          <div class="prog-item"
+               [class.prog-item--now]="isWeddingDay && item.isNow"
+               [class.prog-item--past]="isWeddingDay && item.isPast">
+
+            <!-- Timeline spine -->
+            <div class="prog-item__spine">
+              <div class="prog-item__dot">
+                @if (isWeddingDay && item.isNow) {
+                  <ion-icon name="ellipse" class="prog-item__dot-live"></ion-icon>
+                }
+              </div>
+              <div class="prog-item__line"></div>
+            </div>
+
+            <!-- Content -->
+            <div class="prog-item__content">
+              <div class="prog-item__header">
+                <ion-icon [name]="item.icon" class="prog-item__icon"></ion-icon>
+                <div class="prog-item__meta">
+                  <span class="prog-item__time">{{ item.time }}</span>
+                  <span class="prog-item__title">{{ item.title }}</span>
+                </div>
+                @if (isWeddingDay && item.isNow) {
+                  <span class="prog-item__now-badge">Now</span>
+                }
+              </div>
+              <p class="prog-item__desc">{{ item.description }}</p>
+            </div>
+
+          </div>
+        }
+      </div>
+
+    </div>
+  }
+
+  <div class="prog-footer">
+    <p>💍 With love, Kamille &amp; Vlarix</p>
+  </div>
+
+</ion-content>

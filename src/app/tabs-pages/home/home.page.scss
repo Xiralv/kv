@@ -80,7 +80,7 @@
 
 /* Text and Paragraphs */
 p {
-  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; 
   line-height: 1.5;
   text-align: center;
 }
@@ -140,8 +140,7 @@ ion-card-title {
 
 .sticky-rsvp ion-card {
   width: 100%;
-  max-width: 600px;
-  /* keeps it elegant on large screens */
+  max-width: 600px; /* keeps it elegant on large screens */
   margin: 0 auto;
   border-radius: 0;
   box-shadow: none;
@@ -159,7 +158,6 @@ ion-card-title {
   display: block;
   border-radius: 12px;
 }
-
 ion-button {
   --border-color: #000;
   --background-activated: #000;
@@ -222,10 +220,8 @@ ion-col {
 
 
 .date-label {
-  display: block;
-  /* ⬅️ THIS is the missing piece */
-  width: 100%;
-  /* ⬅️ allows true centering */
+  display: block;     /* ⬅️ THIS is the missing piece */
+  width: 100%;        /* ⬅️ allows true centering */
   margin: 16px 0;
 }
 
@@ -245,8 +241,7 @@ ion-col {
 
 
 .circle-gap {
-  gap: 16px;
-  /* space between circles */
+  gap: 16px; /* space between circles */
 }
 
 .circle-text-wrapper {
@@ -277,8 +272,7 @@ ion-col {
 
 .dress-row {
   display: grid;
-  grid-template-columns: 100px 1fr;
-  /* fixed label width */
+  grid-template-columns: 100px 1fr; /* fixed label width */
   gap: 12px;
   align-items: start;
   margin-bottom: 6px;
@@ -291,7 +285,7 @@ ion-col {
 
 .dress-row .value {
   text-align: left;
-  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; 
   line-height: 1.5;
   text-align: center;
 }
@@ -321,8 +315,7 @@ ion-col {
   }
 
   .gift-images img {
-    width: clamp(120px, 18vw, 180px);
-    /* ⬅️ bigger */
+    width: clamp(120px, 18vw, 180px); /* ⬅️ bigger */
     max-width: none;
   }
 }
@@ -377,15 +370,8 @@ ion-col {
 }
 
 @keyframes bannerFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-6px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 /* ── Countdown card ──────────────────────────────────────────────────────── */
@@ -460,8 +446,7 @@ ion-col {
   font-size: clamp(20px, 5vw, 28px);
   font-weight: 700;
   color: #fddf7d;
-  margin-bottom: 18px;
-  /* nudge separator up to align with numbers */
+  margin-bottom: 18px; /* nudge separator up to align with numbers */
 }
 
 /* Wedding-day live schedule */
@@ -482,30 +467,17 @@ ion-col {
   opacity: 0.45;
   transition: opacity 0.3s;
 
-  &:last-child {
-    border-bottom: none;
-  }
+  &:last-child { border-bottom: none; }
 
   &.active {
     opacity: 1;
-
-    .schedule-dot {
-      background: #fddf7d;
-      box-shadow: 0 0 0 3px rgba(253, 223, 125, 0.35);
-    }
-
-    .schedule-time,
-    .schedule-label {
-      color: #3d2b00;
-    }
+    .schedule-dot { background: #fddf7d; box-shadow: 0 0 0 3px rgba(253, 223, 125, 0.35); }
+    .schedule-time, .schedule-label { color: #3d2b00; }
   }
 
   &.past {
     opacity: 0.3;
-
-    .schedule-dot {
-      background: #ccc;
-    }
+    .schedule-dot { background: #ccc; }
   }
 }
 
@@ -548,4 +520,274 @@ ion-col {
   padding: 2px 8px;
   border-radius: 20px;
   flex-shrink: 0;
+}
+
+/* ── Venue direction CTAs (below map) ───────────────────────────────────── */
+.venue-ctas {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.venue-cta-block {
+  padding: 12px 0;
+}
+
+.venue-divider {
+  height: 0.5px;
+  background: #f0e8cc;
+}
+
+.venue-cta-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: #a07800;
+  margin: 0 0 2px;
+}
+
+.venue-cta-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: #333;
+  margin: 0 0 10px;
+}
+
+.venue-cta-btns {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.dir-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 7px 14px;
+  border-radius: 10px;
+  text-decoration: none;
+  border: 1.5px solid;
+  transition: opacity 0.15s;
+
+  ion-icon { font-size: 15px; }
+
+  &:active { opacity: 0.7; }
+}
+
+.dir-btn--gmaps {
+  color: #1a73e8;
+  border-color: #1a73e8;
+  background: #f0f6ff;
+}
+
+.dir-btn--waze {
+  color: #00b4d8;
+  border-color: #00b4d8;
+  background: #f0fbff;
+}
+
+/* ── Transportation rows ─────────────────────────────────────────────────── */
+.transport-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.transport-row {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 0;
+  border-bottom: 0.5px solid #f5f5f5;
+
+  &:last-child { border-bottom: none; }
+}
+
+.transport-icon {
+  font-size: 22px;
+  color: #a07800;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.transport-info {
+  flex: 1;
+  text-align: left;
+}
+
+.transport-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 3px;
+}
+
+.transport-sub {
+  font-size: 12px;
+  color: #888;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.transport-link {
+  font-size: 12px;
+  font-weight: 600;
+  color: #1a73e8;
+  text-decoration: none;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* ── Hotel / Accommodation rows ──────────────────────────────────────────── */
+.hotel-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.hotel-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 12px;
+  background: var(--ion-color-light, #f8f8f8);
+  border: 1px solid #eee;
+  position: relative;
+
+  &--featured {
+    background: #fffbef;
+    border-color: #fddf7d;
+  }
+}
+
+.hotel-row__badge {
+  position: absolute;
+  top: -9px;
+  left: 12px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: #fddf7d;
+  color: #5a3e00;
+  padding: 2px 9px;
+  border-radius: 20px;
+}
+
+.hotel-row__info {
+  flex: 1;
+}
+
+.hotel-row__name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 2px;
+}
+
+.hotel-row__detail {
+  font-size: 12px;
+  color: #888;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.hotel-row__btns {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.hotel-link {
+  font-size: 12px;
+  font-weight: 600;
+  color: #1a73e8;
+  text-decoration: none;
+  padding: 5px 10px;
+  border-radius: 8px;
+  border: 1.5px solid #1a73e8;
+  background: #f0f6ff;
+
+  &--dir {
+    display: inline-flex;
+    align-items: center;
+    color: #a07800;
+    border-color: #fddf7d;
+    background: #fffbef;
+
+    ion-icon { font-size: 15px; }
+  }
+}
+
+/* ── FAQ accordion ───────────────────────────────────────────────────────── */
+.faq-group-label {
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: #a07800;
+  margin: 20px 0 6px;
+
+  &:first-of-type { margin-top: 4px; }
+}
+
+.faq-header {
+  --background: #fffbef;
+  --border-radius: 10px;
+  border-radius: 10px;
+  margin-bottom: 2px;
+
+  ion-label {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-size: clamp(13px, 3.2vw, 14px);
+    font-weight: 500;
+    color: #3d2b00;
+    white-space: normal !important;
+  }
+}
+
+.faq-icon {
+  font-size: 18px;
+  color: #a07800;
+  margin-right: 4px;
+}
+
+.faq-answer {
+  padding: 10px 16px 14px 44px;
+  background: #fff;
+
+  p {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-size: clamp(13px, 3vw, 14px);
+    color: #555;
+    line-height: 1.65;
+    margin: 0;
+  }
+}
+
+.faq-answer__spacer {
+  margin-top: 8px !important;
+}
+
+// Tighten the Ionic accordion group gaps
+ion-accordion-group {
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(253, 223, 125, 0.4);
+}
+
+ion-accordion {
+  background: transparent;
+
+  &:not(:last-child) {
+    border-bottom: 0.5px solid rgba(253, 223, 125, 0.35);
+  }
 }

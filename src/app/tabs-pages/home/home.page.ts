@@ -29,10 +29,22 @@ export class HomePage implements AfterViewInit, OnDestroy {
   bannerHeight = Math.min(window.innerHeight * 0.3, 300);
   private map!: L.Map;
 
-  churchImage = 'https://vismin.ph/wp-content/uploads/2024/07/Our-Mother-of-Perpetual-Help-Parish-1-1024x768.jpg';
-  churchLink = 'https://www.google.com/search?sca_esv=3a209260479b6c25&sxsrf=AE3TifNNRX4BwcdNvBi8np3xGuJurDAArg:1762489943630&q=our+lady+of+perpetual+help+davao&source=lnms&fbs=AIIjpHwdlVWI4oi2g38E8_BbusNm3pTf6ItdW8-u0JVVBgXow2SS4XfWu_GDEb99WFnlrQRu8iokckxH_JDkxqr6KkGW4h-UbOrZy4_VKBu-AShUrAooLdiGQYtSQDT99Xap-srDPez-ucnQiAzRh8mmP1kRjLDdbJzfrcZft5EkU32xioTPtdvXjSP0QmbpiIoU0I1Tueb0jSePp7oklbvhDoAy9soWPuopFzaG3PmlHIaSuWt66cU&sa=X&ved=2ahUKEwjEpYrYmt-QAxV8iK8BHQAvE28Q0pQJegQICRAB&biw=1512&bih=857&dpr=2';
+  churchImage    = 'https://vismin.ph/wp-content/uploads/2024/07/Our-Mother-of-Perpetual-Help-Parish-1-1024x768.jpg';
   receptionImage = 'https://cf.bstatic.com/xdata/images/hotel/max1024x768/702406430.jpg?k=23c7108d3cbaaefe1151a0cbe2e8deed01eb26e1ff8654468db1a7b0c3aa217d&o=';
-  receptionLink = 'https://www.waterfronthotels.com.ph/waterfront-insular-hotel-davao/';
+
+  // Venue coordinates
+  readonly CHURCH_LAT    = 7.0921547;
+  readonly CHURCH_LNG    = 125.6071803;
+  readonly RECEPTION_LAT = 7.1064277;
+  readonly RECEPTION_LNG = 125.647736;
+
+  // Google Maps directions links (opens destination in Maps, user's location auto-detected)
+  get churchGoogleMaps()    { return `https://www.google.com/maps/dir/?api=1&destination=${this.CHURCH_LAT},${this.CHURCH_LNG}&travelmode=driving`; }
+  get receptionGoogleMaps() { return `https://www.google.com/maps/dir/?api=1&destination=${this.RECEPTION_LAT},${this.RECEPTION_LNG}&travelmode=driving`; }
+
+  // Waze deeplinks (dominant nav app in PH)
+  get churchWaze()          { return `https://waze.com/ul?ll=${this.CHURCH_LAT},${this.CHURCH_LNG}&navigate=yes`; }
+  get receptionWaze()       { return `https://waze.com/ul?ll=${this.RECEPTION_LAT},${this.RECEPTION_LNG}&navigate=yes`; }
   selectedImage: string | null = null;
 
   // ─── Countdown ────────────────────────────────────────────────────────────
@@ -40,15 +52,15 @@ export class HomePage implements AfterViewInit, OnDestroy {
   private countdownInterval: any;
 
   countdown = { days: '00', hours: '00', minutes: '00', seconds: '00' };
-  isWeddingDay = false;
+  isWeddingDay   = false;
   weddingDayPassed = false;
 
   schedule = [
-    { time: '3:00 PM', label: 'Ceremony begins', hour: 15, minute: 0, isNow: false, isPast: false },
-    { time: '4:30 PM', label: 'Cocktail hour', hour: 16, minute: 30, isNow: false, isPast: false },
-    { time: '6:00 PM', label: 'Reception & dinner', hour: 18, minute: 0, isNow: false, isPast: false },
-    { time: '7:00 PM', label: 'Speeches & first dance', hour: 19, minute: 0, isNow: false, isPast: false },
-    { time: '8:00 PM', label: 'Open floor / party 🎉', hour: 20, minute: 0, isNow: false, isPast: false },
+    { time: '3:00 PM',  label: 'Ceremony begins',         hour: 15, minute: 0,  isNow: false, isPast: false },
+    { time: '4:30 PM',  label: 'Cocktail hour',           hour: 16, minute: 30, isNow: false, isPast: false },
+    { time: '6:00 PM',  label: 'Reception & dinner',      hour: 18, minute: 0,  isNow: false, isPast: false },
+    { time: '7:00 PM',  label: 'Speeches & first dance',  hour: 19, minute: 0,  isNow: false, isPast: false },
+    { time: '8:00 PM',  label: 'Open floor / party 🎉',   hour: 20, minute: 0,  isNow: false, isPast: false },
   ];
 
   constructor(
@@ -56,7 +68,7 @@ export class HomePage implements AfterViewInit, OnDestroy {
     private routerOutlet: IonRouterOutlet,
     private alertCtrl: AlertController,
     private api: SupabaseService,           // ← injected for DB check
-  ) { }
+  ) {}
 
   async ngAfterViewInit() {
     setTimeout(() => this.initMap(), 1000);
@@ -106,12 +118,12 @@ export class HomePage implements AfterViewInit, OnDestroy {
   }
 
   private tickCountdown(): void {
-    const now = new Date();
+    const now  = new Date();
     const diff = this.WEDDING.getTime() - now.getTime();
 
-    const todayDate = now.toDateString();
+    const todayDate   = now.toDateString();
     const weddingDate = this.WEDDING.toDateString();
-    this.isWeddingDay = todayDate === weddingDate;
+    this.isWeddingDay     = todayDate === weddingDate;
     this.weddingDayPassed = diff < 0 && !this.isWeddingDay;
 
     if (!this.isWeddingDay && diff > 0) {
@@ -121,8 +133,8 @@ export class HomePage implements AfterViewInit, OnDestroy {
       const m = Math.floor((totalSeconds % 3600) / 60);
       const s = totalSeconds % 60;
       this.countdown = {
-        days: String(d).padStart(2, '0'),
-        hours: String(h).padStart(2, '0'),
+        days:    String(d).padStart(2, '0'),
+        hours:   String(h).padStart(2, '0'),
         minutes: String(m).padStart(2, '0'),
         seconds: String(s).padStart(2, '0'),
       };
@@ -137,8 +149,8 @@ export class HomePage implements AfterViewInit, OnDestroy {
     const currentMinutes = now.getHours() * 60 + now.getMinutes();
     this.schedule = this.schedule.map((event, i) => {
       const eventMinutes = event.hour * 60 + event.minute;
-      const nextEvent = this.schedule[i + 1];
-      const nextMinutes = nextEvent ? nextEvent.hour * 60 + nextEvent.minute : 24 * 60;
+      const nextEvent    = this.schedule[i + 1];
+      const nextMinutes  = nextEvent ? nextEvent.hour * 60 + nextEvent.minute : 24 * 60;
       return {
         ...event,
         isNow: currentMinutes >= eventMinutes && currentMinutes < nextMinutes,
@@ -162,28 +174,78 @@ export class HomePage implements AfterViewInit, OnDestroy {
       attribution: '&copy; OpenStreetMap contributors'
     }).addTo(this.map);
 
-    const churchCoords: L.LatLngExpression = [7.0921547, 125.6071803];
-    const receptionCoords: L.LatLngExpression = [7.1064277, 125.647736];
+    const churchCoords: L.LatLngExpression    = [this.CHURCH_LAT,    this.CHURCH_LNG];
+    const receptionCoords: L.LatLngExpression = [this.RECEPTION_LAT, this.RECEPTION_LNG];
 
-    L.marker(churchCoords, { icon: churchIcon }).addTo(this.map).bindPopup(`
-      <div style="text-align:center;">
-        <b>Ceremony</b><br>
-        Our Mother of Perpetual Help Parish<br>
-        <a href="${this.churchLink}" target="_blank">
-          <img src="${this.churchImage}" style="width:170px;margin-top:5px;border-radius:8px;">
-        </a>
-      </div>
-    `);
+    const popupStyle = `
+      font-family: 'Gill Sans', Calibri, sans-serif;
+      text-align: center;
+      min-width: 190px;
+    `;
 
-    L.marker(receptionCoords, { icon: receptionIcon }).addTo(this.map).bindPopup(`
-      <div style="text-align:center;">
-        <b>Reception</b><br>
-        Waterfront Insular Hotel Davao<br>
-        <a href="${this.receptionLink}" target="_blank">
-          <img src="${this.receptionImage}" style="width:200px;margin-top:5px;border-radius:8px;">
-        </a>
-      </div>
-    `);
+    const btnRowStyle = `
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+      margin-top: 10px;
+    `;
+
+    const btnBase = `
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 5px 11px;
+      border-radius: 8px;
+      text-decoration: none;
+      border: 1.5px solid;
+    `;
+
+    const gmapsBtn = `${btnBase} color:#1a73e8; border-color:#1a73e8; background:#fff;`;
+    const wazeBtn  = `${btnBase} color:#33ccff; border-color:#33ccff; background:#fff;`;
+
+    L.marker(churchCoords, { icon: churchIcon })
+      .addTo(this.map)
+      .bindPopup(`
+        <div style="${popupStyle}">
+          <b style="font-size:13px;">⛪ Ceremony</b><br>
+          <span style="font-size:11px;color:#666;">Our Mother of Perpetual Help Parish</span><br>
+          <a href="${this.churchGoogleMaps}" target="_blank">
+            <img src="${this.churchImage}"
+                 style="width:100%;max-width:180px;margin-top:8px;border-radius:8px;display:block;margin-left:auto;margin-right:auto;">
+          </a>
+          <div style="${btnRowStyle}">
+            <a href="${this.churchGoogleMaps}" target="_blank" style="${gmapsBtn}">
+              🗺 Google Maps
+            </a>
+            <a href="${this.churchWaze}" target="_blank" style="${wazeBtn}">
+              🚗 Waze
+            </a>
+          </div>
+        </div>
+      `, { maxWidth: 220 });
+
+    L.marker(receptionCoords, { icon: receptionIcon })
+      .addTo(this.map)
+      .bindPopup(`
+        <div style="${popupStyle}">
+          <b style="font-size:13px;">🥂 Reception</b><br>
+          <span style="font-size:11px;color:#666;">Waterfront Insular Hotel Davao</span><br>
+          <a href="${this.receptionGoogleMaps}" target="_blank">
+            <img src="${this.receptionImage}"
+                 style="width:100%;max-width:200px;margin-top:8px;border-radius:8px;display:block;margin-left:auto;margin-right:auto;">
+          </a>
+          <div style="${btnRowStyle}">
+            <a href="${this.receptionGoogleMaps}" target="_blank" style="${gmapsBtn}">
+              🗺 Google Maps
+            </a>
+            <a href="${this.receptionWaze}" target="_blank" style="${wazeBtn}">
+              🚗 Waze
+            </a>
+          </div>
+        </div>
+      `, { maxWidth: 220 });
 
     const group = L.featureGroup([L.marker(churchCoords), L.marker(receptionCoords)]);
     this.map.fitBounds(group.getBounds().pad(0.3));
@@ -219,8 +281,8 @@ export class HomePage implements AfterViewInit, OnDestroy {
       header: 'Are you sure?',
       message: 'Do you really want to close this modal?',
       buttons: [
-        { text: 'Cancel', role: 'cancel', handler: () => false },
-        { text: 'Yes', role: 'confirm', handler: () => true },
+        { text: 'Cancel', role: 'cancel',  handler: () => false },
+        { text: 'Yes',    role: 'confirm', handler: () => true  },
       ],
     });
     await alert.present();
@@ -233,10 +295,6 @@ export class HomePage implements AfterViewInit, OnDestroy {
     this.bannerHeight = Math.max(250 - scrollTop, 56);
   }
 
-  openImage(img: string) {
-    this.selectedImage = img;
-  }
-  closeImage() {
-    this.selectedImage = null;
-  }
+  openImage(img: string) { this.selectedImage = img; }
+  closeImage()            { this.selectedImage = null; }
 }

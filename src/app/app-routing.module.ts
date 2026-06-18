@@ -14,6 +14,10 @@ const routes: Routes = [
   {
     path: 'verify-rsvp',
     loadChildren: () => import('./pages/verify-rsvp/verify-rsvp.module').then(m => m.VerifyRsvpPageModule)
+  },
+  {
+    path: 'programme',
+    loadChildren: () => import('./tabs-pages/programme/programme.module').then( m => m.ProgrammePageModule)
   }
 ];
 

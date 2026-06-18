@@ -465,6 +465,43 @@
 
         <ion-card-content>
           <div id="map" class="map-container"></div>
+
+          <!-- Venue direction CTAs -->
+          <div class="venue-ctas">
+
+            <div class="venue-cta-block">
+              <p class="venue-cta-label">⛪ Ceremony</p>
+              <p class="venue-cta-name">Our Mother of Perpetual Help Parish</p>
+              <div class="venue-cta-btns">
+                <a [href]="churchGoogleMaps" target="_blank" class="dir-btn dir-btn--gmaps">
+                  <ion-icon name="map-outline"></ion-icon>
+                  Google Maps
+                </a>
+                <a [href]="churchWaze" target="_blank" class="dir-btn dir-btn--waze">
+                  <ion-icon name="navigate-outline"></ion-icon>
+                  Waze
+                </a>
+              </div>
+            </div>
+
+            <div class="venue-divider"></div>
+
+            <div class="venue-cta-block">
+              <p class="venue-cta-label">🥂 Reception</p>
+              <p class="venue-cta-name">Waterfront Insular Hotel Davao</p>
+              <div class="venue-cta-btns">
+                <a [href]="receptionGoogleMaps" target="_blank" class="dir-btn dir-btn--gmaps">
+                  <ion-icon name="map-outline"></ion-icon>
+                  Google Maps
+                </a>
+                <a [href]="receptionWaze" target="_blank" class="dir-btn dir-btn--waze">
+                  <ion-icon name="navigate-outline"></ion-icon>
+                  Waze
+                </a>
+              </div>
+            </div>
+
+          </div>
         </ion-card-content>
 
       </ion-card>
@@ -473,13 +510,48 @@
       <ion-card>
         <ion-card-header>
           <p>
-            It's easy to roam around the city! Grab and Taxi are available. If you want to rent a car, just let us know
-            so we can help you out!
+            It's easy to roam around the city! Grab and taxis are available everywhere.
+            If you'd like to rent a car, just let us know and we'll help you out!
           </p>
           <ion-card-title>Transportation</ion-card-title>
         </ion-card-header>
         <ion-card-content>
+          <div class="transport-rows">
 
+            <div class="transport-row">
+              <ion-icon name="car-outline" class="transport-icon"></ion-icon>
+              <div class="transport-info">
+                <p class="transport-title">Grab</p>
+                <p class="transport-sub">The easiest way to get around Davao — available 24/7</p>
+              </div>
+              <a href="https://grab.onelink.me/2695613898?pid=owned&c=PH_consumer_webe_all_all_all_brand_awareness&af_web_dp=https%3A%2F%2Fwww.grab.com%2Fph%2F" target="_blank" class="transport-link">Open app</a>
+            </div>
+
+            <div class="transport-row">
+              <ion-icon name="taxi-outline" class="transport-icon"></ion-icon>
+              <div class="transport-info">
+                <p class="transport-title">Taxi</p>
+                <p class="transport-sub">Available at major hotels and the airport — agree on the meter before riding</p>
+              </div>
+            </div>
+
+            <div class="transport-row">
+              <ion-icon name="airplane-outline" class="transport-icon"></ion-icon>
+              <div class="transport-info">
+                <p class="transport-title">From the airport</p>
+                <p class="transport-sub">Francisco Bangoy International Airport is ~25 min to the church and ~30 min to the hotel</p>
+              </div>
+            </div>
+
+            <div class="transport-row">
+              <ion-icon name="bus-outline" class="transport-icon"></ion-icon>
+              <div class="transport-info">
+                <p class="transport-title">Church → Reception shuttle</p>
+                <p class="transport-sub">We're arranging a shuttle between the church and Waterfront Hotel — details to follow!</p>
+              </div>
+            </div>
+
+          </div>
         </ion-card-content>
       </ion-card>
 
@@ -487,11 +559,185 @@
         <ion-card-header>
           <p>
             If you need to book a hotel, we highly encourage staying at Waterfront Insular Hotel.
-            Just message us the details so we can connect you with our Coordinator.
+            Just message us and we'll connect you with our coordinator for a group rate!
           </p>
           <ion-card-title>Accommodation</ion-card-title>
         </ion-card-header>
         <ion-card-content>
+          <div class="hotel-rows">
+
+            <div class="hotel-row hotel-row--featured">
+              <div class="hotel-row__badge">Recommended</div>
+              <div class="hotel-row__info">
+                <p class="hotel-row__name">Waterfront Insular Hotel Davao</p>
+                <p class="hotel-row__detail">Reception venue · Group rate available</p>
+              </div>
+              <div class="hotel-row__btns">
+                <a href="https://www.waterfronthotels.com.ph/waterfront-insular-hotel-davao/" target="_blank" class="hotel-link">Book</a>
+                <a [href]="receptionGoogleMaps" target="_blank" class="hotel-link hotel-link--dir">
+                  <ion-icon name="navigate-outline"></ion-icon>
+                </a>
+              </div>
+            </div>
+
+            <div class="hotel-row">
+              <div class="hotel-row__info">
+                <p class="hotel-row__name">Seda Abreeza</p>
+                <p class="hotel-row__detail">~15 min from reception · Contemporary 5-star</p>
+              </div>
+              <div class="hotel-row__btns">
+                <a href="https://www.sedahotels.com/abreeza" target="_blank" class="hotel-link">Book</a>
+              </div>
+            </div>
+
+            <div class="hotel-row">
+              <div class="hotel-row__info">
+                <p class="hotel-row__name">Marco Polo Davao</p>
+                <p class="hotel-row__detail">~10 min from reception · City centre location</p>
+              </div>
+              <div class="hotel-row__btns">
+                <a href="https://www.marcopolohotels.com/en/marco_polo/hotels/davao/index.html" target="_blank" class="hotel-link">Book</a>
+              </div>
+            </div>
+
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+
+      <!-- FAQ Card -->
+      <ion-card>
+        <ion-card-header>
+          <p>Got questions? We've got answers.</p>
+          <ion-card-title>FAQ</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+
+          <!-- Group: Guests & RSVP -->
+          <p class="faq-group-label">Guests &amp; RSVP</p>
+          <ion-accordion-group>
+
+            <ion-accordion value="plusone">
+              <ion-item slot="header" lines="none" class="faq-header">
+                <ion-icon name="people-outline" slot="start" class="faq-icon"></ion-icon>
+                <ion-label>Can I bring a plus one?</ion-label>
+              </ion-item>
+              <div slot="content" class="faq-answer">
+                <p>Your invitation is made out to the specific guests listed on your RSVP. If a plus one is included, they'll appear in the RSVP flow when you enter your name. If they're not listed, we kindly ask that only the named guests attend — we have a set number of seats.</p>
+              </div>
+            </ion-accordion>
+
+            <ion-accordion value="kids">
+              <ion-item slot="header" lines="none" class="faq-header">
+                <ion-icon name="happy-outline" slot="start" class="faq-icon"></ion-icon>
+                <ion-label>Are children welcome?</ion-label>
+              </ion-item>
+              <div slot="content" class="faq-answer">
+                <p>We love your little ones! Children are welcome at the ceremony. For the reception, we'd love for it to be an adults-only evening so everyone can celebrate freely — we hope you understand and can arrange childcare for the night.</p>
+              </div>
+            </ion-accordion>
+
+            <ion-accordion value="rsvp-deadline">
+              <ion-item slot="header" lines="none" class="faq-header">
+                <ion-icon name="calendar-outline" slot="start" class="faq-icon"></ion-icon>
+                <ion-label>When is the RSVP deadline?</ion-label>
+              </ion-item>
+              <div slot="content" class="faq-answer">
+                <p>Please RSVP by <strong>November 30, 2026</strong> using the button at the bottom of this page. If you have any trouble, message Kamille or Vlarix directly and we'll sort it out!</p>
+              </div>
+            </ion-accordion>
+
+          </ion-accordion-group>
+
+          <!-- Group: On the Day -->
+          <p class="faq-group-label">On the day</p>
+          <ion-accordion-group>
+
+            <ion-accordion value="arrive">
+              <ion-item slot="header" lines="none" class="faq-header">
+                <ion-icon name="time-outline" slot="start" class="faq-icon"></ion-icon>
+                <ion-label>What time should I arrive?</ion-label>
+              </ion-item>
+              <div slot="content" class="faq-answer">
+                <p>The ceremony begins at <strong>3:00 PM sharp</strong> — please don't be late! We recommend arriving at least 15–20 minutes early to find your seat. Doors open from 2:30 PM.</p>
+              </div>
+            </ion-accordion>
+
+            <ion-accordion value="photos">
+              <ion-item slot="header" lines="none" class="faq-header">
+                <ion-icon name="camera-outline" slot="start" class="faq-icon"></ion-icon>
+                <ion-label>Can I take photos during the ceremony?</ion-label>
+              </ion-item>
+              <div slot="content" class="faq-answer">
+                <p>We're having an <strong>unplugged ceremony</strong> — please keep phones and cameras away so everyone can be fully present. Our photographer will capture everything! Feel free to take as many photos as you like at the reception. 📸</p>
+              </div>
+            </ion-accordion>
+
+            <ion-accordion value="attire">
+              <ion-item slot="header" lines="none" class="faq-header">
+                <ion-icon name="shirt-outline" slot="start" class="faq-icon"></ion-icon>
+                <ion-label>What should I wear?</ion-label>
+              </ion-item>
+              <div slot="content" class="faq-answer">
+                <p><strong>Principal Sponsors —</strong> Ladies in Champagne or Nude long dress. Gentlemen in Barong (long or short sleeve), any pants except khaki.</p>
+                <p class="faq-answer__spacer"><strong>Guests —</strong> Ladies in Sage Green, Dusty Blue, or Light Brown long dress or pantsuit. Gentlemen in Barong (long or short sleeve), any pants except khaki.</p>
+                <p class="faq-answer__spacer">Please avoid casual attire, loud prints, and reserve white and khaki for the couple. 🤍</p>
+              </div>
+            </ion-accordion>
+
+          </ion-accordion-group>
+
+          <!-- Group: Getting There -->
+          <p class="faq-group-label">Getting there</p>
+          <ion-accordion-group>
+
+            <ion-accordion value="parking">
+              <ion-item slot="header" lines="none" class="faq-header">
+                <ion-icon name="car-outline" slot="start" class="faq-icon"></ion-icon>
+                <ion-label>Is parking available?</ion-label>
+              </ion-item>
+              <div slot="content" class="faq-answer">
+                <p>Our Mother of Perpetual Help Parish has limited street parking. We recommend using <strong>Grab</strong> or a taxi to the church so you don't have to worry about it. Waterfront Insular Hotel has its own parking for the reception.</p>
+              </div>
+            </ion-accordion>
+
+            <ion-accordion value="shuttle">
+              <ion-item slot="header" lines="none" class="faq-header">
+                <ion-icon name="bus-outline" slot="start" class="faq-icon"></ion-icon>
+                <ion-label>Is there a shuttle between church and reception?</ion-label>
+              </ion-item>
+              <div slot="content" class="faq-answer">
+                <p>Yes! We're arranging a shuttle from Our Mother of Perpetual Help Parish to Waterfront Insular Hotel Davao after the ceremony. Timing details will be shared closer to the date.</p>
+              </div>
+            </ion-accordion>
+
+          </ion-accordion-group>
+
+          <!-- Group: Gifts & Contact -->
+          <p class="faq-group-label">Gifts &amp; contact</p>
+          <ion-accordion-group>
+
+            <ion-accordion value="gifts">
+              <ion-item slot="header" lines="none" class="faq-header">
+                <ion-icon name="gift-outline" slot="start" class="faq-icon"></ion-icon>
+                <ion-label>Do you have a gift registry?</ion-label>
+              </ion-item>
+              <div slot="content" class="faq-answer">
+                <p>Your presence is the greatest gift! If you'd like to give something, a monetary gift is very much appreciated. Details on where to send it are in the Gifts section of this app.</p>
+              </div>
+            </ion-accordion>
+
+            <ion-accordion value="contact">
+              <ion-item slot="header" lines="none" class="faq-header">
+                <ion-icon name="chatbubble-outline" slot="start" class="faq-icon"></ion-icon>
+                <ion-label>Who do I contact if I have more questions?</ion-label>
+              </ion-item>
+              <div slot="content" class="faq-answer">
+                <p>Reach out to Kamille or Vlarix directly — we're happy to help with anything. You can also message our wedding coordinator for venue and logistics questions.</p>
+              </div>
+            </ion-accordion>
+
+          </ion-accordion-group>
 
         </ion-card-content>
       </ion-card>
