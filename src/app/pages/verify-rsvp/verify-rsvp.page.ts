@@ -3,14 +3,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ModalController } from '@ionic/angular';
 import { AnimationOptions } from 'ngx-lottie';
-import { SupabaseService } from 'src/app/services/api/supabase.service';
+import { SupabaseService, Guest } from 'src/app/services/api/supabase.service';
 import { GlobalService } from 'src/app/services/global/global.service';
-
-interface Guest {
-  id: string;
-  attend: boolean;
-  full_name: string;
-}
 
 const RSVP_SUBMITTED_KEY = 'rsvp_submitted_ids';
 
@@ -44,6 +38,14 @@ export class VerifyRsvpPage implements OnInit {
    */
   @Input() autoLoadName: string | null = null;
 
+  /**
+   * The name used to verify this party (typed on slide 1, or passed in via
+   * autoLoadName). Sent alongside every write so submit_rsvp_response() can
+   * confirm server-side that the guest id being updated actually belongs
+   * to this party.
+   */
+  private verifiedFullname = '';
+
   constructor(
     private fb: FormBuilder,
     private api: SupabaseService,
@@ -73,6 +75,7 @@ export class VerifyRsvpPage implements OnInit {
     try {
       const allGuests = await this.api.getGuestWithRelations(fullname);
       this.arrGuests = allGuests;
+      this.verifiedFullname = fullname;
       this.isAlreadyAnswered = true;
       // Small delay so the swiper is fully initialised before we slide
       setTimeout(() => this.skipToThankYou(), 150);
@@ -108,35 +111,31 @@ export class VerifyRsvpPage implements OnInit {
 
   async onSubmit() {
     this.isLoading = true;
+    const fullname = this.rsvpForm.value.fullname;
 
-    const { data, error } = await this.api.verifyUser(this.rsvpForm.value);
-
-    if (!data || data.length === 0 || !data[0].full_name) {
-      this.global.presentToast(
-        `Oh no! We couldn't find your name — please contact Kamille or Vlarix`,
-        'warning',
-        'alert-circle-outline'
-      );
-      this.isLoading = false;
-      return;
-    }
-
-    // Save name for personalised home page welcome
-    localStorage.setItem('user_fullname', data[0].full_name);
-
-    // Fetch full group from Supabase (primary guest + all related guests)
+    // Single round trip — verify_guest_party() returns the whole party
+    // (primary guest + relations) in one call, so there's no need to
+    // look the guest up twice.
     let allGuests: Guest[];
     try {
-      allGuests = await this.api.getGuestWithRelations(this.rsvpForm.value.fullname);
-    } catch (err) {
+      allGuests = await this.api.getGuestWithRelations(fullname);
+    } catch (err: any) {
+      const notFound = err?.message === 'Guest not found';
       this.global.presentToast(
-        `Something went wrong — please try again or contact Kamille / Vlarix`,
+        notFound
+          ? `Oh no! We couldn't find your name — please contact Kamille or Vlarix`
+          : `Something went wrong — please try again or contact Kamille / Vlarix`,
         'warning',
         'alert-circle-outline'
       );
       this.isLoading = false;
       return;
     }
+
+    this.verifiedFullname = fullname;
+
+    // Save name for personalised home page welcome
+    localStorage.setItem('user_fullname', allGuests[0].full_name);
 
     this.arrGuests = allGuests;
 
@@ -174,7 +173,9 @@ export class VerifyRsvpPage implements OnInit {
   async onConfirmRSVP() {
     for (const guest of this.arrGuests) {
       try {
-        await this.api.updateAttend(guest.id, guest.attend);
+        // Confirm button is disabled (isConfirmDisabled) until every guest
+        // here has attend set to true/false, so the assertion below is safe.
+        await this.api.updateAttend(guest.id, guest.attend!, this.verifiedFullname);
       } catch (err) {
         console.error('Error updating attend:', err);
         this.global.presentToast(
