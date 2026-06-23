@@ -672,7 +672,29 @@ ion-button {
   }
 }
 
-// ── Accordion (dress code & any other) ───────────────────────────────────────
+// ── Attire guide redirect link ───────────────────────────────────────────────
+.attire-guide-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 18px;
+  padding: 11px 18px;
+  border-radius: 14px;
+  background: $gold-bg;
+  border: 1.5px solid $gold;
+  color: $gold-dark;
+  font-family: $font;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: opacity 0.15s;
+
+  ion-icon { font-size: 17px; }
+  &:active { opacity: 0.7; }
+}
+
+// ── Accordion (dress code & any other) ───────────────────────────────────────────
 ion-accordion-group {
   border-radius: 12px;
   overflow: hidden;
