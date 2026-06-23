@@ -1,0 +1,134 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>FAQ</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">FAQ</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <!-- Intro -->
+  <div class="faq-intro">
+    <p class="faq-intro__names">Kamille &amp; Vlarix</p>
+    <p class="faq-intro__sub">Got questions? We've got answers.</p>
+  </div>
+
+  <div class="faq-content">
+
+    <!-- Group: Guests & RSVP -->
+    <p class="faq-group-label">Guests &amp; RSVP</p>
+    <ion-accordion-group>
+
+      <ion-accordion value="plusone">
+        <ion-item slot="header" lines="none" class="faq-header">
+          <ion-icon name="people-outline" slot="start" class="faq-icon"></ion-icon>
+          <ion-label>Can I bring a plus one?</ion-label>
+        </ion-item>
+        <div slot="content" class="faq-answer">
+          <p>Your invitation is made out to the specific guests listed on your RSVP. If a plus one is included, they'll appear in the RSVP flow when you enter your name. If they're not listed, we kindly ask that only the named guests attend — we have a set number of seats.</p>
+        </div>
+      </ion-accordion>
+    </ion-accordion-group>
+
+    <!-- Group: On the Day -->
+    <p class="faq-group-label">On the day</p>
+    <ion-accordion-group>
+
+      <ion-accordion value="arrive">
+        <ion-item slot="header" lines="none" class="faq-header">
+          <ion-icon name="time-outline" slot="start" class="faq-icon"></ion-icon>
+          <ion-label>What time should I arrive?</ion-label>
+        </ion-item>
+        <div slot="content" class="faq-answer">
+          <p>The ceremony begins at <strong>3:00 PM sharp</strong> — please don't be late! We recommend arriving at least 15–20 minutes early to find your seat.</p>
+        </div>
+      </ion-accordion>
+
+      <ion-accordion value="photos">
+        <ion-item slot="header" lines="none" class="faq-header">
+          <ion-icon name="camera-outline" slot="start" class="faq-icon"></ion-icon>
+          <ion-label>Can I take photos during the ceremony?</ion-label>
+        </ion-item>
+        <div slot="content" class="faq-answer">
+          <p>Yes, photos are very much welcome! Just please be mindful not to block the aisle or step in front of our documentation team — we have official photographers and videographers on-site capturing every moment.</p>
+          <p class="faq-answer__spacer">And don't forget to tag us on instagram!📸</p>
+          <p class="faq-answer__spacer">
+            <strong><a href="https://www.instagram.com/kamillevrgas" target="_blank" class="faq-ig-link">@kamillevrgas</a></strong>
+            &nbsp;&amp;&nbsp;
+            <strong><a href="https://www.instagram.com/vlarixx" target="_blank" class="faq-ig-link">@vlarixx</a></strong>
+          </p>
+        </div>
+      </ion-accordion>
+
+      <ion-accordion value="attire">
+        <ion-item slot="header" lines="none" class="faq-header">
+          <ion-icon name="shirt-outline" slot="start" class="faq-icon"></ion-icon>
+          <ion-label>What should I wear?</ion-label>
+        </ion-item>
+        <div slot="content" class="faq-answer">
+          <p>We have a full attire guide with details for every role — guests, sponsors, entourage, and more!</p>
+          <a href="/tabs/attire" class="faq-attire-link">
+            <ion-icon name="shirt-outline"></ion-icon>
+            View the full Attire Guide
+            <ion-icon name="arrow-forward-outline"></ion-icon>
+          </a>
+          <p class="faq-answer__spacer" style="font-size:12px;color:#aaa;">Quick summary: ladies in Light Brown, Sage Green, or Dusty Blue formal maxi dress. Gentlemen in white/cream Barong with dark pants. No khaki, no white for ladies.</p>
+        </div>
+      </ion-accordion>
+
+    </ion-accordion-group>
+
+    <!-- Group: Getting There -->
+    <p class="faq-group-label">Getting there</p>
+    <ion-accordion-group>
+
+      <ion-accordion value="parking">
+        <ion-item slot="header" lines="none" class="faq-header">
+          <ion-icon name="car-outline" slot="start" class="faq-icon"></ion-icon>
+          <ion-label>Is parking available?</ion-label>
+        </ion-item>
+        <div slot="content" class="faq-answer">
+          <p>Our Mother of Perpetual Help Parish has ample space for parking. You can also book <strong>Grab</strong> or a taxi to the church so you have less to worry about. Waterfront Insular Hotel has its own parking for the reception.</p>
+        </div>
+      </ion-accordion>
+
+    </ion-accordion-group>
+
+    <!-- Group: Gifts & Contact -->
+    <p class="faq-group-label">Gifts &amp; contact</p>
+    <ion-accordion-group>
+
+      <ion-accordion value="gifts">
+        <ion-item slot="header" lines="none" class="faq-header">
+          <ion-icon name="gift-outline" slot="start" class="faq-icon"></ion-icon>
+          <ion-label>Do you have a gift registry?</ion-label>
+        </ion-item>
+        <div slot="content" class="faq-answer">
+          <p>Your presence is the greatest gift! If you'd like to give something, a monetary gift is very much appreciated. Details on where to send it are in the Gifts section on the Home tab.</p>
+        </div>
+      </ion-accordion>
+
+      <ion-accordion value="contact">
+        <ion-item slot="header" lines="none" class="faq-header">
+          <ion-icon name="chatbubble-outline" slot="start" class="faq-icon"></ion-icon>
+          <ion-label>Who do I contact if I have more questions?</ion-label>
+        </ion-item>
+        <div slot="content" class="faq-answer">
+          <p>Reach out to Kamille or Vlarix directly — we're happy to help with anything. You can also message our wedding coordinator for venue and logistics questions.</p>
+        </div>
+      </ion-accordion>
+
+    </ion-accordion-group>
+
+  </div>
+
+  <div class="faq-footer">
+    <p>💍 With love, Kamille &amp; Vlarix</p>
+  </div>
+
+</ion-content>

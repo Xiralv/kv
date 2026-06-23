@@ -1,0 +1,123 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Attire Guide</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Attire Guide</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <!-- Intro -->
+  <div class="attire-intro">
+    <p class="attire-intro__tagline">Kamille &amp; Vlarix</p>
+    <p class="attire-intro__title">Wedding Attire Guide</p>
+    <p class="attire-intro__sub">Can't wait to see you in your dashing outfit! 💛</p>
+  </div>
+
+  <!-- Role selector chips -->
+  <div class="role-chips-wrap">
+    <div class="role-chips">
+      @for (r of roles; track r.role) {
+        <button class="role-chip"
+                [class.role-chip--active]="activeRole === r.role"
+                (click)="setActive(r.role)">
+          <span class="role-chip__emoji">{{ r.emoji }}</span>
+          <span class="role-chip__label">{{ r.role | titlecase }}</span>
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- Active role panel -->
+  <div class="attire-panel">
+
+    <div class="attire-panel__header">
+      <span class="attire-panel__emoji">{{ activeAttire.emoji }}</span>
+      <h2 class="attire-panel__title">{{ activeAttire.role | titlecase }}</h2>
+    </div>
+
+    <!-- Reference images -->
+    @if (activeAttire.images && activeAttire.images.length > 0) {
+      <div class="attire-images" [class.attire-images--single]="activeAttire.images.length === 1">
+        @for (img of activeAttire.images; track img) {
+          <div class="attire-img-wrap">
+            <img [src]="img" [alt]="activeAttire.role + ' attire reference'"
+                 class="attire-img" loading="lazy" />
+          </div>
+        }
+      </div>
+    }
+
+    <!-- Ladies -->
+    @if (activeAttire.ladies) {
+      <div class="attire-section">
+        <p class="attire-section__label">👗 Ladies</p>
+
+        <!-- Colour swatch -->
+        <!-- <div class="attire-swatch-row">
+          <div class="attire-swatch" [style.background]="activeAttire.ladies!.swatch"></div>
+          <span class="attire-swatch__text">{{ activeAttire.ladies!.color }}</span>
+        </div> -->
+
+        <!-- Garment -->
+        <div class="attire-detail-card">
+          <p class="attire-detail-card__garment">{{ activeAttire.ladies!.garment }}</p>
+          @if (activeAttire.ladies!.fabric) {
+            <p class="attire-detail-card__fabric">{{ activeAttire.ladies!.fabric }}</p>
+          }
+          @if (activeAttire.ladies!.notes && activeAttire.ladies!.notes!.length > 0) {
+            <ul class="attire-notes">
+              @for (note of activeAttire.ladies!.notes; track note) {
+                <li>{{ note }}</li>
+              }
+            </ul>
+          }
+        </div>
+      </div>
+    }
+
+    <!-- Gents -->
+    @if (activeAttire.gents) {
+      <div class="attire-section">
+        <p class="attire-section__label">👔 Gentlemen</p>
+        <div class="attire-detail-card">
+          <p class="attire-detail-card__garment">{{ activeAttire.gents!.garment }}</p>
+          @if (activeAttire.gents!.notes && activeAttire.gents!.notes!.length > 0) {
+            <ul class="attire-notes">
+              @for (note of activeAttire.gents!.notes; track note) {
+                <li>{{ note }}</li>
+              }
+            </ul>
+          }
+        </div>
+      </div>
+    }
+
+    <!-- Don'ts -->
+    @if (activeAttire.donts && activeAttire.donts.length > 0) {
+      <div class="attire-section">
+        <p class="attire-section__label attire-section__label--dont">🚫 Please avoid</p>
+        <div class="attire-donts">
+          @for (dont of activeAttire.donts; track dont) {
+            <div class="attire-dont-row">
+              <ion-icon name="close-circle-outline" class="attire-dont-icon"></ion-icon>
+              <span>{{ dont }}</span>
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+  </div>
+
+  <!-- Footer note -->
+  <div class="attire-footer">
+    <p>If unsure, don't hesitate to message us — we'd love to help! 💛</p>
+  </div>
+
+</ion-content>

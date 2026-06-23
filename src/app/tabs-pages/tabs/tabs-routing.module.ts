@@ -20,6 +20,14 @@ const routes: Routes = [
         loadChildren: () => import('../programme/programme.module').then(m => m.ProgrammePageModule)
       },
       {
+        path: 'faq',
+        loadChildren: () => import('../faq/faq.module').then(m => m.FaqPageModule)
+      },
+      {
+        path: 'attire',
+        loadChildren: () => import('../attire/attire.module').then(m => m.AttirePageModule)
+      },
+      {
         path: '',
         redirectTo: '/tabs/home',
         pathMatch: 'full'

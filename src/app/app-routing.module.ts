@@ -18,6 +18,14 @@ const routes: Routes = [
   {
     path: 'programme',
     loadChildren: () => import('./tabs-pages/programme/programme.module').then( m => m.ProgrammePageModule)
+  },
+  {
+    path: 'faq',
+    loadChildren: () => import('./tabs-pages/faq/faq.module').then( m => m.FaqPageModule)
+  },
+  {
+    path: 'attire',
+    loadChildren: () => import('./tabs-pages/attire/attire.module').then( m => m.AttirePageModule)
   }
 ];
 

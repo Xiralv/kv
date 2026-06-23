@@ -1,0 +1,287 @@
+$gold:        #fddf7d;
+$gold-dark:   #5a3e00;
+$gold-mid:    #a07800;
+$gold-bg:     #fffbef;
+$gold-border: rgba(253, 223, 125, 0.45);
+$sage:        #8fad8a;
+$font:        'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+
+// ── Intro ─────────────────────────────────────────────────────────────────────
+.attire-intro {
+  text-align: center;
+  padding: 24px 20px 12px;
+  border-bottom: 0.5px solid $gold-border;
+}
+
+.attire-intro__tagline {
+  font-family: $font;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: $gold-mid;
+  margin: 0 0 4px;
+}
+
+.attire-intro__title {
+  font-family: $font;
+  font-size: clamp(22px, 5.5vw, 28px);
+  font-weight: 700;
+  color: $gold-dark;
+  margin: 0 0 6px;
+}
+
+.attire-intro__sub {
+  font-family: $font;
+  font-size: 13px;
+  color: #999;
+  font-style: italic;
+  margin: 0;
+}
+
+// ── Role chip selector ────────────────────────────────────────────────────────
+.role-chips-wrap {
+  padding: 14px 0 2px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+}
+
+.role-chips {
+  display: flex;
+  gap: 8px;
+  padding: 0 16px;
+  width: max-content;
+}
+
+.role-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  border: 1.5px solid $gold-border;
+  background: #fff;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, transform 0.15s;
+  min-width: 72px;
+
+  &:active { transform: scale(0.96); }
+
+  &--active {
+    background: $gold-bg;
+    border-color: $gold;
+    box-shadow: 0 2px 10px rgba(253, 223, 125, 0.35);
+  }
+}
+
+.role-chip__emoji {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.role-chip__label {
+  font-family: $font;
+  font-size: 10px;
+  font-weight: 600;
+  color: $gold-dark;
+  text-align: center;
+  line-height: 1.3;
+  white-space: normal;
+  max-width: 64px;
+}
+
+// ── Active panel ──────────────────────────────────────────────────────────────
+.attire-panel {
+  padding: 16px 16px 8px;
+  animation: panelFadeIn 0.2s ease both;
+}
+
+@keyframes panelFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.attire-panel__header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1.5px solid $gold;
+}
+
+.attire-panel__emoji { font-size: 24px; }
+
+.attire-panel__title {
+  font-family: $font;
+  font-size: clamp(18px, 4.5vw, 22px);
+  font-weight: 700;
+  color: $gold-dark;
+  margin: 0;
+}
+
+// ── Section ───────────────────────────────────────────────────────────────────
+.attire-section {
+  margin-bottom: 16px;
+}
+
+.attire-section__label {
+  font-family: $font;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: $gold-mid;
+  margin: 0 0 8px;
+
+  &--dont { color: #c0392b; }
+}
+
+// ── Colour swatch row ─────────────────────────────────────────────────────────
+.attire-swatch-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.attire-swatch {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  border: 2px solid rgba(0,0,0,0.06);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.attire-swatch__text {
+  font-family: $font;
+  font-size: clamp(13px, 3.2vw, 14px);
+  font-weight: 600;
+  color: #444;
+  line-height: 1.4;
+}
+
+// ── Detail card ───────────────────────────────────────────────────────────────
+.attire-detail-card {
+  background: $gold-bg;
+  border: 1px solid $gold-border;
+  border-radius: 14px;
+  padding: 14px 16px;
+}
+
+.attire-detail-card__garment {
+  font-family: $font;
+  font-size: clamp(14px, 3.5vw, 16px);
+  font-weight: 700;
+  color: $gold-dark;
+  margin: 0 0 4px;
+}
+
+.attire-detail-card__fabric {
+  font-family: $font;
+  font-size: 12px;
+  color: $gold-mid;
+  font-style: italic;
+  margin: 0 0 8px;
+}
+
+.attire-notes {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  li {
+    font-family: $font;
+    font-size: 13px;
+    color: #555;
+    padding-left: 14px;
+    position: relative;
+    line-height: 1.5;
+
+    &::before {
+      content: '·';
+      position: absolute;
+      left: 0;
+      color: $gold-mid;
+      font-weight: 700;
+    }
+  }
+}
+
+// ── Don'ts ────────────────────────────────────────────────────────────────────
+.attire-donts {
+  background: #fff5f5;
+  border: 1px solid rgba(192, 57, 43, 0.15);
+  border-radius: 14px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.attire-dont-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: $font;
+  font-size: clamp(12px, 3vw, 13px);
+  color: #c0392b;
+  font-weight: 500;
+}
+
+.attire-dont-icon {
+  font-size: 16px;
+  color: #c0392b;
+  flex-shrink: 0;
+}
+
+// ── Footer ────────────────────────────────────────────────────────────────────
+.attire-footer {
+  text-align: center;
+  padding: 12px 20px 40px;
+  font-family: $font;
+  font-size: 13px;
+  font-style: italic;
+  color: $gold-mid;
+  border-top: 0.5px solid $gold-border;
+  margin: 8px 16px 0;
+}
+
+// ── Reference images ──────────────────────────────────────────────────────────
+.attire-images {
+  display: grid;
+  // grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  margin-bottom: 16px;
+  border-radius: 16px;
+  overflow: hidden;
+
+  &--single {
+    grid-template-columns: 1fr;
+  }
+}
+
+.attire-img-wrap {
+  border-radius: 12px;
+  overflow: hidden;
+  aspect-ratio: 1 / 1;
+  background: #f5f0e8;
+}
+
+.attire-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+  display: block;
+  transition: transform 0.3s ease;
+
+  &:active { transform: scale(1.03); }
+}

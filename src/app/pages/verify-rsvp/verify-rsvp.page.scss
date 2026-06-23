@@ -1,39 +1,276 @@
-/* Disable all scrollbars and ensure full height */
+// ── Design tokens ─────────────────────────────────────────────────────────────
+$gold:        #fddf7d;
+$gold-dark:   #5a3e00;
+$gold-mid:    #a07800;
+$gold-bg:     #fffbef;
+$gold-light:  #fff9e6;
+$gold-border: rgba(253, 223, 125, 0.45);
+$font:        'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+
+// ── Scroll lock ───────────────────────────────────────────────────────────────
+html, body, ion-app, ion-content {
+  height: 100%;
+  overflow: hidden;
+}
+
 ion-content, .swiper, .swiper-slide, .thankyou-slide {
   height: 100vh !important;
   overflow: hidden !important;
 }
 
+// ── Background ────────────────────────────────────────────────────────────────
 .rsvp-background {
-  --background: #f2f2f2;
+  --background: linear-gradient(160deg, #fffdf6 0%, #fff8e6 100%);
 }
 
+// ── Progress bar ──────────────────────────────────────────────────────────────
+.swiper-progressbar {
+  --swiper-pagination-color: #{$gold};
+}
+
+// ── Slide centering ───────────────────────────────────────────────────────────
 .rsvp-container {
   height: 100%;
-}
-
-.avatar-container {
   display: flex;
+  align-items: center;
   justify-content: center;
-  margin-bottom: 20px;
+  padding: 20px 16px;
 }
 
-.swiper-progressbar {
-  --swiper-pagination-color: #fddf7d;
+// ── Card shell — replaces ion-card for slides 1 & 2 ──────────────────────────
+.rsvp-card {
+  width: 100%;
+  max-width: 440px;
+  background: #fff;
+  border-radius: 28px;
+  border: 1.5px solid $gold-border;
+  box-shadow: 0 8px 40px rgba(253, 223, 125, 0.22), 0 2px 12px rgba(0,0,0,0.06);
+  overflow: hidden;
 }
 
-ion-avatar {
-  width: 100px;
-  height: 100px;
+// ── Intro section (top of card) ───────────────────────────────────────────────
+.rsvp-intro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 28px 20px 20px;
+  text-align: center;
+  background: linear-gradient(160deg, $gold-bg 0%, #fff 100%);
+
+  &--compact {
+    padding: 20px 20px 14px;
+  }
 }
 
+.rsvp-intro__avatar {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid $gold;
+  box-shadow: 0 4px 16px rgba(253, 223, 125, 0.35);
+  margin-bottom: 14px;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.rsvp-intro__eyebrow {
+  font-family: $font;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: $gold-mid;
+  margin: 0 0 4px;
+}
+
+.rsvp-intro__names {
+  font-family: $font;
+  font-size: clamp(22px, 5.5vw, 28px);
+  font-weight: 700;
+  color: $gold-dark;
+  margin: 0 0 6px;
+}
+
+.rsvp-intro__date {
+  font-family: $font;
+  font-size: 12px;
+  color: #aaa;
+  font-style: italic;
+  margin: 0;
+}
+
+// ── Divider ───────────────────────────────────────────────────────────────────
+.rsvp-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, $gold, transparent);
+  margin: 0 20px;
+}
+
+// ── Form section ──────────────────────────────────────────────────────────────
+.rsvp-form-section {
+  padding: 18px 20px 24px;
+}
+
+.rsvp-form-label {
+  font-family: $font;
+  font-size: 13px;
+  color: #888;
+  text-align: center;
+  margin: 0 0 12px;
+  font-style: italic;
+}
+
+.rsvp-input-wrap {
+  margin-bottom: 12px;
+}
+
+.rsvp-input-item {
+  --background: #{$gold-bg};
+  --border-radius: 14px;
+  --padding-start: 12px;
+  --inner-padding-end: 12px;
+  border: 1.5px solid $gold-border;
+  border-radius: 14px;
+  overflow: hidden;
+
+  ion-input {
+    font-family: $font;
+    color: $gold-dark;
+    font-size: 15px;
+  }
+}
+
+.rsvp-input-icon {
+  font-size: 18px;
+  color: $gold-mid;
+  margin-right: 8px;
+}
+
+// ── Submit / Confirm button ───────────────────────────────────────────────────
+.rsvp-submit-btn {
+  --background: #{$gold};
+  --background-activated: #{$gold-dark};
+  --color: #{$gold-dark};
+  --color-activated: #fff;
+  --border-radius: 16px;
+  --border-color: #{$gold};
+  font-family: $font;
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.03em;
+  height: 50px;
+}
+
+// ── Guests section (slide 2) ──────────────────────────────────────────────────
+.rsvp-guests-section {
+  padding: 16px 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.guest-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: $gold-bg;
+  border: 1px solid $gold-border;
+  border-radius: 14px;
+  padding: 12px 14px;
+}
+
+.guest-row__info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.guest-row__icon {
+  font-size: 22px;
+  color: $gold-mid;
+  flex-shrink: 0;
+}
+
+.guest-row__name {
+  font-family: $font;
+  font-size: 14px;
+  font-weight: 600;
+  color: $gold-dark;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.guest-row__btns {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+// Accept / Decline native buttons
+.attend-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: $font;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 10px;
+  border-radius: 10px;
+  border: 1.5px solid;
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+
+  ion-icon { font-size: 13px; }
+
+  &--yes {
+    color: #2a9d5c;
+    border-color: #2a9d5c;
+
+    &.attend-btn--selected {
+      background: #e6f9f0;
+    }
+  }
+
+  &--no {
+    color: #c5000f;
+    border-color: #c5000f;
+
+    &.attend-btn--selected {
+      background: #fdecea;
+    }
+  }
+}
+
+.guest-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px 0;
+
+  ion-skeleton-text {
+    height: 44px;
+    border-radius: 14px;
+  }
+}
+
+// ── Slide 3: Thank you ────────────────────────────────────────────────────────
 .thankyou-slide {
   height: 100vh;
   width: 100vw;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #f2f2f2;
+  background: linear-gradient(160deg, $gold-bg 0%, #fff 100%);
 }
 
 .thankyou-card {
@@ -42,6 +279,9 @@ ion-avatar {
   max-width: none;
   margin: 0;
   border-radius: 0;
+  border: none;
+  box-shadow: none;
+  background: transparent;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -64,73 +304,98 @@ ion-avatar {
   left: 50%;
   transform: translate(-50%, -50%);
   width: 90%;
-  max-width: 400px;
+  max-width: 380px;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  color: #333;
+  z-index: 2;
 
   img {
-    width: 260px;
-    max-width: 85vw;
+    width: 220px;
+    max-width: 80vw;
     height: auto;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
   }
 
   p {
-    font-size: 17px;
-    line-height: 1.5;
-    color: #444;
-    margin-bottom: 8px;
+    font-family: $font;
+    font-size: clamp(13px, 3.2vw, 16px);
+    line-height: 1.55;
+    color: $gold-dark;
+    margin-bottom: 6px;
+    font-weight: 500;
   }
 
   ul {
     list-style-type: disc;
     padding-left: 1.2rem;
     text-align: left;
-    color: #777;
-    font-size: 15px;
-    line-height: 1.4;
+    color: $gold-mid;
+    font-family: $font;
+    font-size: 14px;
+    line-height: 1.5;
     margin-top: 4px;
   }
 }
 
-// ── Already-answered read-only summary ────────────────────────────────────────
+// ── Close button ──────────────────────────────────────────────────────────────
+.close-btn {
+  --background: #{$gold};
+  --background-activated: #{$gold-dark};
+  --color: #{$gold-dark};
+  --color-activated: #fff;
+  --border-color: #{$gold};
+  --border-radius: 16px;
+  font-family: $font;
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.03em;
+  height: 50px;
+}
 
+// ── Already-answered badge ────────────────────────────────────────────────────
 .already-answered-badge {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.05em;
+  gap: 6px;
+  font-family: $font;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
   text-transform: uppercase;
-  color: #666;
-  background: #efefef;
-  border: 1px solid #ddd;
+  color: $gold-dark;
+  background: $gold;
   border-radius: 20px;
-  padding: 4px 12px;
-  margin-bottom: 12px;
+  padding: 4px 14px;
+  margin-bottom: 10px;
 
-  ion-icon {
-    font-size: 14px;
-    color: #888;
-  }
+  ion-icon { font-size: 14px; color: $gold-dark; }
 }
 
 .already-answered-msg {
-  font-size: 14px !important;
-  color: #666 !important;
-  margin-bottom: 14px !important;
+  font-family: $font;
+  font-size: 13px !important;
+  color: $gold-mid !important;
+  margin-bottom: 12px !important;
+  line-height: 1.5;
 }
 
+.already-answered-contact {
+  font-family: $font;
+  font-size: 12px !important;
+  color: #aaa !important;
+  margin-top: 6px !important;
+  font-style: italic;
+}
+
+// ── RSVP summary rows ─────────────────────────────────────────────────────────
 .rsvp-summary {
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin-bottom: 14px;
+  gap: 7px;
+  margin-bottom: 12px;
   text-align: left;
 }
 
@@ -139,29 +404,32 @@ ion-avatar {
   align-items: center;
   justify-content: space-between;
   background: #fff;
-  border: 1px solid #e8e8e8;
-  border-radius: 10px;
-  padding: 10px 14px;
+  border: 1.5px solid $gold-border;
+  border-radius: 12px;
+  padding: 9px 12px;
+  box-shadow: 0 2px 8px rgba(253, 223, 125, 0.12);
 }
 
 .summary-name {
-  font-size: 14px;
-  font-weight: 500;
-  color: #333;
+  font-family: $font;
+  font-size: 13px;
+  font-weight: 600;
+  color: $gold-dark;
 }
 
 .summary-status {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-size: 13px;
-  font-weight: 500;
-  padding: 3px 10px;
+  font-family: $font;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 9px;
   border-radius: 14px;
   background: #f2f2f2;
   color: #888;
 
-  ion-icon { font-size: 15px; }
+  ion-icon { font-size: 14px; }
 
   &.attending {
     background: #e6f9f0;
@@ -174,35 +442,4 @@ ion-avatar {
     color: #c5000f;
     ion-icon { color: #c5000f; }
   }
-}
-
-.already-answered-contact {
-  font-size: 13px !important;
-  color: #999 !important;
-  margin-top: 4px !important;
-}
-
-// ── Button & selection styles ─────────────────────────────────────────────────
-
-ion-button {
-  --border-color: #000;
-  --background-activated: #000;
-  --color-activated: #fff;
-  --color: #000;
-}
-
-.yes {
-  --background: #93e9be;
-  color: rgba(255, 255, 255, 0.88);
-}
-
-.no {
-  --background: #c5000f;
-  color: white;
-}
-
-/* Prevent whole-page scroll in Ionic wrapper */
-html, body, ion-app, ion-content {
-  height: 100%;
-  overflow: hidden;
 }

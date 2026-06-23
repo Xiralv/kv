@@ -1,69 +1,98 @@
-<ion-content [fullscreen]="true" class="ion-padding rsvp-background">
+<ion-content [fullscreen]="true" class="rsvp-background">
 
-  <swiper-container #swiperRef class="ion-margin-top swiper-progressbar" slides-per-view="1" space-between="10"
+  <swiper-container #swiperRef class="swiper-progressbar" slides-per-view="1" space-between="10"
     pagination='{"type": "progressbar"}' allow-touch-move="false">
 
     <!-- ─── Slide 1: Name lookup ─────────────────────────────────────────── -->
     <swiper-slide class="rsvp-container">
-      <ion-card class="rsvp-card">
-        <ion-card-header>
-          <p>You are invited to Kamille &amp; Vlarix's Special Day!</p>
-          <ion-card-title>RSVP</ion-card-title>
-          <div class="avatar-container">
-            <ion-avatar>
-              <img src="assets/images/imgbanner.png" />
-            </ion-avatar>
-          </div>
-        </ion-card-header>
+      <div class="rsvp-card">
 
-        <ion-card-content>
+        <!-- Intro header -->
+        <div class="rsvp-intro">
+          <div class="rsvp-intro__avatar">
+            <img src="assets/images/imgbanner.png" alt="Kamille & Vlarix" />
+          </div>
+          <p class="rsvp-intro__eyebrow">You are invited to</p>
+          <h1 class="rsvp-intro__names">Kamille &amp; Vlarix</h1>
+          <p class="rsvp-intro__date">Friday · December 18, 2026</p>
+        </div>
+
+        <!-- Divider -->
+        <div class="rsvp-divider"></div>
+
+        <!-- Form -->
+        <div class="rsvp-form-section">
+          <p class="rsvp-form-label">Enter your full name to find your invitation</p>
           <form [formGroup]="rsvpForm" (ngSubmit)="onSubmit()">
-            <ion-item>
-              <ion-label position="floating">Full Name</ion-label>
-              <ion-input type="text" formControlName="fullname" required></ion-input>
-            </ion-item>
-            <ion-button fill="outline" expand="block" type="submit"
-              [disabled]="rsvpForm.invalid || isLoading" class="ion-margin-top">
-              {{ isLoading ? 'Checking...' : 'Submit' }}
+            <div class="rsvp-input-wrap">
+              <ion-item lines="none" class="rsvp-input-item">
+                <ion-icon name="person-outline" slot="start" class="rsvp-input-icon"></ion-icon>
+                <ion-input type="text" formControlName="fullname"
+                  placeholder="e.g. Juan dela Cruz" required></ion-input>
+              </ion-item>
+            </div>
+            <ion-button fill="solid" expand="block" type="submit"
+              [disabled]="rsvpForm.invalid || isLoading" class="rsvp-submit-btn">
+              <ion-icon name="search-outline" slot="start"></ion-icon>
+              {{ isLoading ? 'Looking you up...' : 'Find My Invitation' }}
             </ion-button>
           </form>
-        </ion-card-content>
-      </ion-card>
+        </div>
+
+      </div>
     </swiper-slide>
 
     <!-- ─── Slide 2: Accept / Decline ───────────────────────────────────── -->
-    <swiper-slide>
-      <ion-card>
-        <ion-card-header>
-          <p>Friday, December 18, 2026</p>
-          <ion-card-title>Wedding Day</ion-card-title>
-        </ion-card-header>
-        <ion-card-content>
+    <swiper-slide class="rsvp-container">
+      <div class="rsvp-card">
+
+        <div class="rsvp-intro rsvp-intro--compact">
+          <p class="rsvp-intro__eyebrow">Friday · December 18, 2026</p>
+          <h1 class="rsvp-intro__names">Will you join us?</h1>
+          <p class="rsvp-intro__date">Please confirm for each guest below</p>
+        </div>
+
+        <div class="rsvp-divider"></div>
+
+        <div class="rsvp-guests-section">
           @if (arrGuests && arrGuests.length > 0) {
             @for (guest of arrGuests; track guest.id) {
-              <ion-row class="ion-align-items-center">
-                <ion-col>
-                  <p>{{ guest.full_name }}</p>
-                </ion-col>
-                <ion-col size="auto">
-                  <ion-button (click)="selectButton(guest, 'yes')"
-                    [ngClass]="{'yes': guest.attend === true}"
-                    fill="outline" size="small">Accept</ion-button>
-                  <ion-button (click)="selectButton(guest, 'no')"
-                    [ngClass]="{'no': guest.attend === false}"
-                    fill="outline" size="small">Decline</ion-button>
-                </ion-col>
-              </ion-row>
+              <div class="guest-row">
+                <div class="guest-row__info">
+                  <ion-icon name="person-circle-outline" class="guest-row__icon"></ion-icon>
+                  <span class="guest-row__name">{{ guest.full_name }}</span>
+                </div>
+                <div class="guest-row__btns">
+                  <button class="attend-btn attend-btn--yes"
+                    [class.attend-btn--selected]="guest.attend === true"
+                    (click)="selectButton(guest, 'yes')">
+                    <ion-icon name="checkmark-outline"></ion-icon>
+                    Accept
+                  </button>
+                  <button class="attend-btn attend-btn--no"
+                    [class.attend-btn--selected]="guest.attend === false"
+                    (click)="selectButton(guest, 'no')">
+                    <ion-icon name="close-outline"></ion-icon>
+                    Decline
+                  </button>
+                </div>
+              </div>
             }
+
             <ion-button [disabled]="isConfirmDisabled" (click)="onConfirmRSVP()"
-              fill="outline" expand="block" class="ion-margin-top">
-              Confirm
+              fill="solid" expand="block" class="rsvp-submit-btn ion-margin-top">
+              <ion-icon name="heart-outline" slot="start"></ion-icon>
+              Confirm RSVP
             </ion-button>
           } @else {
-            <ion-skeleton-text [animated]="true" style="width: 50%;"></ion-skeleton-text>
+            <div class="guest-skeleton">
+              <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+              <ion-skeleton-text [animated]="true" style="width:70%"></ion-skeleton-text>
+            </div>
           }
-        </ion-card-content>
-      </ion-card>
+        </div>
+
+      </div>
     </swiper-slide>
 
     <!-- ─── Slide 3: Thank you / Already answered ────────────────────────── -->
@@ -72,9 +101,9 @@
         <ion-card-content class="lottie-container">
 
           <div class="overlay-text">
-            <img style="zoom:1.6" src="assets/images/kvlogofinal.png" alt="KV Logo" />
+            <img src="assets/images/kvlogofinal.png" alt="KV Logo" />
 
-            <!-- ══ Already answered: read-only summary from DB ══ -->
+            <!-- ══ Already answered: read-only summary ══ -->
             @if (isAlreadyAnswered) {
               <div class="already-answered-badge">
                 <ion-icon name="checkmark-circle-outline"></ion-icon>
@@ -87,7 +116,8 @@
                 @for (g of arrGuests; track g.id) {
                   <div class="summary-row">
                     <span class="summary-name">{{ g.full_name }}</span>
-                    <span class="summary-status" [class.attending]="g.attend === true"
+                    <span class="summary-status"
+                      [class.attending]="g.attend === true"
                       [class.declined]="g.attend === false">
                       <ion-icon [name]="g.attend ? 'checkmark-circle' : 'close-circle'"></ion-icon>
                       {{ g.attend ? 'Attending' : 'Not attending' }}
@@ -100,10 +130,9 @@
               </p>
             }
 
-            <!-- ══ Fresh submission: original thank-you message ══ -->
+            <!-- ══ Fresh submission ══ -->
             @if (!isAlreadyAnswered) {
               <p>{{ messageText }}</p>
-
               @if (guestCount === 1) {
                 @if (arrGuests[0].attend === false) {
                   <p>{{ arrGuests[0].full_name }} can't attend.</p>
@@ -134,7 +163,8 @@
               }
             }
 
-            <ion-button (click)="closeModal()" fill="outline" expand="block" class="ion-margin-top">
+            <ion-button (click)="closeModal()" fill="solid" expand="block"
+              class="ion-margin-top close-btn">
               See Event Details
             </ion-button>
           </div>

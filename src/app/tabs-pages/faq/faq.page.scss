@@ -1,0 +1,139 @@
+$gold:        #fddf7d;
+$gold-dark:   #5a3e00;
+$gold-mid:    #a07800;
+$gold-border: rgba(253, 223, 125, 0.45);
+$font:        'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+
+// ── Intro ─────────────────────────────────────────────────────────────────────
+.faq-intro {
+  text-align: center;
+  padding: 24px 20px 16px;
+  border-bottom: 0.5px solid $gold-border;
+}
+
+.faq-intro__names {
+  font-family: $font;
+  font-size: clamp(22px, 5.5vw, 28px);
+  font-weight: 700;
+  color: $gold-dark;
+  margin: 0 0 4px;
+}
+
+.faq-intro__sub {
+  font-family: $font;
+  font-size: 13px;
+  color: #999;
+  font-style: italic;
+  margin: 0;
+}
+
+// ── Content wrapper ───────────────────────────────────────────────────────────
+.faq-content {
+  padding: 8px 16px 24px;
+}
+
+// ── Group label ───────────────────────────────────────────────────────────────
+.faq-group-label {
+  font-family: $font;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: $gold-mid;
+  margin: 22px 0 6px 4px;
+}
+
+// ── Accordion overrides ───────────────────────────────────────────────────────
+ion-accordion-group {
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid $gold-border;
+  background: #fff;
+}
+
+ion-accordion {
+  border-bottom: 0.5px solid $gold-border;
+
+  &:last-child { border-bottom: none; }
+}
+
+.faq-header {
+  --background: #fff;
+  --padding-start: 14px;
+  --inner-padding-end: 14px;
+  --min-height: 52px;
+  font-family: $font;
+
+  ion-label {
+    font-size: clamp(13px, 3.2vw, 14px);
+    font-weight: 500;
+    color: #2c2c2c;
+    white-space: normal !important;
+  }
+}
+
+.faq-icon {
+  font-size: 18px;
+  color: $gold-mid;
+  margin-right: 4px;
+}
+
+// ── Answer panel ──────────────────────────────────────────────────────────────
+.faq-answer {
+  padding: 12px 16px 16px 44px;  // left-indent aligns with label past the icon
+  background: $gold-border;
+  background: rgba(253, 223, 125, 0.08);
+  border-top: 0.5px solid $gold-border;
+
+  p {
+    font-family: $font;
+    font-size: clamp(12px, 3vw, 13px);
+    color: #555;
+    line-height: 1.65;
+    margin: 0;
+  }
+}
+
+.faq-answer__spacer {
+  margin-top: 8px !important;
+}
+
+.faq-attire-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  padding: 9px 16px;
+  border-radius: 10px;
+  background: #fffbef;
+  border: 1.5px solid #fddf7d;
+  color: #5a3e00;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  width: 100%;
+  justify-content: center;
+
+  ion-icon { font-size: 16px; }
+
+  &:active { opacity: 0.75; }
+}
+
+.faq-ig-link {
+  color: #c13584;
+  text-decoration: none;
+  font-weight: 600;
+
+  &:hover { text-decoration: underline; }
+}
+
+// ── Footer ────────────────────────────────────────────────────────────────────
+.faq-footer {
+  text-align: center;
+  padding: 8px 16px 40px;
+  font-family: $font;
+  font-size: 14px;
+  font-style: italic;
+  color: $gold-mid;
+}
