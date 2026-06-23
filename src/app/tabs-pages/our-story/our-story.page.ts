@@ -71,7 +71,7 @@ export class OurStoryPage implements OnInit {
     {
       src:     'assets/images/ourstory/9.png',
       year:    '2024',
-      caption: 'He asked, she said yes again 💍',
+      caption: 'He asked again, she said yes again 💍',
       detail:  'The question that changed everything. Of course she said yes.',
     },
   ];
