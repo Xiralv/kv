@@ -137,7 +137,7 @@ export class AttirePage {
       gents: {
         garment: 'White / Off-white barong · Black pants · Black shoes',
       },
-      donts: ['No coat-type barongs please'],
+      // donts: ['No coat-type barongs please'],
     },
   ];
 
