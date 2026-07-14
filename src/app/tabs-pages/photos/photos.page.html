@@ -1,0 +1,153 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Photos</ion-title>
+    @if (!isLoading && photoCount > 0) {
+      <ion-note slot="end" style="margin-right:16px;font-size:12px;color:var(--ion-color-medium)">
+        {{ photoCount }} shared
+      </ion-note>
+    }
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Photos</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <!-- Intro -->
+  <div class="photos-intro">
+    <p class="photos-intro__names">Kamille &amp; Vlarix</p>
+    <p class="photos-intro__sub">Share your favourite moments from the celebration 💛</p>
+  </div>
+
+  <!-- Upload section -->
+  <div class="upload-section">
+    <input type="file" id="photo-file-input" accept="image/*"
+      style="display:none" (change)="onFileSelected($event)" />
+
+    @switch (uploadState) {
+
+      <!-- Checking permission -->
+      @case ('checking') {
+        <div class="upload-checking">
+          <ion-spinner name="dots" color="medium"></ion-spinner>
+        </div>
+      }
+
+      <!-- Confirmed attending — show upload CTA -->
+      @case ('allowed') {
+        @if (isUploading) {
+          <div class="upload-progress-wrap">
+            <ion-progress-bar [value]="uploadProgress / 100" class="upload-bar"></ion-progress-bar>
+            <p class="upload-progress-label">
+              {{ uploadProgress < 40 ? 'Compressing...' : uploadProgress < 90 ? 'Uploading...' : 'Almost done...' }}
+            </p>
+          </div>
+        } @else {
+          <button class="upload-btn" (click)="triggerFilePicker()">
+            <ion-icon name="camera-outline" class="upload-btn__icon"></ion-icon>
+            <span class="upload-btn__label">Share a photo</span>
+            <span class="upload-btn__sub">Tap to choose from your camera roll</span>
+          </button>
+          <!-- Photo counter -->
+          <div class="photo-counter">
+            <div class="photo-counter__bar">
+              <div class="photo-counter__fill"
+                [style.width.%]="(guestPhotoCount / PHOTO_LIMIT) * 100"></div>
+            </div>
+            <span class="photo-counter__label">
+              {{ guestPhotoCount }} / {{ PHOTO_LIMIT }} photos shared
+            </span>
+          </div>
+        }
+      }
+
+      <!-- Limit reached -->
+      @case ('limit-reached') {
+        <div class="upload-locked upload-locked--limit">
+          <ion-icon name="checkmark-circle-outline" class="upload-locked__icon upload-locked__icon--done"></ion-icon>
+          <p class="upload-locked__title">You've shared {{ PHOTO_LIMIT }} photos 🎉</p>
+          <p class="upload-locked__sub">That's your limit — thanks for capturing the memories!</p>
+        </div>
+      }
+
+      <!-- Name not stored — hasn't RSVPd on this device -->
+      @case ('not-rsvpd') {
+        <div class="upload-locked">
+          <ion-icon name="lock-closed-outline" class="upload-locked__icon"></ion-icon>
+          <p class="upload-locked__title">RSVP first to share photos</p>
+          <p class="upload-locked__sub">Only guests who have confirmed attendance can upload.</p>
+          <ion-button fill="outline" size="small" routerLink="/tabs/home">Go to RSVP</ion-button>
+        </div>
+      }
+
+      <!-- Guest found but not attending -->
+      @case ('not-attending') {
+        <div class="upload-locked upload-locked--declined">
+          <ion-icon name="heart-dislike-outline" class="upload-locked__icon"></ion-icon>
+          <p class="upload-locked__title">Photo sharing is for attending guests</p>
+          <p class="upload-locked__sub">
+            It looks like you won't be joining us in person — we'll miss you! 💛
+          </p>
+        </div>
+      }
+
+    }
+  </div>
+
+  <!-- Loading skeleton -->
+  @if (isLoading) {
+    <div class="photo-grid photo-grid--loading">
+      @for (i of [1,2,3,4,5,6]; track i) {
+        <div class="photo-skeleton">
+          <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Empty state -->
+  @if (!isLoading && photos.length === 0) {
+    <div class="photos-empty">
+      <ion-icon name="images-outline" class="photos-empty__icon"></ion-icon>
+      <p class="photos-empty__msg">No photos yet — be the first to share one! 📸</p>
+    </div>
+  }
+
+  <!-- Photo grid -->
+  @if (!isLoading && photos.length > 0) {
+    <div class="photo-grid">
+      @for (photo of photos; track photo.id) {
+        <div class="photo-tile" (click)="openLightbox(photo)">
+          <img [src]="photo.url" [alt]="photo.uploader_name + '\'s photo'"
+               loading="lazy" class="photo-tile__img" />
+          <div class="photo-tile__overlay">
+            <ion-icon name="expand-outline"></ion-icon>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Lightbox -->
+  @if (selectedPhoto) {
+    <div class="lightbox-backdrop" (click)="closeLightbox()">
+      <div class="lightbox" (click)="$event.stopPropagation()">
+        <button class="lightbox__close" (click)="closeLightbox()" aria-label="Close">
+          <ion-icon name="close-outline"></ion-icon>
+        </button>
+        <img [src]="selectedPhoto.url" [alt]="selectedPhoto.uploader_name + '\'s photo'"
+             class="lightbox__img" />
+        <div class="lightbox__meta">
+          <ion-icon name="person-outline" class="lightbox__icon"></ion-icon>
+          <span class="lightbox__uploader">{{ selectedPhoto.uploader_name }}</span>
+          <span class="lightbox__time">{{ selectedPhoto.created_at | date:'MMM d · h:mm a' }}</span>
+        </div>
+      </div>
+    </div>
+  }
+
+</ion-content>

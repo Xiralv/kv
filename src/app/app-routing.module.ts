@@ -26,6 +26,10 @@ const routes: Routes = [
   {
     path: 'attire',
     loadChildren: () => import('./tabs-pages/attire/attire.module').then( m => m.AttirePageModule)
+  },
+  {
+    path: 'photos',
+    loadChildren: () => import('./tabs-pages/photos/photos.module').then( m => m.PhotosPageModule)
   }
 ];
 

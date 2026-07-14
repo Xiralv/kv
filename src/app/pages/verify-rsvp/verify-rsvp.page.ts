@@ -77,6 +77,8 @@ export class VerifyRsvpPage implements OnInit {
       this.arrGuests = allGuests;
       this.verifiedFullname = fullname;
       this.isAlreadyAnswered = true;
+      // Backfill device cache so future opens skip the DB round-trip
+      this.markAsSubmitted(allGuests.map(g => g.id));
       // Small delay so the swiper is fully initialised before we slide
       setTimeout(() => this.skipToThankYou(), 150);
     } catch (err) {
@@ -148,6 +150,8 @@ export class VerifyRsvpPage implements OnInit {
     if (everyoneAnswered) {
       // Already answered — show read-only summary, skip slide 2 entirely
       this.isAlreadyAnswered = true;
+      // ✅ Backfill device cache so next open skips the DB round-trip
+      this.markAsSubmitted(allGuests.map(g => g.id));
       this.skipToThankYou();
     } else {
       // First time answering — proceed to slide 2
@@ -186,7 +190,6 @@ export class VerifyRsvpPage implements OnInit {
         return; // stop on first failure — do not advance or mark submitted
       }
     }
-
     // All DB writes succeeded — record on device as fast-path for next open
     this.markAsSubmitted(this.arrGuests.map(g => g.id));
     this.swiperRef.nativeElement.swiper.slideNext();

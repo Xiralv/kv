@@ -7,6 +7,16 @@ export interface Guest {
   attend: boolean | null;
 }
 
+export interface WeddingPhoto {
+  id: string;
+  url: string;
+  uploader_name: string;
+  created_at: string;
+}
+
+const PHOTO_BUCKET = 'wedding-photos';
+const PHOTO_TABLE = 'photos';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -63,4 +73,118 @@ export class SupabaseService {
     }
     return data;
   }
+
+
+
+
+  // ─── Photos ────────────────────────────────────────────────────────────────
+
+  /**
+   * Server-side check: returns true only if the guest exists in the guests
+   * table with attend = true. Runs via a SECURITY DEFINER RPC so the guests
+   * table is never directly exposed to the browser.
+   */
+  async isConfirmedGuest(fullname: string): Promise<boolean> {
+    const { data, error } = await supabase.rpc('is_confirmed_guest', {
+      p_fullname: fullname.trim(),
+    });
+    if (error) {
+      console.error('isConfirmedGuest error:', error);
+      return false;
+    }
+    return data === true;
+  }
+
+  /** Returns how many photos this guest has already uploaded (0–10). */
+  async getGuestPhotoCount(fullname: string): Promise<number> {
+    const { data, error } = await supabase.rpc('get_guest_photo_count', {
+      p_fullname: fullname.trim(),
+    });
+    if (error) { console.error('getGuestPhotoCount error:', error); return 0; }
+    return data as number;
+  }
+
+  /** Fetch all photos, newest first. */
+  async getPhotos(): Promise<WeddingPhoto[]> {
+    const { data, error } = await supabase
+      .from(PHOTO_TABLE)
+      .select('id, storage_path, uploader_name, created_at')
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    if (!data) return [];
+
+    return data.map((row: any) => ({
+      id: row.id,
+      uploader_name: row.uploader_name,
+      created_at: row.created_at,
+      url: supabase.storage
+        .from(PHOTO_BUCKET)
+        .getPublicUrl(row.storage_path).data.publicUrl,
+    }));
+  }
+
+  /** Compress, upload to Storage, insert metadata row. Returns WeddingPhoto. */
+  async uploadPhoto(file: File, uploaderName: string): Promise<WeddingPhoto> {
+    const compressed = await this.compressImage(file, 1600, 0.82);
+
+    const ext = file.name.split('.').pop() || 'jpg';
+    const path = `photos/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from(PHOTO_BUCKET)
+      .upload(path, compressed, { contentType: 'image/jpeg', upsert: false });
+
+    if (uploadError) throw uploadError;
+
+    const { data, error: insertError } = await supabase
+      .from(PHOTO_TABLE)
+      .insert({ storage_path: path, uploader_name: uploaderName })
+      .select('id, storage_path, uploader_name, created_at')
+      .single();
+
+    if (insertError) {
+      await supabase.storage.from(PHOTO_BUCKET).remove([path]);
+      throw insertError;
+    }
+
+    return {
+      id: data.id,
+      uploader_name: data.uploader_name,
+      created_at: data.created_at,
+      url: supabase.storage.from(PHOTO_BUCKET).getPublicUrl(path).data.publicUrl,
+    };
+  }
+
+  /** Resize to maxWidth and re-encode as JPEG using an off-screen canvas. */
+  compressImage(file: File, maxWidth = 1600, quality = 0.82): Promise<File> {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      const url = URL.createObjectURL(file);
+
+      img.onload = () => {
+        URL.revokeObjectURL(url);
+        let { width, height } = img;
+        if (width > maxWidth) {
+          height = Math.round((height * maxWidth) / width);
+          width = maxWidth;
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        canvas.getContext('2d')!.drawImage(img, 0, 0, width, height);
+        canvas.toBlob(
+          blob => {
+            if (!blob) { reject(new Error('Compression failed')); return; }
+            resolve(new File([blob], file.name, { type: 'image/jpeg', lastModified: Date.now() }));
+          },
+          'image/jpeg',
+          quality,
+        );
+      };
+      img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Image load failed')); };
+      img.src = url;
+    });
+  }
+
 }

@@ -20,12 +20,16 @@ const routes: Routes = [
         loadChildren: () => import('../programme/programme.module').then(m => m.ProgrammePageModule)
       },
       {
-        path: 'faq',
-        loadChildren: () => import('../faq/faq.module').then(m => m.FaqPageModule)
+        path: 'photos',
+        loadChildren: () => import('../photos/photos.module').then(m => m.PhotosPageModule)
       },
       {
         path: 'attire',
         loadChildren: () => import('../attire/attire.module').then(m => m.AttirePageModule)
+      },
+      {
+        path: 'faq',
+        loadChildren: () => import('../faq/faq.module').then(m => m.FaqPageModule)
       },
       {
         path: '',
