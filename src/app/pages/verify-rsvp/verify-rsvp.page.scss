@@ -443,3 +443,68 @@ ion-content, .swiper, .swiper-slide, .thankyou-slide {
     ion-icon { color: #c5000f; }
   }
 }
+
+// ── Candidate picker (ambiguous first-name matches) ──────────────────────────
+.candidates-wrap {
+  margin-top: 16px;
+  animation: panelFadeIn 0.2s ease both;
+}
+
+@keyframes panelFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.candidates-label {
+  font-family: $font;
+  font-size: 13px;
+  color: $gold-mid;
+  text-align: center;
+  font-style: italic;
+  margin: 0 0 10px;
+}
+
+.candidates-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.candidate-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1.5px solid $gold-border;
+  background: $gold-bg;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  text-align: left;
+
+  &:active {
+    background: #fff8d6;
+    border-color: $gold;
+  }
+}
+
+.candidate-icon {
+  font-size: 24px;
+  color: $gold-mid;
+  flex-shrink: 0;
+}
+
+.candidate-name {
+  flex: 1;
+  font-family: $font;
+  font-size: 15px;
+  font-weight: 600;
+  color: $gold-dark;
+}
+
+.candidate-chevron {
+  font-size: 16px;
+  color: $gold-mid;
+  flex-shrink: 0;
+}

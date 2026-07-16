@@ -3,7 +3,7 @@
   <swiper-container #swiperRef class="swiper-progressbar" slides-per-view="1" space-between="10"
     pagination='{"type": "progressbar"}' allow-touch-move="false">
 
-    <!-- ─── Slide 1: Name lookup ─────────────────────────────────────────── -->
+    <!-- ─── Slide 1: First-name lookup ──────────────────────────────────── -->
     <swiper-slide class="rsvp-container">
       <div class="rsvp-card">
 
@@ -17,18 +17,19 @@
           <p class="rsvp-intro__date">Friday · December 18, 2026</p>
         </div>
 
-        <!-- Divider -->
         <div class="rsvp-divider"></div>
 
-        <!-- Form -->
+        <!-- Search form -->
         <div class="rsvp-form-section">
-          <p class="rsvp-form-label">Enter your full name to find your invitation</p>
+          <p class="rsvp-form-label">Enter your first name to find your invitation</p>
           <form [formGroup]="rsvpForm" (ngSubmit)="onSubmit()">
             <div class="rsvp-input-wrap">
               <ion-item lines="none" class="rsvp-input-item">
                 <ion-icon name="person-outline" slot="start" class="rsvp-input-icon"></ion-icon>
-                <ion-input type="text" formControlName="fullname"
-                  placeholder="e.g. Juan dela Cruz" required></ion-input>
+                <ion-input type="text" formControlName="firstname"
+                  placeholder="e.g. Maria" required
+                  autocomplete="given-name"
+                  autocapitalize="words"></ion-input>
               </ion-item>
             </div>
             <ion-button fill="solid" expand="block" type="submit"
@@ -37,6 +38,22 @@
               {{ isLoading ? 'Looking you up...' : 'Find My Invitation' }}
             </ion-button>
           </form>
+
+          <!-- Candidate picker — shown when first name is ambiguous -->
+          @if (candidates.length > 1) {
+            <div class="candidates-wrap">
+              <p class="candidates-label">We found a few guests — which one are you?</p>
+              <div class="candidates-list">
+                @for (c of candidates; track c.id) {
+                  <button class="candidate-row" (click)="selectCandidate(c)">
+                    <ion-icon name="person-circle-outline" class="candidate-icon"></ion-icon>
+                    <span class="candidate-name">{{ c.full_name }}</span>
+                    <ion-icon name="chevron-forward-outline" class="candidate-chevron"></ion-icon>
+                  </button>
+                }
+              </div>
+            </div>
+          }
         </div>
 
       </div>
@@ -103,7 +120,6 @@
           <div class="overlay-text">
             <img src="assets/images/kvlogofinal.png" alt="KV Logo" />
 
-            <!-- ══ Already answered: read-only summary ══ -->
             @if (isAlreadyAnswered) {
               <div class="already-answered-badge">
                 <ion-icon name="checkmark-circle-outline"></ion-icon>
@@ -130,7 +146,6 @@
               </p>
             }
 
-            <!-- ══ Fresh submission ══ -->
             @if (!isAlreadyAnswered) {
               <p>{{ messageText }}</p>
               @if (guestCount === 1) {
@@ -141,25 +156,13 @@
                 }
               } @else if (hasAccepted && hasDeclined) {
                 <p>The following guest(s) can't attend:</p>
-                <ul>
-                  @for (g of arrGuests; track g.id) {
-                    @if (!g.attend) { <li>{{ g.full_name }}</li> }
-                  }
-                </ul>
+                <ul>@for (g of arrGuests; track g.id) { @if (!g.attend) { <li>{{ g.full_name }}</li> } }</ul>
               } @else if (hasDeclined && !hasAccepted) {
                 <p>The following guest(s) can't attend:</p>
-                <ul>
-                  @for (g of arrGuests; track g.id) {
-                    @if (!g.attend) { <li>{{ g.full_name }}</li> }
-                  }
-                </ul>
+                <ul>@for (g of arrGuests; track g.id) { @if (!g.attend) { <li>{{ g.full_name }}</li> } }</ul>
               } @else if (hasAccepted && !hasDeclined) {
                 <p>We're happy that all guest(s) can join!</p>
-                <ul>
-                  @for (g of arrGuests; track g.id) {
-                    @if (g.attend) { <li>{{ g.full_name }}</li> }
-                  }
-                </ul>
+                <ul>@for (g of arrGuests; track g.id) { @if (g.attend) { <li>{{ g.full_name }}</li> } }</ul>
               }
             }
 

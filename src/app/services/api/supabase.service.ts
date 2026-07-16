@@ -14,6 +14,12 @@ export interface WeddingPhoto {
   created_at: string;
 }
 
+export interface GuestSearchResult {
+  id: string;
+  full_name: string;
+  attend: boolean | null;
+}
+
 const PHOTO_BUCKET = 'wedding-photos';
 const PHOTO_TABLE = 'photos';
 
@@ -72,6 +78,23 @@ export class SupabaseService {
       throw error;
     }
     return data;
+  }
+
+
+
+  /**
+ * Search guests by first name (or partial name).
+ * Returns:
+ *   0 results → not found
+ *   1 result  → unique match, proceed
+ *   2+ results → ambiguous, ask for more
+ */
+  async searchGuestByFirstname(firstname: string): Promise<GuestSearchResult[]> {
+    const { data, error } = await supabase.rpc('search_guest_by_firstname', {
+      p_firstname: firstname.trim(),
+    });
+    if (error) throw error;
+    return (data || []) as GuestSearchResult[];
   }
 
 
