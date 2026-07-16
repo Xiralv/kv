@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Camera, CameraResultType, CameraSource, CameraDirection } from '@capacitor/camera';
 import { SupabaseService, WeddingPhoto } from 'src/app/services/api/supabase.service';
 import { GlobalService } from 'src/app/services/global/global.service';
 
@@ -10,41 +11,31 @@ import { GlobalService } from 'src/app/services/global/global.service';
 })
 export class PhotosPage implements OnInit {
 
-  photos: WeddingPhoto[]    = [];
-  isLoading                 = true;
-  isUploading               = false;
-  uploadProgress            = 0;
+  photos: WeddingPhoto[] = [];
+  isLoading = true;
+  isUploading = false;
+  uploadProgress = 0;
   selectedPhoto: WeddingPhoto | null = null;
 
-  guestName: string | null  = localStorage.getItem('user_fullname');
-
-  // Three possible upload states:
-  //  'checking'    — verifying with Supabase on page load
-  //  'allowed'     — confirmed attending guest, can upload
-  //  'not-rsvpd'   — no name stored locally yet
-  //  'not-attending' — name found but attend !== true
+  guestName: string | null = localStorage.getItem('user_fullname');
   uploadState: 'checking' | 'allowed' | 'not-rsvpd' | 'not-attending' | 'limit-reached' = 'checking';
 
   readonly PHOTO_LIMIT = 10;
-  guestPhotoCount = 0;          // how many this guest has already uploaded
+  guestPhotoCount = 0;
 
   constructor(
     private api: SupabaseService,
     private global: GlobalService,
-  ) {}
-
-
+  ) { }
 
   async ngOnInit() {
-    // console.log('ngOnInit')
     // await Promise.all([
     //   this.loadPhotos(),
     //   this.checkUploadPermission(),
     // ]);
   }
 
-
-  async ionViewWillEnter() {
+    async ionViewWillEnter() {
     this.guestName = localStorage.getItem('user_fullname');
     await Promise.all([
       this.loadPhotos(),
@@ -52,26 +43,18 @@ export class PhotosPage implements OnInit {
     ]);
   }
 
-  /** DB check — can this guest upload? */
+
   private async checkUploadPermission(): Promise<void> {
-    console.log('this.guestName',this.guestName)
     if (!this.guestName) {
       this.uploadState = 'not-rsvpd';
       return;
     }
     try {
       const confirmed = await this.api.isConfirmedGuest(this.guestName);
-      if (!confirmed) {
-        this.uploadState = 'not-attending';
-        return;
-      }
-      // Fetch their current upload count from the DB
+      if (!confirmed) { this.uploadState = 'not-attending'; return; }
       this.guestPhotoCount = await this.api.getGuestPhotoCount(this.guestName);
       this.uploadState = this.guestPhotoCount >= this.PHOTO_LIMIT ? 'limit-reached' : 'allowed';
     } catch {
-      // If the check fails (network issue), fall back to not-rsvpd
-      // so they're prompted to re-enter their name rather than seeing
-      // a broken upload button.
       this.uploadState = 'not-rsvpd';
     }
   }
@@ -87,36 +70,44 @@ export class PhotosPage implements OnInit {
     }
   }
 
-  triggerFilePicker(): void {
-    const input = document.getElementById('photo-file-input') as HTMLInputElement;
-    input?.click();
+  // ─── Camera: opens rear camera (environment) ───────────────────────────────
+  async openRearCamera(): Promise<void> {
+    await this.capturePhoto(CameraSource.Camera, 'environment');
   }
 
-  async onFileSelected(event: Event): Promise<void> {
-    const input = event.target as HTMLInputElement;
-    const files = input.files;
-    if (!files || files.length === 0) return;
+  // ─── Camera: opens front camera (selfie / user-facing) ────────────────────
+  async openFrontCamera(): Promise<void> {
+    await this.capturePhoto(CameraSource.Camera, 'user');
+  }
 
-    const file = files[0];
+  // ─── Gallery: opens camera roll / photo library ────────────────────────────
+  async openGallery(): Promise<void> {
+    await this.capturePhoto(CameraSource.Photos, 'environment');
+  }
 
-    if (!file.type.startsWith('image/')) {
-      this.global.presentToast('Please select an image file', 'warning', 'alert-circle-outline');
-      return;
-    }
-    if (file.size > 10 * 1024 * 1024) {
-      this.global.presentToast('Please choose a photo under 10 MB', 'warning', 'alert-circle-outline');
-      return;
-    }
+  /**
+   * Core capture method.
+   * Uses @capacitor/camera which:
+   *   - In a browser → falls back to @ionic/pwa-elements (getUserMedia overlay
+   *     with front/rear toggle, or native file picker for Photos source)
+   *   - On native iOS/Android → uses the native camera / photo library
+   *
+   * direction: 'environment' = rear camera, 'user' = front camera (selfie)
+   */
+  private async capturePhoto(
+    source: CameraSource,
+    direction: 'environment' | 'user',
+  ): Promise<void> {
+    // Guard checks
+    if (this.uploadState !== 'allowed') return;
 
-    // Re-verify server-side before every upload — guards against a guest
-    // who later changed their RSVP to decline.
     const stillConfirmed = await this.api.isConfirmedGuest(this.guestName || '');
     if (!stillConfirmed) {
       this.uploadState = 'not-attending';
       this.global.presentToast('Only confirmed guests can share photos', 'warning', 'alert-circle-outline');
       return;
     }
-    // Re-check count server-side before every upload
+
     this.guestPhotoCount = await this.api.getGuestPhotoCount(this.guestName || '');
     if (this.guestPhotoCount >= this.PHOTO_LIMIT) {
       this.uploadState = 'limit-reached';
@@ -124,18 +115,63 @@ export class PhotosPage implements OnInit {
       return;
     }
 
-    this.isUploading    = true;
-    this.uploadProgress = 0;
+    let dataUrl: string;
+    try {
+      const image = await Camera.getPhoto({
+        quality: 85,
+        resultType: CameraResultType.DataUrl,
+        source,
+        // direction only applies when source = Camera (ignored for Photos)
+        direction: direction === 'user' ? CameraDirection.Front : CameraDirection.Rear, // 0 = rear, 1 = front
+        correctOrientation: true,
+        allowEditing: false,
+        presentationStyle: 'popover', // less jarring than fullscreen on iPad
+      });
+
+      if (!image.dataUrl) {
+        this.global.presentToast('No photo was captured', 'warning', 'alert-circle-outline');
+        return;
+      }
+      dataUrl = image.dataUrl;
+    } catch (err: any) {
+      // User cancelled — not an error
+      if (err?.message?.includes('cancelled') || err?.message?.includes('No image picked')) return;
+      console.error('Camera error:', err);
+      this.global.presentToast('Camera error — please try again', 'warning', 'alert-circle-outline');
+      return;
+    }
+
+    // Convert dataUrl → File for upload
+    const file = this.dataUrlToFile(dataUrl, `wedding-photo-${Date.now()}.jpg`);
+    await this.uploadFile(file);
+  }
+
+  /** Convert a base64 data URL to a File object. */
+  private dataUrlToFile(dataUrl: string, filename: string): File {
+    const [header, base64] = dataUrl.split(',');
+    const mime = header.match(/:(.*?);/)![1];
+    const bytes = atob(base64);
+    const arr = new Uint8Array(bytes.length);
+    for (let i = 0; i < bytes.length; i++) arr[i] = bytes.charCodeAt(i);
+    return new File([arr], filename, { type: mime });
+  }
+
+  /** Shared upload logic used by all three capture paths. */
+  private async uploadFile(file: File): Promise<void> {
+    if (file.size > 10 * 1024 * 1024) {
+      this.global.presentToast('Photo is too large — please try another', 'warning', 'alert-circle-outline');
+      return;
+    }
+
+    this.isUploading = true;
+    this.uploadProgress = 20;
 
     try {
-      this.uploadProgress = 20;
       const uploaded = await this.api.uploadPhoto(file, this.guestName || 'Guest');
       this.uploadProgress = 95;
       this.photos = [uploaded, ...this.photos];
       this.guestPhotoCount += 1;
-      if (this.guestPhotoCount >= this.PHOTO_LIMIT) {
-        this.uploadState = 'limit-reached';
-      }
+      if (this.guestPhotoCount >= this.PHOTO_LIMIT) this.uploadState = 'limit-reached';
       this.uploadProgress = 100;
       this.global.presentToast(
         this.guestPhotoCount >= this.PHOTO_LIMIT
@@ -152,14 +188,13 @@ export class PhotosPage implements OnInit {
         'alert-circle-outline',
       );
     } finally {
-      this.isUploading    = false;
+      this.isUploading = false;
       this.uploadProgress = 0;
-      input.value         = '';
     }
   }
 
-  openLightbox(photo: WeddingPhoto)  { this.selectedPhoto = photo; }
-  closeLightbox()                     { this.selectedPhoto = null;  }
+  openLightbox(photo: WeddingPhoto) { this.selectedPhoto = photo; }
+  closeLightbox() { this.selectedPhoto = null; }
 
   get photoCount(): number { return this.photos.length; }
 }

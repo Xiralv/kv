@@ -25,8 +25,6 @@
 
   <!-- Upload section -->
   <div class="upload-section">
-    <input type="file" id="photo-file-input" accept="image/*"
-      style="display:none" (change)="onFileSelected($event)" />
 
     @switch (uploadState) {
 
@@ -37,7 +35,7 @@
         </div>
       }
 
-      <!-- Confirmed attending — show upload CTA -->
+      <!-- Confirmed attending — three camera options -->
       @case ('allowed') {
         @if (isUploading) {
           <div class="upload-progress-wrap">
@@ -47,11 +45,35 @@
             </p>
           </div>
         } @else {
-          <button class="upload-btn" (click)="triggerFilePicker()">
-            <ion-icon name="camera-outline" class="upload-btn__icon"></ion-icon>
-            <span class="upload-btn__label">Share a photo</span>
-            <span class="upload-btn__sub">Tap to choose from your camera roll</span>
-          </button>
+          <!-- Three camera options -->
+          <div class="camera-options">
+
+            <button class="cam-btn" (click)="openRearCamera()">
+              <div class="cam-btn__icon-wrap cam-btn__icon-wrap--rear">
+                <ion-icon name="camera-outline"></ion-icon>
+              </div>
+              <span class="cam-btn__label">Photo</span>
+              <span class="cam-btn__sub">Rear camera</span>
+            </button>
+
+            <button class="cam-btn cam-btn--featured" (click)="openFrontCamera()">
+              <div class="cam-btn__icon-wrap cam-btn__icon-wrap--front">
+                <ion-icon name="camera-reverse-outline"></ion-icon>
+              </div>
+              <span class="cam-btn__label">Selfie</span>
+              <span class="cam-btn__sub">Front camera</span>
+            </button>
+
+            <button class="cam-btn" (click)="openGallery()">
+              <div class="cam-btn__icon-wrap cam-btn__icon-wrap--gallery">
+                <ion-icon name="images-outline"></ion-icon>
+              </div>
+              <span class="cam-btn__label">Gallery</span>
+              <span class="cam-btn__sub">Camera roll</span>
+            </button>
+
+          </div>
+
           <!-- Photo counter -->
           <div class="photo-counter">
             <div class="photo-counter__bar">
@@ -68,13 +90,14 @@
       <!-- Limit reached -->
       @case ('limit-reached') {
         <div class="upload-locked upload-locked--limit">
-          <ion-icon name="checkmark-circle-outline" class="upload-locked__icon upload-locked__icon--done"></ion-icon>
+          <ion-icon name="checkmark-circle-outline"
+            class="upload-locked__icon upload-locked__icon--done"></ion-icon>
           <p class="upload-locked__title">You've shared {{ PHOTO_LIMIT }} photos 🎉</p>
           <p class="upload-locked__sub">That's your limit — thanks for capturing the memories!</p>
         </div>
       }
 
-      <!-- Name not stored — hasn't RSVPd on this device -->
+      <!-- Not yet RSVPd -->
       @case ('not-rsvpd') {
         <div class="upload-locked">
           <ion-icon name="lock-closed-outline" class="upload-locked__icon"></ion-icon>
@@ -84,7 +107,7 @@
         </div>
       }
 
-      <!-- Guest found but not attending -->
+      <!-- Guest declined -->
       @case ('not-attending') {
         <div class="upload-locked upload-locked--declined">
           <ion-icon name="heart-dislike-outline" class="upload-locked__icon"></ion-icon>
