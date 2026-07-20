@@ -155,6 +155,24 @@
     </div>
   }
 
+  <!-- Infinite scroll trigger — fires when user is 80px from the bottom -->
+  <ion-infinite-scroll
+    threshold="100px"
+    (ionInfinite)="loadMore($event)"
+    [disabled]="!hasMorePhotos">
+    <ion-infinite-scroll-content
+      loadingSpinner="dots"
+      loadingText="Loading more photos...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+
+  <!-- End of feed message -->
+  @if (!hasMorePhotos && photos.length > 0) {
+    <div class="end-of-feed">
+      <span>✨ You've seen all {{ photoCount }} photos</span>
+    </div>
+  }
+
   <!-- Lightbox -->
   @if (selectedPhoto) {
     <div class="lightbox-backdrop" (click)="closeLightbox()">

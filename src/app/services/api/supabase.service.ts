@@ -127,12 +127,21 @@ export class SupabaseService {
     return data as number;
   }
 
-  /** Fetch all photos, newest first. */
-  async getPhotos(): Promise<WeddingPhoto[]> {
+
+  /**
+   * Fetch a page of photos, newest first.
+   * @param page  zero-based page index
+   * @param limit number of photos per page (default 10)
+   */
+  async getPhotos(page = 0, limit = 10): Promise<WeddingPhoto[]> {
+    const from = page * limit;
+    const to = from + limit - 1;          // Supabase range is inclusive
+
     const { data, error } = await supabase
       .from(PHOTO_TABLE)
       .select('id, storage_path, uploader_name, created_at')
-      .order('created_at', { ascending: false });
+      .order('created_at', { ascending: false })
+      .range(from, to);
 
     if (error) throw error;
     if (!data) return [];
