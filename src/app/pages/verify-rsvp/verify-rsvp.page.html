@@ -182,10 +182,12 @@
                   @if (s.table_number) {
                     <div class="seating-row">
                       <span class="seating-row__name">{{ s.full_name }}</span>
-                      @if (s.table_number.toUpperCase() === 'VIP') {
-                        <span class="seating-row__table seating-row__table--vip">
+                      @if (s.table_number === 'VIP 1' || s.table_number === 'VIP 2') {
+                        <span class="seating-row__table seating-row__table--vip"
+                          [class.seating-row__table--vip1]="s.table_number === 'VIP 1'"
+                          [class.seating-row__table--vip2]="s.table_number === 'VIP 2'">
                           <ion-icon name="star"></ion-icon>
-                          VIP
+                          {{ s.table_number }}
                         </span>
                       } @else {
                         <span class="seating-row__table">{{ s.table_number }}</span>

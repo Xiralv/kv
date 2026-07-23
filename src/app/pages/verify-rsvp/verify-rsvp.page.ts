@@ -28,16 +28,15 @@ export class VerifyRsvpPage implements OnInit {
   };
 
 
-  /** True when the guest re-opens the RSVP and we detected an existing answer in the DB */
+ /** True when the guest re-opens the RSVP and we detected an existing answer in the DB */
   isAlreadyAnswered = false;
-  isLoading         = false;
+  isLoading = false;
 
   /**
    * When first-name search returns multiple matches the app shows a list
    * of candidate names for the guest to tap and confirm which one is them.
    */
   candidates: GuestSearchResult[] = [];
-
   /**
    * Passed by the home page when hasSubmittedRsvp is true.
    * When present, ngOnInit skips the name-input slide and loads the
@@ -76,7 +75,7 @@ export class VerifyRsvpPage implements OnInit {
   // ─── Slide 1: first-name search ─────────────────────────────────────────────
 
   async onSubmit() {
-    this.isLoading  = true;
+    this.isLoading = true;
     this.candidates = [];
 
     const firstname = this.rsvpForm.value.firstname as string;
@@ -111,14 +110,14 @@ export class VerifyRsvpPage implements OnInit {
     } else {
       // Multiple matches — show candidate picker
       this.candidates = results;
-      this.isLoading  = false;
+      this.isLoading = false;
     }
   }
 
   /** Called when the guest taps their name from the candidates list. */
   async selectCandidate(candidate: GuestSearchResult) {
     this.candidates = [];
-    this.isLoading  = true;
+    this.isLoading = true;
     await this.resolveGuest(candidate.full_name);
   }
 
@@ -151,9 +150,6 @@ export class VerifyRsvpPage implements OnInit {
     } catch {
       this.seating = [];
     }
-
-    console.log('this.seating',this.seating)
-
     // ── DB check: has every guest in this group already answered? ────────────
     // attend === true  → confirmed attending
     // attend === false → declined
@@ -184,7 +180,6 @@ export class VerifyRsvpPage implements OnInit {
    * Used both by the auto-load path (View My RSVP) and onSubmit when the DB
    * already has answers for the group.
    */
-
   private async loadAndShowSummary(fullname: string): Promise<void> {
     this.isLoading = true;
     try {
@@ -199,7 +194,6 @@ export class VerifyRsvpPage implements OnInit {
       } catch {
         this.seating = [];
       }
-
       setTimeout(() => this.skipToThankYou(), 150);
     } catch (err) {
       this.global.presentToast(
@@ -231,7 +225,7 @@ export class VerifyRsvpPage implements OnInit {
 
   selectButton(guestData: Guest, button: string) {
     guestData.attend = button === 'yes';
-    this.arrGuests   = [...this.arrGuests];
+    this.arrGuests = [...this.arrGuests];
   }
 
   async onConfirmRSVP() {
@@ -271,26 +265,24 @@ export class VerifyRsvpPage implements OnInit {
 
   get guestCount(): number {
     return this.arrGuests?.length || 0;
-  }
-
+ }
   get hasDeclined(): boolean {
-    return this.arrGuests?.some(g => g.attend === false);
+    return this.arrGuests?.some(g => g.attend === false); 
   }
   get hasAccepted(): boolean {
-    return this.arrGuests?.some(g => g.attend === true);
+    return this.arrGuests?.some(g => g.attend === true); 
   }
-
 
   /** True if at least one guest in the party has a table assigned. */
   get hasSeating(): boolean {
     return this.seating.some(s => s.table_number !== null);
   }
 
-  /** True if every assigned seat in the party is VIP. */
+  /** True if every assigned seat in the party is VIP 1 or VIP 2. */
   get isVipParty(): boolean {
     const assigned = this.seating.filter(s => s.table_number !== null);
     return assigned.length > 0 &&
-      assigned.every(s => s.table_number!.toUpperCase() === 'VIP');
+      assigned.every(s => s.table_number === 'VIP 1' || s.table_number === 'VIP 2');
   }
 
   get messageText(): string {

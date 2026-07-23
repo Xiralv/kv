@@ -9,14 +9,14 @@ import { PrenupPhoto, SupabaseService } from 'src/app/services/api/supabase.serv
 })
 export class PrenupPage implements OnInit {
 
-  photos: PrenupPhoto[]              = [];
-  isLoading                          = true;
-  loadError                          = false;
-  selectedPhoto: PrenupPhoto | null  = null;
+  photos: PrenupPhoto[] = [];
+  isLoading = true;
+  loadError = false;
+  selectedPhoto: PrenupPhoto | null = null;
 
-  constructor(private api: SupabaseService) {}
+  constructor(private api: SupabaseService) { }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   async ionViewWillEnter() {
     await this.loadPhotos();
