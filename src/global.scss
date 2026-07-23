@@ -36,6 +36,10 @@
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 // @import "@ionic/angular/css/palettes/dark.system.css";
 
+html, body, ion-app {
+  background: #fffbef; /* your app's cream/gold background */
+}
+
 .toast-text-color {
     --color: #ffffff !important;
     /* changes icon color */
