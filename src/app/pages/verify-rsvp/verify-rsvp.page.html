@@ -166,6 +166,36 @@
               }
             }
 
+            <!-- Seating card — only shown when table_number is assigned -->
+            @if (hasSeating) {
+              <div class="seating-card" [class.seating-card--vip]="isVipParty">
+                <p class="seating-card__eyebrow">
+                  @if (isVipParty) {
+                    <ion-icon name="star" class="seating-eyebrow-icon--vip"></ion-icon>
+                    VIP Guest
+                  } @else {
+                    <ion-icon name="restaurant-outline"></ion-icon>
+                    Your table
+                  }
+                </p>
+                @for (s of seating; track s.guest_id) {
+                  @if (s.table_number) {
+                    <div class="seating-row">
+                      <span class="seating-row__name">{{ s.full_name }}</span>
+                      @if (s.table_number.toUpperCase() === 'VIP') {
+                        <span class="seating-row__table seating-row__table--vip">
+                          <ion-icon name="star"></ion-icon>
+                          VIP
+                        </span>
+                      } @else {
+                        <span class="seating-row__table">{{ s.table_number }}</span>
+                      }
+                    </div>
+                  }
+                }
+              </div>
+            }
+
             <ion-button (click)="closeModal()" fill="solid" expand="block"
               class="ion-margin-top close-btn">
               See Event Details

@@ -126,14 +126,17 @@ export class PhotosPage implements OnInit {
 
   // ─── Camera ─────────────────────────────────────────────────────────────────
 
-  async openRearCamera():  Promise<void> { await this.capturePhoto(CameraSource.Camera, 'environment'); }
-  async openFrontCamera(): Promise<void> { await this.capturePhoto(CameraSource.Camera, 'user'); }
-  async openGallery():     Promise<void> { await this.capturePhoto(CameraSource.Photos,  'environment'); }
+  async openRearCamera(): Promise<void> {
+    await this.capturePhoto(CameraSource.Camera, 'environment');
+  }
+  async openFrontCamera(): Promise<void> {
+    await this.capturePhoto(CameraSource.Camera, 'user');
+  }
+  async openGallery(): Promise<void> {
+    await this.capturePhoto(CameraSource.Photos, 'environment');
+  }
 
-  private async capturePhoto(
-    source: CameraSource,
-    direction: 'environment' | 'user',
-  ): Promise<void> {
+  private async capturePhoto(source: CameraSource,direction: 'environment' | 'user',): Promise<void> {
     if (this.uploadState !== 'allowed') return;
 
     const stillConfirmed = await this.api.isConfirmedGuest(this.guestName || '');
@@ -153,13 +156,13 @@ export class PhotosPage implements OnInit {
     let dataUrl: string;
     try {
       const image = await Camera.getPhoto({
-        quality:            85,
-        resultType:         CameraResultType.DataUrl,
+        quality: 85,
+        resultType: CameraResultType.DataUrl,
         source,
-        direction:          direction === 'user' ? CameraDirection.Front : CameraDirection.Rear,
+        direction: direction === 'user' ? CameraDirection.Front : CameraDirection.Rear,
         correctOrientation: true,
-        allowEditing:       false,
-        presentationStyle:  'popover',
+        allowEditing: false,
+        presentationStyle: 'popover',
       });
 
       if (!image.dataUrl) {
@@ -223,8 +226,15 @@ export class PhotosPage implements OnInit {
     }
   }
 
-  openLightbox(photo: WeddingPhoto)  { this.selectedPhoto = photo; }
-  closeLightbox()                     { this.selectedPhoto = null;  }
+  openLightbox(photo: WeddingPhoto)  { 
+    this.selectedPhoto = photo; 
+  }
 
-  get photoCount(): number { return this.photos.length; }
+  closeLightbox() { 
+    this.selectedPhoto = null;  
+  }
+
+  get photoCount(): number { 
+    return this.photos.length; 
+  }
 }

@@ -1,0 +1,91 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Prenup</ion-title>
+    @if (!isLoading && photoCount > 0) {
+      <ion-note slot="end" style="margin-right:16px;font-size:12px;color:var(--ion-color-medium)">
+        {{ photoCount }} photos
+      </ion-note>
+    }
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Prenup</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <!-- Intro -->
+  <div class="prenup-intro">
+    <p class="prenup-intro__names">Kamille &amp; Vlarix</p>
+    <p class="prenup-intro__sub">Our pre-wedding shoot 💛</p>
+  </div>
+
+  <!-- Loading skeleton -->
+  @if (isLoading) {
+    <div class="photo-grid photo-grid--loading">
+      @for (i of [1,2,3,4,5,6]; track i) {
+        <div class="photo-skeleton">
+          <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Error state -->
+  @if (!isLoading && loadError) {
+    <div class="prenup-empty">
+      <ion-icon name="alert-circle-outline" class="prenup-empty__icon"></ion-icon>
+      <p class="prenup-empty__msg">Couldn't load the album — pull down to try again.</p>
+    </div>
+  }
+
+  <!-- Empty state -->
+  @if (!isLoading && !loadError && photos.length === 0) {
+    <div class="prenup-empty">
+      <ion-icon name="images-outline" class="prenup-empty__icon"></ion-icon>
+      <p class="prenup-empty__msg">Photos coming soon — check back later! 📸</p>
+    </div>
+  }
+
+  <!-- Photo grid -->
+  @if (!isLoading && !loadError && photos.length > 0) {
+    <div class="photo-grid">
+      @for (photo of photos; track photo.id) {
+        <div class="photo-tile" (click)="openLightbox(photo)">
+          <img [src]="photo.url" [alt]="photo.caption || 'Prenup photo'"
+               loading="lazy" class="photo-tile__img" />
+          <div class="photo-tile__overlay">
+            <ion-icon name="expand-outline"></ion-icon>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Lightbox -->
+  @if (selectedPhoto) {
+    <div class="lightbox-backdrop" (click)="closeLightbox()">
+      <div class="lightbox" (click)="$event.stopPropagation()">
+        <button class="lightbox__close" (click)="closeLightbox()" aria-label="Close">
+          <ion-icon name="close-outline"></ion-icon>
+        </button>
+        <img [src]="selectedPhoto.url" [alt]="selectedPhoto.caption || 'Prenup photo'"
+             class="lightbox__img" />
+        @if (selectedPhoto.caption) {
+          <div class="lightbox__meta">
+            <ion-icon name="heart-outline" class="lightbox__icon"></ion-icon>
+            <span class="lightbox__caption">{{ selectedPhoto.caption }}</span>
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+</ion-content>

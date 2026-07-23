@@ -1,0 +1,1051 @@
+$gold: #fddf7d;
+$gold-dark: #5a3e00;
+$gold-mid: #a07800;
+$gold-bg: #fffbef;
+$gold-border: rgba(253, 223, 125, 0.45);
+$font: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+
+.admin-bg {
+    --background: #f5f5f0;
+}
+
+// ── Login ──────────────────────────────────────────────────────────────────────
+.login-wrap {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+}
+
+.login-card {
+    width: 100%;
+    max-width: 380px;
+    background: #fff;
+    border-radius: 24px;
+    padding: 32px 24px;
+    border: 1.5px solid $gold-border;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    text-align: center;
+}
+
+.login-logo {
+    width: 100px;
+    margin-bottom: 16px;
+}
+
+.login-title {
+    font-family: $font;
+    font-size: 22px;
+    font-weight: 700;
+    color: $gold-dark;
+    margin: 0 0 4px;
+}
+
+.login-sub {
+    font-family: $font;
+    font-size: 12px;
+    color: #aaa;
+    margin: 0 0 20px;
+    font-style: italic;
+}
+
+.login-input-wrap {
+    margin-bottom: 14px;
+}
+
+.login-input-item {
+    --background: #{$gold-bg};
+    border: 1.5px solid $gold-border;
+    border-radius: 12px;
+    overflow: hidden;
+
+    ion-icon {
+        color: $gold-mid;
+    }
+}
+
+.login-error {
+    font-family: $font;
+    font-size: 12px;
+    color: #c5000f;
+    margin: 6px 0 0;
+    text-align: left;
+}
+
+.login-btn {
+    --background: #{$gold};
+    --color: #{$gold-dark};
+    --border-radius: 14px;
+    font-weight: 700;
+}
+
+// ── Admin header ───────────────────────────────────────────────────────────────
+.admin-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 16px 8px;
+    background: #fff;
+    border-bottom: 1px solid $gold-border;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.admin-header__title {
+    font-family: $font;
+    font-size: 18px;
+    font-weight: 700;
+    color: $gold-dark;
+    margin: 0;
+}
+
+.admin-header__sub {
+    font-family: $font;
+    font-size: 11px;
+    color: #aaa;
+    margin: 0;
+    font-style: italic;
+}
+
+.admin-header__actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.view-toggle-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-family: $font;
+    font-size: 13px;
+    font-weight: 600;
+    color: $gold-dark;
+    background: $gold-bg;
+    border: 1.5px solid $gold;
+    border-radius: 10px;
+    padding: 6px 12px;
+    cursor: pointer;
+
+    ion-icon {
+        font-size: 15px;
+    }
+}
+
+.view-segment {
+    display: flex;
+    background: $gold-bg;
+    border: 1.5px solid $gold-border;
+    border-radius: 10px;
+    padding: 2px;
+    gap: 2px;
+}
+
+.view-segment__btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: transparent;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.15s ease;
+
+    ion-icon {
+        font-size: 16px;
+        color: $gold-mid;
+    }
+
+    &.on {
+        background: $gold;
+
+        ion-icon { color: $gold-dark; }
+    }
+}
+
+.logout-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: #f5f5f0;
+    border: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+
+    ion-icon {
+        font-size: 18px;
+        color: #888;
+    }
+}
+
+// ── Loading ────────────────────────────────────────────────────────────────────
+.admin-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    gap: 12px;
+
+    p {
+        font-family: $font;
+        font-size: 13px;
+        color: #aaa;
+        margin: 0;
+    }
+}
+
+// ── Stats row ──────────────────────────────────────────────────────────────────
+.stats-row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+    padding: 12px 12px 0;
+}
+
+.stat-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 10px 6px;
+    text-align: center;
+    cursor: pointer;
+    border: 1.5px solid transparent;
+    transition: border-color 0.15s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+
+    &:active {
+        opacity: 0.8;
+    }
+
+    &--total {
+        border-color: #e0e0e0;
+    }
+
+    &--confirmed {
+        border-color: rgba(46, 213, 115, 0.4);
+        background: #f0fef5;
+    }
+
+    &--declined {
+        border-color: rgba(197, 0, 15, 0.2);
+        background: #fff5f5;
+    }
+
+    &--pending {
+        border-color: rgba(255, 159, 10, 0.4);
+        background: #fffbf0;
+    }
+
+    &--checkin {
+        border-color: $gold;
+        background: $gold-bg;
+    }
+}
+
+.stat-card__num {
+    font-family: $font;
+    font-size: clamp(18px, 4vw, 24px);
+    font-weight: 700;
+    color: $gold-dark;
+    line-height: 1;
+}
+
+.stat-card__label {
+    font-family: $font;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #888;
+}
+
+.stat-card__pct {
+    font-family: $font;
+    font-size: 10px;
+    font-weight: 700;
+    color: $gold-mid;
+}
+
+// ── Check-in progress bar ──────────────────────────────────────────────────────
+.checkin-bar-wrap {
+    padding: 10px 12px 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.checkin-bar {
+    width: 100%;
+    height: 6px;
+    background: #e8e8e8;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.checkin-bar__fill {
+    height: 100%;
+    background: $gold;
+    border-radius: 4px;
+    transition: width 0.4s ease;
+}
+
+.checkin-bar__label {
+    font-family: $font;
+    font-size: 11px;
+    color: $gold-mid;
+    font-style: italic;
+}
+
+// ── Search ─────────────────────────────────────────────────────────────────────
+.search-wrap {
+    padding: 8px 12px 4px;
+}
+
+.admin-search {
+    --background: #fff;
+    --border-radius: 12px;
+    --placeholder-color: #aaa;
+    --icon-color: #{$gold-mid};
+    border: 1px solid $gold-border;
+    border-radius: 12px;
+    overflow: hidden;
+    padding: 0;
+}
+
+.filter-chips {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    padding: 8px 0 4px;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+.filter-chip {
+    font-family: $font;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 20px;
+    border: 1px solid #ddd;
+    background: #fff;
+    white-space: nowrap;
+    cursor: pointer;
+    color: #555;
+    transition: background 0.12s;
+
+    &.on {
+        background: $gold;
+        border-color: $gold;
+        color: $gold-dark;
+    }
+}
+
+// ── Add guest ──────────────────────────────────────────────────────────────────
+.add-guest-trigger {
+    padding: 6px 12px;
+}
+
+.add-guest-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: $font;
+    font-size: 13px;
+    font-weight: 600;
+    color: $gold-dark;
+    background: $gold-bg;
+    border: 1.5px dashed $gold;
+    border-radius: 12px;
+    padding: 8px 16px;
+    width: 100%;
+    justify-content: center;
+    cursor: pointer;
+
+    ion-icon {
+        font-size: 16px;
+    }
+}
+
+.add-guest-form {
+    margin: 4px 12px 8px;
+    background: #fff;
+    border: 1.5px solid $gold-border;
+    border-radius: 14px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.add-input {
+    --background: #{$gold-bg};
+    --border-radius: 10px;
+    border: 1px solid $gold-border;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.add-guest-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+.add-cancel-btn {
+    font-family: $font;
+    font-size: 13px;
+    color: #888;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px 12px;
+}
+
+.add-save-btn {
+    font-family: $font;
+    font-size: 13px;
+    font-weight: 700;
+    color: $gold-dark;
+    background: $gold;
+    border: none;
+    border-radius: 10px;
+    padding: 7px 18px;
+    cursor: pointer;
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+}
+
+// ── Guest count ────────────────────────────────────────────────────────────────
+.guest-count {
+    font-family: $font;
+    font-size: 11px;
+    color: #aaa;
+    margin: 6px 12px 4px;
+    font-style: italic;
+}
+
+// ── Guest list ─────────────────────────────────────────────────────────────────
+.guest-list {
+    padding: 0 12px 100px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.guest-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #fff;
+    border-radius: 14px;
+    padding: 10px 12px;
+    border: 1.5px solid #f0f0f0;
+    transition: border-color 0.15s, background 0.15s;
+
+    &--checked {
+        background: #f8fff9;
+        border-color: rgba(46, 213, 115, 0.3);
+    }
+}
+
+// Check-in toggle button
+.checkin-toggle {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 2px solid #ddd;
+    background: #f5f5f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+
+    ion-icon {
+        font-size: 20px;
+        color: #ccc;
+    }
+
+    &--on {
+        background: #e6f9f0;
+        border-color: #2a9d5c;
+
+        ion-icon {
+            color: #2a9d5c;
+        }
+    }
+
+    // In dashboard mode: indicator only, not tappable
+    &--dashboard {
+        cursor: default;
+        opacity: 0.6;
+        pointer-events: none;
+    }
+}
+
+.guest-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.guest-info__top {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.guest-name {
+    font-family: $font;
+    font-size: 14px;
+    font-weight: 600;
+    color: #2c2c2c;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.vip-badge {
+    font-family: $font;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 20px;
+    white-space: nowrap;
+
+    &--1 {
+        background: linear-gradient(135deg, #f5c518, $gold);
+        color: $gold-dark;
+        box-shadow: 0 1px 4px rgba(245, 197, 24, 0.4);
+    }
+
+    &--2 {
+        background: linear-gradient(135deg, #e8d5a3, #d4b896);
+        color: #5a3e00;
+        box-shadow: 0 1px 4px rgba(212, 184, 150, 0.4);
+    }
+}
+
+// VIP row tints
+.guest-row--vip1 {
+    background: linear-gradient(90deg, #fffdf0, #fff);
+    border-color: rgba(245, 197, 24, 0.35);
+}
+
+.guest-row--vip2 {
+    background: linear-gradient(90deg, #fdf8f0, #fff);
+    border-color: rgba(212, 184, 150, 0.4);
+}
+
+.table-badge {
+    font-family: $font;
+    font-size: 10px;
+    font-weight: 600;
+    background: $gold-bg;
+    color: $gold-mid;
+    border: 1px solid $gold-border;
+    padding: 2px 8px;
+    border-radius: 20px;
+    white-space: nowrap;
+}
+
+.guest-info__bottom {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.attend-badge {
+    font-size: 10px;
+    font-family: $font;
+}
+
+.checkin-time {
+    font-family: $font;
+    font-size: 11px;
+    color: #2a9d5c;
+    font-style: italic;
+}
+
+.edit-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: 1px solid #eee;
+    background: #f9f9f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    cursor: pointer;
+
+    ion-icon {
+        font-size: 16px;
+        color: #888;
+    }
+}
+
+// ── Empty state ────────────────────────────────────────────────────────────────
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+
+    ion-icon {
+        font-size: 40px;
+        color: #ddd;
+    }
+
+    p {
+        font-family: $font;
+        font-size: 13px;
+        color: #aaa;
+        margin: 8px 0 0;
+    }
+}
+
+// ── Edit modal ─────────────────────────────────────────────────────────────────
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(0, 0, 0, 0.55);
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    animation: bdIn 0.2s ease both;
+}
+
+@keyframes bdIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.edit-modal {
+    width: 100%;
+    max-width: 500px;
+    background: #fff;
+    border-radius: 24px 24px 0 0;
+    overflow: hidden;
+    animation: slideUp 0.25s cubic-bezier(0.34, 1.2, 0.64, 1) both;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(100%);
+    }
+
+    to {
+        transform: translateY(0);
+    }
+}
+
+.edit-modal__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px 12px;
+    border-bottom: 0.5px solid $gold-border;
+
+    h3 {
+        font-family: $font;
+        font-size: 17px;
+        font-weight: 700;
+        color: $gold-dark;
+        margin: 0;
+    }
+}
+
+.edit-modal__close {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #f2f2f2;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+
+    ion-icon {
+        font-size: 18px;
+        color: #666;
+    }
+}
+
+.edit-modal__body {
+    padding: 14px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.edit-label {
+    font-family: $font;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: $gold-mid;
+}
+
+.edit-input {
+    --background: #{$gold-bg};
+    border: 1.5px solid $gold-border;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.attend-selector {
+    display: flex;
+    gap: 8px;
+}
+
+.attend-opt {
+    flex: 1;
+    padding: 8px 4px;
+    border-radius: 10px;
+    border: 1.5px solid #eee;
+    background: #fafafa;
+    font-family: $font;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+    transition: background 0.12s;
+
+    &.on-yes {
+        background: #e6f9f0;
+        border-color: #2a9d5c;
+        color: #2a9d5c;
+    }
+
+    &.on-no {
+        background: #fdecea;
+        border-color: #c5000f;
+        color: #c5000f;
+    }
+
+    &.on-pend {
+        background: #fff8e6;
+        border-color: #f0a500;
+        color: #a06500;
+    }
+}
+
+.edit-modal__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px 20px;
+    border-top: 0.5px solid $gold-border;
+}
+
+.delete-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-family: $font;
+    font-size: 13px;
+    font-weight: 600;
+    color: #c5000f;
+    background: #fdecea;
+    border: none;
+    border-radius: 10px;
+    padding: 8px 14px;
+    cursor: pointer;
+
+    ion-icon {
+        font-size: 15px;
+    }
+}
+
+.save-btn {
+    font-family: $font;
+    font-size: 14px;
+    font-weight: 700;
+    color: $gold-dark;
+    background: $gold;
+    border: none;
+    border-radius: 12px;
+    padding: 10px 24px;
+    cursor: pointer;
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+}
+
+// ── Table / VIP selector ──────────────────────────────────────────────────────
+.table-selector {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 4px 0;
+}
+
+.table-opt {
+    font-family: $font;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1.5px solid #e0e0e0;
+    background: #fafafa;
+    color: #555;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.12s, border-color 0.12s;
+
+    &--active {
+        background: $gold-bg;
+        border-color: $gold;
+        color: $gold-dark;
+    }
+
+    &--vip {
+        border-color: rgba(245, 197, 24, 0.5);
+        background: #fffdf0;
+        color: $gold-dark;
+
+        &.table-opt--active {
+            background: linear-gradient(135deg, #fff8d0, $gold-bg);
+            border-color: #f5c518;
+        }
+    }
+}
+
+.add-label {
+    font-family: $font;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: $gold-mid;
+    margin: 4px 0 2px;
+    display: block;
+}
+
+// ── Prenup album admin ───────────────────────────────────────────────────────
+
+.prenup-upload-card {
+    margin: 16px;
+    padding: 16px;
+    background: #fff;
+    border: 1.5px solid $gold-border;
+    border-radius: 16px;
+}
+
+.prenup-upload-card__title {
+    font-family: $font;
+    font-size: 14px;
+    font-weight: 700;
+    color: $gold-dark;
+    margin: 0 0 12px;
+}
+
+.prenup-file-picker {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 28px 16px;
+    border: 1.5px dashed $gold;
+    border-radius: 14px;
+    background: $gold-bg;
+    cursor: pointer;
+
+    ion-icon {
+        font-size: 28px;
+        color: $gold-mid;
+    }
+
+    span {
+        font-family: $font;
+        font-size: 13px;
+        font-weight: 600;
+        color: $gold-dark;
+    }
+}
+
+.prenup-upload-card__hint {
+    font-weight: 400;
+    font-size: 11px;
+    color: #aaa;
+    text-transform: none;
+}
+
+.prenup-upload-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.prenup-upload-thumb {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: 10px;
+    overflow: hidden;
+    background: $gold-bg;
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+}
+
+.prenup-upload-thumb--add {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1.5px dashed $gold;
+    cursor: pointer;
+
+    ion-icon {
+        font-size: 22px;
+        color: $gold-mid;
+    }
+}
+
+.prenup-upload-thumb__remove {
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.55);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+
+    ion-icon {
+        font-size: 13px;
+        color: #fff;
+    }
+}
+
+.prenup-upload-count {
+    font-family: $font;
+    font-size: 11px;
+    color: #999;
+    margin: 0 0 10px;
+}
+
+.prenup-upload-progress {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 0 4px;
+
+    span {
+        font-family: $font;
+        font-size: 12px;
+        color: $gold-mid;
+        font-weight: 600;
+    }
+}
+
+.prenup-upload-progress__bar {
+    width: 100%;
+    height: 6px;
+    border-radius: 4px;
+    background: $gold-bg;
+    overflow: hidden;
+}
+
+.prenup-upload-progress__fill {
+    height: 100%;
+    background: $gold;
+    border-radius: 4px;
+    transition: width 0.2s ease;
+}
+
+.prenup-admin-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    padding: 0 16px 40px;
+
+    @media (min-width: 480px) { grid-template-columns: repeat(3, 1fr); }
+    @media (min-width: 768px) { grid-template-columns: repeat(4, 1fr); }
+}
+
+.prenup-admin-tile {
+    background: #fff;
+    border: 1px solid $gold-border;
+    border-radius: 14px;
+    overflow: hidden;
+
+    img {
+        width: 100%;
+        aspect-ratio: 1;
+        object-fit: cover;
+        display: block;
+    }
+}
+
+.prenup-admin-tile__caption {
+    font-family: $font;
+    font-size: 11px;
+    color: #777;
+    margin: 0;
+    padding: 8px 8px 0;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.prenup-admin-tile__actions {
+    display: flex;
+    gap: 6px;
+    padding: 8px;
+}
+
+.edit-btn--danger {
+    ion-icon { color: #c5000f; }
+}
+
+.edit-modal__preview {
+    width: 100%;
+    max-height: 220px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin-bottom: 14px;
+    display: block;
+}

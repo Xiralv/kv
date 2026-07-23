@@ -30,7 +30,16 @@ const routes: Routes = [
   {
     path: 'photos',
     loadChildren: () => import('./tabs-pages/photos/photos.module').then( m => m.PhotosPageModule)
-  }
+  },
+  {
+    path: 'prenup',
+    loadChildren: () => import('./tabs-pages/prenup/prenup.module').then( m => m.PrenupPageModule)
+  },
+  // ── Admin dashboard — lives outside the tabs, no tab bar shown ────────────
+  {
+    path: 'admin',
+    loadChildren: () => import('./pages/admin/admin.module').then(m => m.AdminPageModule)
+  },
 ];
 
 @NgModule({

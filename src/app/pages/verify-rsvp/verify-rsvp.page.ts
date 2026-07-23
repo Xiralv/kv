@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ModalController } from '@ionic/angular';
 import { AnimationOptions } from 'ngx-lottie';
-import { SupabaseService, Guest, GuestSearchResult } from 'src/app/services/api/supabase.service';
+import { SupabaseService, Guest, GuestSearchResult, SeatingResult } from 'src/app/services/api/supabase.service';
 import { GlobalService } from 'src/app/services/global/global.service';
 
 const RSVP_SUBMITTED_KEY = 'rsvp_submitted_ids';
@@ -19,6 +19,7 @@ export class VerifyRsvpPage implements OnInit {
 
   rsvpForm: FormGroup;
   arrGuests: Guest[] = [];
+  seating: SeatingResult[] = [];   // table assignments for the party
 
   congratsOptions: AnimationOptions = {
     path: 'assets/lottiefiles/congratulation.json',
@@ -144,6 +145,15 @@ export class VerifyRsvpPage implements OnInit {
     localStorage.setItem('user_fullname', allGuests[0].full_name);
     this.arrGuests = allGuests;
 
+    // Fetch seating — non-blocking, fails gracefully if table not assigned yet
+    try {
+      this.seating = await this.api.getPartySeating(fullname);
+    } catch {
+      this.seating = [];
+    }
+
+    console.log('this.seating',this.seating)
+
     // ── DB check: has every guest in this group already answered? ────────────
     // attend === true  → confirmed attending
     // attend === false → declined
@@ -183,6 +193,13 @@ export class VerifyRsvpPage implements OnInit {
       this.verifiedFullname = fullname;
       this.isAlreadyAnswered = true;
       this.markAsSubmitted(allGuests.map(g => g.id));
+      // Fetch seating for the summary view
+      try {
+        this.seating = await this.api.getPartySeating(fullname);
+      } catch {
+        this.seating = [];
+      }
+
       setTimeout(() => this.skipToThankYou(), 150);
     } catch (err) {
       this.global.presentToast(
@@ -261,6 +278,19 @@ export class VerifyRsvpPage implements OnInit {
   }
   get hasAccepted(): boolean {
     return this.arrGuests?.some(g => g.attend === true);
+  }
+
+
+  /** True if at least one guest in the party has a table assigned. */
+  get hasSeating(): boolean {
+    return this.seating.some(s => s.table_number !== null);
+  }
+
+  /** True if every assigned seat in the party is VIP. */
+  get isVipParty(): boolean {
+    const assigned = this.seating.filter(s => s.table_number !== null);
+    return assigned.length > 0 &&
+      assigned.every(s => s.table_number!.toUpperCase() === 'VIP');
   }
 
   get messageText(): string {

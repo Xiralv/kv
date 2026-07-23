@@ -508,3 +508,100 @@ ion-content, .swiper, .swiper-slide, .thankyou-slide {
   color: $gold-mid;
   flex-shrink: 0;
 }
+
+// ── Seating card (slide 3) ────────────────────────────────────────────────────
+.seating-card {
+  width: 100%;
+  background: #fff;
+  border: 1.5px solid $gold;
+  border-radius: 16px;
+  padding: 12px 16px;
+  margin-top: 14px;
+  box-shadow: 0 4px 16px rgba(253, 223, 125, 0.2);
+  animation: seatFadeIn 0.4s ease both;
+
+  // VIP variant — deeper gold gradient with shimmer border
+  &--vip {
+    background: linear-gradient(135deg, #fffdf0 0%, #fff8d6 100%);
+    border: 2px solid $gold;
+    box-shadow:
+      0 4px 20px rgba(253, 223, 125, 0.35),
+      inset 0 1px 0 rgba(255,255,255,0.8);
+  }
+}
+
+@keyframes seatFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.seating-card__eyebrow {
+  font-family: $font;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: $gold-mid;
+  margin: 0 0 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+
+  ion-icon { font-size: 13px; }
+}
+
+.seating-eyebrow-icon--vip {
+  font-size: 14px !important;
+  color: $gold-dark !important;
+}
+
+.seating-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 7px 0;
+  border-bottom: 0.5px solid $gold-border;
+
+  &:last-child { border-bottom: none; }
+}
+
+.seating-row__name {
+  font-family: $font;
+  font-size: 13px;
+  font-weight: 600;
+  color: $gold-dark;
+  flex: 1;
+  text-align: left;
+}
+
+// Regular table pill
+.seating-row__table {
+  font-family: $font;
+  font-size: 13px;
+  font-weight: 700;
+  background: $gold;
+  color: $gold-dark;
+  padding: 3px 12px;
+  border-radius: 20px;
+  white-space: nowrap;
+
+  // VIP badge — crown icon + distinct styling
+  &--vip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: linear-gradient(135deg, #f5c518 0%, $gold 60%, #e6b800 100%);
+    color: #3d2b00;
+    padding: 4px 10px 4px 8px;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    box-shadow: 0 2px 6px rgba(230, 184, 0, 0.4);
+
+    ion-icon {
+      font-size: 12px;
+      color: #3d2b00;
+    }
+  }
+}

@@ -24,6 +24,10 @@ const routes: Routes = [
         loadChildren: () => import('../photos/photos.module').then(m => m.PhotosPageModule)
       },
       {
+        path: 'prenup',
+        loadChildren: () => import('../prenup/prenup.module').then(m => m.PrenupPageModule)
+      },
+      {
         path: 'attire',
         loadChildren: () => import('../attire/attire.module').then(m => m.AttirePageModule)
       },

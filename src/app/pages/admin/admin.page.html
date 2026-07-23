@@ -1,0 +1,453 @@
+<ion-content [fullscreen]="true" class="admin-bg">
+
+  <!-- ── Login screen ──────────────────────────────────────────────────────── -->
+  @if (!isAuthenticated) {
+    <div class="login-wrap">
+      <div class="login-card">
+        <img src="assets/images/kvlogofinal.png" class="login-logo" alt="KV Logo" />
+        <h2 class="login-title">Admin Access</h2>
+        <p class="login-sub">Kamille &amp; Vlarix · December 18, 2026</p>
+        <div class="login-input-wrap">
+          <ion-item lines="none" class="login-input-item">
+            <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
+            <ion-input type="password" [(ngModel)]="passwordInput"
+              placeholder="Enter password" (keyup.enter)="login()"
+              autocomplete="current-password">
+            </ion-input>
+          </ion-item>
+          @if (authError) {
+            <p class="login-error">Incorrect password — try again.</p>
+          }
+        </div>
+        <ion-button expand="block" fill="solid" class="login-btn" (click)="login()">
+          Sign in
+        </ion-button>
+      </div>
+    </div>
+  }
+
+  <!-- ── Authenticated ─────────────────────────────────────────────────────── -->
+  @if (isAuthenticated) {
+
+    <!-- Header -->
+    <div class="admin-header">
+      <div class="admin-header__left">
+        <p class="admin-header__title">
+          {{ viewMode === 'checkin' ? '✓ Check-in' : viewMode === 'prenup' ? '📷 Prenup' : '⚙ Admin' }}
+        </p>
+        <p class="admin-header__sub">Kamille &amp; Vlarix</p>
+      </div>
+      <div class="admin-header__actions">
+        <div class="view-segment">
+          <button class="view-segment__btn" [class.on]="viewMode==='dashboard'" (click)="switchView('dashboard')">
+            <ion-icon name="settings-outline"></ion-icon>
+          </button>
+          <button class="view-segment__btn" [class.on]="viewMode==='checkin'" (click)="switchView('checkin')">
+            <ion-icon name="checkmark-circle-outline"></ion-icon>
+          </button>
+          <button class="view-segment__btn" [class.on]="viewMode==='prenup'" (click)="switchView('prenup')">
+            <ion-icon name="camera-outline"></ion-icon>
+          </button>
+        </div>
+        <button class="logout-btn" (click)="logout()">
+          <ion-icon name="log-out-outline"></ion-icon>
+        </button>
+      </div>
+    </div>
+
+    @if (isLoading && viewMode !== 'prenup') {
+      <div class="admin-loading">
+        <ion-spinner name="dots"></ion-spinner>
+        <p>Loading guest list...</p>
+      </div>
+    }
+
+    @if (!isLoading && viewMode !== 'prenup') {
+
+      <!-- Stats row -->
+      <div class="stats-row">
+        <div class="stat-card stat-card--total"     (click)="setFilter('all')">
+          <span class="stat-card__num">{{ stats.total }}</span>
+          <span class="stat-card__label">Total</span>
+        </div>
+        <div class="stat-card stat-card--confirmed" (click)="setFilter('confirmed')">
+          <span class="stat-card__num">{{ stats.confirmed }}</span>
+          <span class="stat-card__label">Confirmed</span>
+        </div>
+        <div class="stat-card stat-card--declined"  (click)="setFilter('declined')">
+          <span class="stat-card__num">{{ stats.declined }}</span>
+          <span class="stat-card__label">Declined</span>
+        </div>
+        <div class="stat-card stat-card--pending"   (click)="setFilter('pending')">
+          <span class="stat-card__num">{{ stats.pending }}</span>
+          <span class="stat-card__label">Pending</span>
+        </div>
+        <div class="stat-card stat-card--checkin"   (click)="setFilter('checked_in')">
+          <span class="stat-card__num">{{ stats.checked_in }}</span>
+          <span class="stat-card__label">Checked in</span>
+          <span class="stat-card__pct">{{ checkinPercent }}%</span>
+        </div>
+      </div>
+
+      <!-- Check-in progress bar -->
+      @if (stats.confirmed > 0) {
+        <div class="checkin-bar-wrap">
+          <div class="checkin-bar">
+            <div class="checkin-bar__fill" [style.width.%]="checkinPercent"></div>
+          </div>
+          <span class="checkin-bar__label">
+            {{ stats.checked_in }} / {{ stats.confirmed }} confirmed guests checked in
+          </span>
+        </div>
+      }
+
+      <!-- Search + filter -->
+      <div class="search-wrap">
+        <ion-searchbar
+          [(ngModel)]="searchQuery"
+          (ionInput)="onSearch($event)"
+          placeholder="Search by name or table..."
+          [debounce]="200"
+          class="admin-search">
+        </ion-searchbar>
+        <div class="filter-chips">
+          <button class="filter-chip" [class.on]="filterStatus==='all'"        (click)="setFilter('all')">All</button>
+          <button class="filter-chip" [class.on]="filterStatus==='confirmed'"   (click)="setFilter('confirmed')">Confirmed</button>
+          <button class="filter-chip" [class.on]="filterStatus==='declined'"    (click)="setFilter('declined')">Declined</button>
+          <button class="filter-chip" [class.on]="filterStatus==='pending'"     (click)="setFilter('pending')">Pending</button>
+          <button class="filter-chip" [class.on]="filterStatus==='checked_in'"  (click)="setFilter('checked_in')">Checked in</button>
+          <button class="filter-chip" [class.on]="filterStatus==='vip'"         (click)="setFilter('vip')">VIP</button>
+        </div>
+      </div>
+
+      <!-- Add guest (dashboard only) -->
+      @if (viewMode === 'dashboard') {
+        @if (!showAddForm) {
+          <div class="add-guest-trigger">
+            <button class="add-guest-btn" (click)="showAddForm = true">
+              <ion-icon name="person-add-outline"></ion-icon>
+              Add guest
+            </button>
+          </div>
+        } @else {
+          <div class="add-guest-form">
+            <ion-item lines="none" class="add-input">
+              <ion-input [(ngModel)]="newGuestName"
+                placeholder="Full name" autocapitalize="words">
+              </ion-input>
+            </ion-item>
+
+            <!-- Table / VIP selector for add form -->
+            <label class="add-label">Table / Status</label>
+            <div class="table-selector">
+              <button class="table-opt"
+                [class.table-opt--active]="newGuestTable === ''"
+                (click)="newGuestTable = ''">None</button>
+              @for (t of tableOptions; track t) {
+                <button class="table-opt"
+                  [class.table-opt--active]="newGuestTable === t"
+                  [class.table-opt--vip]="t.startsWith('VIP')"
+                  (click)="newGuestTable = t">{{ t }}</button>
+              }
+            </div>
+
+            <div class="add-guest-actions">
+              <button class="add-cancel-btn" (click)="showAddForm = false; newGuestName = ''; newGuestTable = ''">Cancel</button>
+              <button class="add-save-btn"
+                [disabled]="!newGuestName.trim() || isSaving"
+                (click)="addGuest()">
+                {{ isSaving ? 'Adding...' : 'Add guest' }}
+              </button>
+            </div>
+          </div>
+        }
+      }
+
+      <!-- Guest count -->
+      <p class="guest-count">
+        {{ filteredGuests.length }} guest{{ filteredGuests.length !== 1 ? 's' : '' }}
+      </p>
+
+      <!-- Guest list -->
+      <div class="guest-list">
+        @for (guest of filteredGuests; track guest.id) {
+          <div class="guest-row"
+            [class.guest-row--checked]="guest.checked_in"
+            [class.guest-row--vip1]="guest.table_number === 'VIP 1'"
+            [class.guest-row--vip2]="guest.table_number === 'VIP 2'">
+
+            <!-- Check-in toggle: shown in BOTH views, but dashboard shows it smaller -->
+            <button class="checkin-toggle"
+              [class.checkin-toggle--on]="guest.checked_in"
+              [class.checkin-toggle--dashboard]="viewMode === 'dashboard'"
+              (click)="viewMode === 'checkin' ? toggleCheckIn(guest) : null"
+              [disabled]="viewMode === 'dashboard'"
+              [title]="viewMode === 'dashboard'
+                ? (guest.checked_in ? 'Checked in ✓' : 'Not yet arrived')
+                : (guest.checked_in ? 'Mark as not arrived' : 'Mark as arrived')">
+              <ion-icon [name]="guest.checked_in ? 'checkmark-circle' : 'ellipse-outline'">
+              </ion-icon>
+            </button>
+
+            <!-- Guest info -->
+            <div class="guest-info">
+              <div class="guest-info__top">
+                <span class="guest-name">{{ guest.full_name }}</span>
+                @if (guest.table_number === 'VIP 1') {
+                  <span class="vip-badge vip-badge--1">★ VIP 1</span>
+                } @else if (guest.table_number === 'VIP 2') {
+                  <span class="vip-badge vip-badge--2">★ VIP 2</span>
+                } @else if (guest.table_number) {
+                  <span class="table-badge">{{ guest.table_number }}</span>
+                }
+              </div>
+              <div class="guest-info__bottom">
+                <ion-badge [color]="attendColor(guest.attend)" class="attend-badge">
+                  {{ attendLabel(guest.attend) }}
+                </ion-badge>
+                @if (guest.checked_in && guest.checked_in_at) {
+                  <span class="checkin-time">
+                    ✓ {{ guest.checked_in_at | date:'h:mm a' }}
+                  </span>
+                }
+              </div>
+            </div>
+
+            <!-- Edit button (dashboard only) -->
+            @if (viewMode === 'dashboard') {
+              <button class="edit-btn" (click)="openEdit(guest)">
+                <ion-icon name="create-outline"></ion-icon>
+              </button>
+            }
+
+          </div>
+        }
+
+        @if (filteredGuests.length === 0) {
+          <div class="empty-state">
+            <ion-icon name="people-outline"></ion-icon>
+            <p>No guests match your search</p>
+          </div>
+        }
+      </div>
+
+    } <!-- /!isLoading -->
+
+    <!-- ── Prenup album management ─────────────────────────────────────────── -->
+    @if (viewMode === 'prenup') {
+
+      <!-- Upload form -->
+      <div class="prenup-upload-card">
+        <p class="prenup-upload-card__title">
+          Add photos <span class="prenup-upload-card__hint">(up to {{ MAX_PRENUP_UPLOAD }} at a time)</span>
+        </p>
+
+        @if (selectedFiles.length === 0) {
+          <label class="prenup-file-picker" for="prenupFileInput">
+            <ion-icon name="cloud-upload-outline"></ion-icon>
+            <span>Choose up to {{ MAX_PRENUP_UPLOAD }} images</span>
+          </label>
+          <input id="prenupFileInput" type="file" accept="image/*" multiple hidden
+            (change)="onPrenupFileSelected($event)" />
+        } @else {
+
+          <div class="prenup-upload-grid">
+            @for (preview of selectedFilePreviews; track preview; let i = $index) {
+              <div class="prenup-upload-thumb">
+                <img [src]="preview" alt="Selected photo preview" />
+                @if (!isUploadingPrenup) {
+                  <button class="prenup-upload-thumb__remove" (click)="removeSelectedFile(i)">
+                    <ion-icon name="close-outline"></ion-icon>
+                  </button>
+                }
+              </div>
+            }
+
+            @if (selectedFiles.length < MAX_PRENUP_UPLOAD && !isUploadingPrenup) {
+              <label class="prenup-upload-thumb prenup-upload-thumb--add" for="prenupFileInput">
+                <ion-icon name="add-outline"></ion-icon>
+              </label>
+              <input id="prenupFileInput" type="file" accept="image/*" multiple hidden
+                (change)="onPrenupFileSelected($event)" />
+            }
+          </div>
+
+          <p class="prenup-upload-count">{{ selectedFiles.length }} / {{ MAX_PRENUP_UPLOAD }} selected</p>
+
+          <ion-item lines="none" class="add-input">
+            <ion-input [(ngModel)]="newPrenupCaption"
+              placeholder="Caption for all (optional)" autocapitalize="sentences"
+              [disabled]="isUploadingPrenup">
+            </ion-input>
+          </ion-item>
+
+          @if (isUploadingPrenup) {
+            <div class="prenup-upload-progress">
+              <div class="prenup-upload-progress__bar">
+                <div class="prenup-upload-progress__fill"
+                  [style.width.%]="(uploadProgress.current / uploadProgress.total) * 100">
+                </div>
+              </div>
+              <span>Uploading {{ uploadProgress.current }} / {{ uploadProgress.total }}...</span>
+            </div>
+          } @else {
+            <div class="add-guest-actions">
+              <button class="add-cancel-btn" (click)="cancelPrenupUpload()">Cancel</button>
+              <button class="add-save-btn"
+                [disabled]="selectedFiles.length === 0"
+                (click)="uploadPrenupPhoto()">
+                Upload {{ selectedFiles.length }} photo{{ selectedFiles.length !== 1 ? 's' : '' }}
+              </button>
+            </div>
+          }
+        }
+      </div>
+
+      @if (isLoadingPrenup) {
+        <div class="admin-loading">
+          <ion-spinner name="dots"></ion-spinner>
+          <p>Loading prenup album...</p>
+        </div>
+      }
+
+      @if (!isLoadingPrenup) {
+        <p class="guest-count">
+          {{ prenupPhotos.length }} photo{{ prenupPhotos.length !== 1 ? 's' : '' }}
+        </p>
+
+        <div class="prenup-admin-grid">
+          @for (photo of prenupPhotos; track photo.id) {
+            <div class="prenup-admin-tile">
+              <img [src]="photo.url" [alt]="photo.caption || 'Prenup photo'" />
+              @if (photo.caption) {
+                <p class="prenup-admin-tile__caption">{{ photo.caption }}</p>
+              }
+              <div class="prenup-admin-tile__actions">
+                <button class="edit-btn" (click)="openEditPrenup(photo)">
+                  <ion-icon name="create-outline"></ion-icon>
+                </button>
+                <button class="edit-btn edit-btn--danger" (click)="confirmDeletePrenup(photo)">
+                  <ion-icon name="trash-outline"></ion-icon>
+                </button>
+              </div>
+            </div>
+          }
+
+          @if (prenupPhotos.length === 0) {
+            <div class="empty-state">
+              <ion-icon name="images-outline"></ion-icon>
+              <p>No prenup photos yet — upload your first one above</p>
+            </div>
+          }
+        </div>
+      }
+
+    } <!-- /prenup view -->
+
+  } <!-- /isAuthenticated -->
+
+  <!-- ── Edit modal ─────────────────────────────────────────────────────────── -->
+  @if (editingGuest) {
+    <div class="modal-backdrop" (click)="closeEdit()">
+      <div class="edit-modal" (click)="$event.stopPropagation()">
+
+        <div class="edit-modal__header">
+          <h3>Edit Guest</h3>
+          <button class="edit-modal__close" (click)="closeEdit()">
+            <ion-icon name="close-outline"></ion-icon>
+          </button>
+        </div>
+
+        <div class="edit-modal__body">
+
+          <label class="edit-label">Full name</label>
+          <ion-item lines="none" class="edit-input">
+            <ion-input [(ngModel)]="editName" autocapitalize="words"></ion-input>
+          </ion-item>
+
+          <!-- Table / VIP selector -->
+          <label class="edit-label">Table / VIP status</label>
+          <div class="table-selector">
+            <button class="table-opt"
+              [class.table-opt--active]="editTable === ''"
+              (click)="editTable = ''">None</button>
+            @for (t of tableOptions; track t) {
+              <button class="table-opt"
+                [class.table-opt--active]="editTable === t"
+                [class.table-opt--vip]="t.startsWith('VIP')"
+                (click)="editTable = t">{{ t }}</button>
+            }
+          </div>
+
+          <label class="edit-label">RSVP Status</label>
+          <div class="attend-selector">
+            <button class="attend-opt" [class.on-yes]="editAttend === true"  (click)="editAttend = true">✓ Confirmed</button>
+            <button class="attend-opt" [class.on-no]="editAttend === false"  (click)="editAttend = false">✗ Declined</button>
+            <button class="attend-opt" [class.on-pend]="editAttend === null" (click)="editAttend = null">? Pending</button>
+          </div>
+
+        </div>
+
+        <div class="edit-modal__footer">
+          <button class="delete-btn" (click)="confirmDelete(editingGuest)">
+            <ion-icon name="trash-outline"></ion-icon>
+            Delete
+          </button>
+          <button class="save-btn"
+            [disabled]="!editName.trim() || isSaving"
+            (click)="saveEdit()">
+            {{ isSaving ? 'Saving...' : 'Save changes' }}
+          </button>
+        </div>
+
+      </div>
+    </div>
+  }
+
+  <!-- ── Prenup photo edit modal ────────────────────────────────────────────── -->
+  @if (editingPrenupPhoto) {
+    <div class="modal-backdrop" (click)="closeEditPrenup()">
+      <div class="edit-modal" (click)="$event.stopPropagation()">
+
+        <div class="edit-modal__header">
+          <h3>Edit Photo</h3>
+          <button class="edit-modal__close" (click)="closeEditPrenup()">
+            <ion-icon name="close-outline"></ion-icon>
+          </button>
+        </div>
+
+        <div class="edit-modal__body">
+
+          <img [src]="editingPrenupPhoto.url" alt="Prenup photo" class="edit-modal__preview" />
+
+          <label class="edit-label">Caption</label>
+          <ion-item lines="none" class="edit-input">
+            <ion-input [(ngModel)]="editPrenupCaption"
+              placeholder="e.g. Golden hour at the shore" autocapitalize="sentences">
+            </ion-input>
+          </ion-item>
+
+          <label class="edit-label">Sort order</label>
+          <ion-item lines="none" class="edit-input">
+            <ion-input type="number" [(ngModel)]="editPrenupSortOrder"></ion-input>
+          </ion-item>
+
+        </div>
+
+        <div class="edit-modal__footer">
+          <button class="delete-btn" (click)="confirmDeletePrenup(editingPrenupPhoto)">
+            <ion-icon name="trash-outline"></ion-icon>
+            Delete
+          </button>
+          <button class="save-btn"
+            [disabled]="isSavingPrenup"
+            (click)="saveEditPrenup()">
+            {{ isSavingPrenup ? 'Saving...' : 'Save changes' }}
+          </button>
+        </div>
+
+      </div>
+    </div>
+  }
+
+</ion-content>
