@@ -13,6 +13,7 @@
             <ion-input type="password" [(ngModel)]="passwordInput"
               placeholder="Enter password" (keyup.enter)="login()"
               autocomplete="current-password">
+                <ion-input-password-toggle slot="end"></ion-input-password-toggle>
             </ion-input>
           </ion-item>
           @if (authError) {
@@ -28,6 +29,11 @@
 
   <!-- ── Authenticated ─────────────────────────────────────────────────────── -->
   @if (isAuthenticated) {
+
+    <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+      <ion-refresher-content></ion-refresher-content>
+    </ion-refresher>
+
 
     <!-- Header -->
     <div class="admin-header">
@@ -49,6 +55,9 @@
             <ion-icon name="camera-outline"></ion-icon>
           </button>
         </div>
+        <button class="logout-btn" (click)="refreshCurrent()" [disabled]="isRefreshing">
+          <ion-icon name="refresh-outline" [class.spinning]="isRefreshing"></ion-icon>
+        </button>
         <button class="logout-btn" (click)="logout()">
           <ion-icon name="log-out-outline"></ion-icon>
         </button>
@@ -110,13 +119,22 @@
           [debounce]="200"
           class="admin-search">
         </ion-searchbar>
-        <div class="filter-chips">
-          <button class="filter-chip" [class.on]="filterStatus==='all'"        (click)="setFilter('all')">All</button>
-          <button class="filter-chip" [class.on]="filterStatus==='confirmed'"   (click)="setFilter('confirmed')">Confirmed</button>
-          <button class="filter-chip" [class.on]="filterStatus==='declined'"    (click)="setFilter('declined')">Declined</button>
-          <button class="filter-chip" [class.on]="filterStatus==='pending'"     (click)="setFilter('pending')">Pending</button>
-          <button class="filter-chip" [class.on]="filterStatus==='checked_in'"  (click)="setFilter('checked_in')">Checked in</button>
-          <button class="filter-chip" [class.on]="filterStatus==='vip'"         (click)="setFilter('vip')">VIP</button>
+        <div class="filter-row">
+          <div class="filter-chips">
+            <button class="filter-chip" [class.on]="filterStatus==='all'"        (click)="setFilter('all')">All</button>
+            <button class="filter-chip" [class.on]="filterStatus==='confirmed'"   (click)="setFilter('confirmed')">Confirmed</button>
+            <button class="filter-chip" [class.on]="filterStatus==='declined'"    (click)="setFilter('declined')">Declined</button>
+            <button class="filter-chip" [class.on]="filterStatus==='pending'"     (click)="setFilter('pending')">Pending</button>
+            <button class="filter-chip" [class.on]="filterStatus==='checked_in'"  (click)="setFilter('checked_in')">Checked in</button>
+            <button class="filter-chip" [class.on]="filterStatus==='vip'"         (click)="setFilter('vip')">VIP</button>
+          </div>
+
+          <button class="sort-btn" [class.on]="sortByUpdated !== 'none'" (click)="toggleSortByUpdated()">
+            <ion-icon [name]="sortByUpdated === 'asc' ? 'arrow-up-outline' : sortByUpdated === 'desc' ? 'arrow-down-outline' : 'swap-vertical-outline'"></ion-icon>
+            <span>
+              {{ sortByUpdated === 'desc' ? 'Recently updated' : sortByUpdated === 'asc' ? 'Oldest updated' : 'Sort by updated' }}
+            </span>
+          </button>
         </div>
       </div>
 

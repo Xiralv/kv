@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { supabase } from '../api/supabase-client.service'
+import { Observable, timer, from, EMPTY } from 'rxjs';
+import { switchMap, catchError } from 'rxjs/operators';
 
 export interface AdminGuest {
   id: string;
@@ -26,6 +28,31 @@ export class AdminService {
     const { data, error } = await supabase.rpc('admin_get_all_guests');
     if (error) throw error;
     return (data || []) as AdminGuest[];
+  }
+
+  /**
+   * Polls admin_get_all_guests on an interval and emits the fresh list each
+   * time, so the admin page picks up RSVP/check-in changes made elsewhere
+   * (e.g. a guest submitting the public RSVP form) without a manual refresh.
+   *
+   * This uses polling rather than Supabase Realtime (`postgres_changes`)
+   * because the `guests` table has no direct SELECT policy for the `anon`
+   * role — it's only reachable through this SECURITY DEFINER RPC, which
+   * keeps guest data hidden from anyone poking the API directly. Realtime's
+   * postgres_changes feed is filtered by each client's RLS, so an anon
+   * subscriber would receive nothing anyway unless that lockdown were
+   * relaxed. Polling gets the same "auto-updates" result without loosening
+   * that.
+   */
+  watchGuests(intervalMs = 15000): Observable<AdminGuest[]> {
+    return timer(intervalMs, intervalMs).pipe(
+      switchMap(() => from(this.getAllGuests()).pipe(
+        catchError(err => {
+          console.error('watchGuests poll failed', err);
+          return EMPTY; // skip this tick, keep polling on the next one
+        }),
+      )),
+    );
   }
 
   async getStats(): Promise<AdminStats> {

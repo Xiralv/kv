@@ -353,6 +353,43 @@ $font: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     }
 }
 
+.filter-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.sort-btn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+    font-family: $font;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid #ddd;
+    background: #fff;
+    white-space: nowrap;
+    cursor: pointer;
+    color: #777;
+    margin: 8px 0 4px;
+    transition: background 0.12s;
+
+    ion-icon {
+        font-size: 13px;
+    }
+
+    &.on {
+        background: $gold-bg;
+        border-color: $gold;
+        color: $gold-dark;
+    }
+}
+
 // ── Add guest ──────────────────────────────────────────────────────────────────
 .add-guest-trigger {
     padding: 6px 12px;
@@ -1048,4 +1085,16 @@ $font: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     border-radius: 12px;
     margin-bottom: 14px;
     display: block;
+}
+
+
+// ── Refresh button ────────────────────────────────────────────────────────────
+
+.spinning {
+    animation: adminRefreshSpin 0.8s linear infinite;
+}
+
+@keyframes adminRefreshSpin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
 }

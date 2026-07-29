@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { AlertController, ToastController } from '@ionic/angular';
 import { AdminService, AdminGuest, AdminStats } from '../../services/admin/admin.service';
 import { SupabaseService, PrenupPhoto } from '../../services/api/supabase.service';
@@ -12,7 +13,7 @@ const ADMIN_PASSWORD = 'kv2026admin'; // change this before deploying
   styleUrls: ['admin.page.scss'],
   standalone: false,
 })
-export class AdminPage implements OnInit {
+export class AdminPage implements OnInit, OnDestroy {
 
   // ── Auth ────────────────────────────────────────────────────────────────────
   isAuthenticated = false;
@@ -35,6 +36,10 @@ export class AdminPage implements OnInit {
   // ── Search & filter ─────────────────────────────────────────────────────────
   searchQuery = '';
   filterStatus: 'all' | 'confirmed' | 'declined' | 'pending' | 'checked_in' | 'vip' = 'all';
+
+  // 'none' = original order from the API; 'desc' = most recently updated
+  // first; 'asc' = least recently updated first. Cycles on each tap.
+  sortByUpdated: 'none' | 'desc' | 'asc' = 'none';
 
   // Table picker options — used in both add-form and edit modal
   readonly tableOptions: string[] = [
@@ -78,6 +83,10 @@ export class AdminPage implements OnInit {
 
   ngOnInit() { }
 
+  ngOnDestroy() {
+    this.stopWatchingGuests();
+  }
+
   // ── Auth ─────────────────────────────────────────────────────────────────────
 
   login() {
@@ -85,6 +94,7 @@ export class AdminPage implements OnInit {
       this.isAuthenticated = true;
       this.authError = false;
       this.loadData();
+      this.startWatchingGuests();
     } else {
       this.authError = true;
       this.passwordInput = '';
@@ -97,7 +107,30 @@ export class AdminPage implements OnInit {
     this.allGuests = [];
     this.prenupPhotos = [];
     this.cancelPrenupUpload();
+    this.stopWatchingGuests();
     this.viewMode = 'dashboard';
+  }
+
+  // ── Live updates (polling) ──────────────────────────────────────────────────
+
+  private guestsSub?: Subscription;
+
+  /** Silently refreshes the guest list in the background every 15s, so
+   *  changes made elsewhere (a guest RSVPing, another admin checking
+   *  someone in) show up here without a manual refresh. See
+   *  AdminService.watchGuests() for why this polls instead of using
+   *  Supabase Realtime directly. */
+  private startWatchingGuests() {
+    this.stopWatchingGuests();
+    this.guestsSub = this.adminService.watchGuests(15000).subscribe(guests => {
+      this.allGuests = guests;
+      this.applyFilter();
+    });
+  }
+
+  private stopWatchingGuests() {
+    this.guestsSub?.unsubscribe();
+    this.guestsSub = undefined;
   }
 
   // ── Load ─────────────────────────────────────────────────────────────────────
@@ -120,6 +153,29 @@ export class AdminPage implements OnInit {
     }
   }
 
+  /** Refreshes whichever view is currently open. Used by the header button
+   *  and the pull-to-refresh gesture. */
+  isRefreshing = false;
+
+  async refreshCurrent() {
+    if (this.isRefreshing) return;
+    this.isRefreshing = true;
+    try {
+      if (this.viewMode === 'prenup') {
+        await this.loadPrenupPhotos();
+      } else {
+        await this.loadData();
+      }
+    } finally {
+      this.isRefreshing = false;
+    }
+  }
+
+  async doRefresh(event: any) {
+    await this.refreshCurrent();
+    event.target.complete();
+  }
+
   // ── Search & filter ──────────────────────────────────────────────────────────
 
   onSearch(event: any) {
@@ -129,6 +185,13 @@ export class AdminPage implements OnInit {
 
   setFilter(status: typeof this.filterStatus) {
     this.filterStatus = status;
+    this.applyFilter();
+  }
+
+  toggleSortByUpdated() {
+    this.sortByUpdated =
+      this.sortByUpdated === 'none' ? 'desc' :
+      this.sortByUpdated === 'desc' ? 'asc' : 'none';
     this.applyFilter();
   }
 
@@ -153,6 +216,14 @@ export class AdminPage implements OnInit {
       case 'vip': guests = guests.filter(g => g.table_number?.startsWith('VIP')); break;
     }
 
+    // Sort by last-updated, if enabled
+    if (this.sortByUpdated !== 'none') {
+      guests.sort((a, b) => {
+        const diff = new Date(a.updated_at).getTime() - new Date(b.updated_at).getTime();
+        return this.sortByUpdated === 'desc' ? -diff : diff;
+      });
+    }
+
     this.filteredGuests = guests;
   }
 
@@ -161,6 +232,7 @@ export class AdminPage implements OnInit {
   async toggleCheckIn(guest: AdminGuest) {
     const newState = !guest.checked_in;
     guest.checked_in = newState; // optimistic update
+    guest.updated_at = new Date().toISOString();
     try {
       await this.adminService.toggleCheckIn(guest.id, newState);
       this.stats.checked_in += newState ? 1 : -1;
@@ -205,6 +277,7 @@ export class AdminPage implements OnInit {
           full_name: this.editName.trim(),
           attend: this.editAttend,
           table_number: this.editTable.trim() || null,
+          updated_at: new Date().toISOString(),
         };
       }
       this.applyFilter();
