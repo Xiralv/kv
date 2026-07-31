@@ -25,13 +25,21 @@
 
       <!-- Personalised welcome banner — shown once user_fullname is known -->
       @if (user_fullname) {
-        <div class="welcome-banner">
+        <div class="welcome-banner" [class.welcome-banner--declined]="guestDeclined">
           <div class="welcome-banner__inner">
-            <span class="welcome-banner__emoji">💍</span>
+            <span class="welcome-banner__emoji">
+              {{ guestDeclined ? '💛' : '💍' }}
+            </span>
             <div class="welcome-banner__text">
               <p class="welcome-banner__greeting">Welcome, {{ user_fullname }}!</p>
               <p class="welcome-banner__sub">
-                {{ hasSubmittedRsvp ? "We've received your RSVP — we can't wait to see you!" : "Don't forget to RSVP below! 👇" }}
+                @if (!hasSubmittedRsvp) {
+                  Don't forget to RSVP below! 👇
+                } @else if (guestDeclined) {
+                  We're sad you can't make it — we'll miss you! If anything changes, let us know. 💛
+                } @else {
+                  We've received your RSVP — we can't wait to see you! 🎉
+                }
               </p>
             </div>
           </div>

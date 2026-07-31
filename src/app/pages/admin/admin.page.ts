@@ -191,7 +191,7 @@ export class AdminPage implements OnInit, OnDestroy {
   toggleSortByUpdated() {
     this.sortByUpdated =
       this.sortByUpdated === 'none' ? 'desc' :
-      this.sortByUpdated === 'desc' ? 'asc' : 'none';
+        this.sortByUpdated === 'desc' ? 'asc' : 'none';
     this.applyFilter();
   }
 

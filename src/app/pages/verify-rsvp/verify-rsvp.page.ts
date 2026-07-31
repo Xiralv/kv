@@ -28,7 +28,7 @@ export class VerifyRsvpPage implements OnInit {
   };
 
 
- /** True when the guest re-opens the RSVP and we detected an existing answer in the DB */
+  /** True when the guest re-opens the RSVP and we detected an existing answer in the DB */
   isAlreadyAnswered = false;
   isLoading = false;
 
@@ -265,12 +265,19 @@ export class VerifyRsvpPage implements OnInit {
 
   get guestCount(): number {
     return this.arrGuests?.length || 0;
- }
-  get hasDeclined(): boolean {
-    return this.arrGuests?.some(g => g.attend === false); 
   }
+  get hasDeclined(): boolean {
+    return this.arrGuests?.some(g => g.attend === false);
+  }
+
   get hasAccepted(): boolean {
-    return this.arrGuests?.some(g => g.attend === true); 
+    return this.arrGuests?.some(g => g.attend === true);
+  }
+
+  /** True when every guest in the party declined — hide congrats lottie in this case. */
+  get allDeclined(): boolean {
+    return this.arrGuests?.length > 0 &&
+      this.arrGuests.every(g => g.attend === false);
   }
 
   /** True if at least one guest in the party has a table assigned. */
@@ -286,16 +293,23 @@ export class VerifyRsvpPage implements OnInit {
   }
 
   get messageText(): string {
-    if (this.guestCount === 1) {
-      return this.arrGuests[0].attend
-        ? "Thank you for confirming! We're excited to celebrate with you! 💍"
-        : "Thanks for letting us know! We're sad you can't make it, but for any changes in the future, please don't hesitate to message us! 💛";
+    // Single guest — declined
+    if (this.guestCount === 1 && !this.arrGuests[0].attend) {
+      return "We're sad you can't make it, but we completely understand. 💛 If anything changes, don't hesitate to reach out to Kamille or Vlarix!";
     }
+    // Single guest — confirmed
+    if (this.guestCount === 1 && this.arrGuests[0].attend) {
+      return "Thank you for confirming! We're so excited to celebrate with you! 💍";
+    }
+    // All declined
+    if (this.allDeclined) {
+      return "We're sad none of you can make it, but we truly appreciate you letting us know. 💛";
+    }
+    // Mixed — some accepted some declined
     if (this.hasAccepted && this.hasDeclined) {
       return "Thank you for confirming! We're excited to see those who can come, and we'll miss the ones who can't make it. 💛";
-    } else if (this.hasDeclined && !this.hasAccepted) {
-      return "Thanks for letting us know! It's sad that you'll not be able to join us, but for any changes please don't hesitate to message us!";
     }
+    // All confirmed
     return "See you on our wedding day! 💍";
   }
 }

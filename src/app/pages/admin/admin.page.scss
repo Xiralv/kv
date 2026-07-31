@@ -50,6 +50,7 @@ $font: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     font-style: italic;
 }
 
+
 .login-input-wrap {
     margin-bottom: 14px;
 }
@@ -1097,4 +1098,11 @@ $font: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 @keyframes adminRefreshSpin {
     from { transform: rotate(0deg); }
     to   { transform: rotate(360deg); }
+}
+
+ion-button {
+    --background-hover: #{$gold-mid};
+
+    --background-focused:  #{$gold-bg};
+  --background-activated: #{$gold-mid};
 }

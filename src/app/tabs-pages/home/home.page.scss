@@ -1,11 +1,11 @@
 // ── Design tokens ─────────────────────────────────────────────────────────────
-$gold:        #fddf7d;
-$gold-dark:   #5a3e00;
-$gold-mid:    #a07800;
-$gold-bg:     #fffbef;
-$gold-light:  #fff9e6;
+$gold: #fddf7d;
+$gold-dark: #5a3e00;
+$gold-mid: #a07800;
+$gold-bg: #fffbef;
+$gold-light: #fff9e6;
 $gold-border: rgba(253, 223, 125, 0.45);
-$font:        'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+$font: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 
 :host {
   --banner-max-height: 35vh;
@@ -15,7 +15,8 @@ $font:        'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 // ── Header + Logo ─────────────────────────────────────────────────────────────
 .transparent-toolbar {
   position: absolute;
-  top: 0; left: 0;
+  top: 0;
+  left: 0;
   width: 100%;
   z-index: 10;
   display: flex;
@@ -50,11 +51,11 @@ $font:        'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 
 // ── Main Content ──────────────────────────────────────────────────────────────
 .main-content {
-  background: #fafaf8;           // very slightly warm white — less sterile than pure #fff
+  background: #fafaf8; // very slightly warm white — less sterile than pure #fff
   border-top-left-radius: 24px;
   border-top-right-radius: 24px;
   margin-top: -24px;
-  box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
   padding-bottom: clamp(80px, 15vh, 140px);
   font-size: clamp(0.9rem, 1.8vw, 1rem);
   line-height: 1.5;
@@ -70,7 +71,7 @@ p {
 // ── Cards — gold-themed ───────────────────────────────────────────────────────
 ion-card {
   border-radius: 20px;
-  box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
   overflow: hidden;
   margin: clamp(8px, 2vw, 12px);
   border: 1px solid $gold-border;
@@ -156,7 +157,9 @@ ion-button {
   justify-content: center;
 }
 
-.circle-gap { gap: 16px; }
+.circle-gap {
+  gap: 16px;
+}
 
 .circle-text-wrapper {
   text-align: center;
@@ -170,7 +173,10 @@ ion-button {
   opacity: 0.7;
   font-weight: 600;
 
-  small { font-size: 0.8rem; opacity: 0.7; }
+  small {
+    font-size: 0.8rem;
+    opacity: 0.7;
+  }
 }
 
 // ── Entourage ─────────────────────────────────────────────────────────────────
@@ -184,7 +190,9 @@ ion-button {
   font-size: clamp(1rem, 2vw, 1.3rem);
 }
 
-.entourage-container { text-align: center; }
+.entourage-container {
+  text-align: center;
+}
 
 .ion-text-center {
   text-align: center !important;
@@ -211,10 +219,15 @@ ion-button {
   }
 }
 
-.center { padding-bottom: 10px; }
+.center {
+  padding-bottom: 10px;
+}
 
 // ── Dress code ────────────────────────────────────────────────────────────────
-.dress-code { max-width: 600px; margin: 0 auto; }
+.dress-code {
+  max-width: 600px;
+  margin: 0 auto;
+}
 
 .dress-row {
   display: grid;
@@ -223,8 +236,16 @@ ion-button {
   align-items: start;
   margin-bottom: 6px;
 
-  .label { font-weight: 700; text-align: right; }
-  .value { font-family: $font; line-height: 1.5; text-align: center; }
+  .label {
+    font-weight: 700;
+    text-align: right;
+  }
+
+  .value {
+    font-family: $font;
+    line-height: 1.5;
+    text-align: center;
+  }
 }
 
 // ── Gift images ───────────────────────────────────────────────────────────────
@@ -249,7 +270,10 @@ ion-button {
     justify-content: center;
     gap: 24px;
 
-    img { width: clamp(120px, 18vw, 180px); max-width: none; }
+    img {
+      width: clamp(120px, 18vw, 180px);
+      max-width: none;
+    }
   }
 }
 
@@ -272,16 +296,17 @@ ion-button {
 // ── Sticky RSVP ───────────────────────────────────────────────────────────────
 .sticky-rsvp {
   position: fixed;
-  bottom: 0; left: 0;
+  bottom: 0;
+  left: 0;
   width: 100%;
   z-index: 11;
   display: flex;
   justify-content: center;
-  background: rgba(255,253,244,0.96);
+  background: rgba(255, 253, 244, 0.96);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border-top: 1.5px solid $gold;
-  box-shadow: 0 -4px 20px rgba(253,223,125,0.2);
+  box-shadow: 0 -4px 20px rgba(253, 223, 125, 0.2);
 
   ion-card {
     width: 100%;
@@ -322,14 +347,28 @@ ion-button {
 
 // ── Responsive ────────────────────────────────────────────────────────────────
 @media (min-width: 768px) {
-  .main-content { padding: 2rem 3rem; }
-  p { text-align: center; }
+  .main-content {
+    padding: 2rem 3rem;
+  }
+
+  p {
+    text-align: center;
+  }
 }
 
 @media (min-width: 1024px) {
-  .main-content { padding: 3rem 6rem; }
-  .logo-container img { max-height: 100px; }
-  ion-card { max-width: 800px; margin: 24px auto; }
+  .main-content {
+    padding: 3rem 6rem;
+  }
+
+  .logo-container img {
+    max-height: 100px;
+  }
+
+  ion-card {
+    max-width: 800px;
+    margin: 24px auto;
+  }
 }
 
 // ── Personalised welcome banner ───────────────────────────────────────────────
@@ -341,6 +380,13 @@ ion-button {
   box-shadow: 0 2px 10px rgba(253, 223, 125, 0.25);
   overflow: hidden;
   animation: bannerFadeIn 0.5s ease both;
+
+  // Declined variant — soft warm grey instead of gold
+  &--declined {
+    background: linear-gradient(135deg, #fafaf8 0%, #f5f5f0 100%);
+    border-color: #ddd;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  }
 }
 
 .welcome-banner__inner {
@@ -382,8 +428,15 @@ ion-button {
 }
 
 @keyframes bannerFadeIn {
-  from { opacity: 0; transform: translateY(-6px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 // ── Countdown card ────────────────────────────────────────────────────────────
@@ -478,17 +531,30 @@ ion-button {
   opacity: 0.45;
   transition: opacity 0.3s;
 
-  &:last-child { border-bottom: none; }
+  &:last-child {
+    border-bottom: none;
+  }
 
   &.active {
     opacity: 1;
-    .schedule-dot { background: $gold; box-shadow: 0 0 0 3px rgba(253,223,125,0.35); }
-    .schedule-time, .schedule-label { color: $gold-dark; }
+
+    .schedule-dot {
+      background: $gold;
+      box-shadow: 0 0 0 3px rgba(253, 223, 125, 0.35);
+    }
+
+    .schedule-time,
+    .schedule-label {
+      color: $gold-dark;
+    }
   }
 
   &.past {
     opacity: 0.3;
-    .schedule-dot { background: #ccc; }
+
+    .schedule-dot {
+      background: #ccc;
+    }
   }
 }
 
@@ -541,9 +607,14 @@ ion-button {
   gap: 0;
 }
 
-.venue-cta-block { padding: 12px 0; }
+.venue-cta-block {
+  padding: 12px 0;
+}
 
-.venue-divider { height: 0.5px; background: #f0e8cc; }
+.venue-divider {
+  height: 0.5px;
+  background: #f0e8cc;
+}
 
 .venue-cta-label {
   font-size: 11px;
@@ -580,15 +651,33 @@ ion-button {
   border: 1.5px solid;
   transition: opacity 0.15s;
 
-  ion-icon { font-size: 15px; }
-  &:active { opacity: 0.7; }
+  ion-icon {
+    font-size: 15px;
+  }
+
+  &:active {
+    opacity: 0.7;
+  }
 }
 
-.dir-btn--gmaps { color: #1a73e8; border-color: #1a73e8; background: #f0f6ff; }
-.dir-btn--waze  { color: #00b4d8; border-color: #00b4d8; background: #f0fbff; }
+.dir-btn--gmaps {
+  color: #1a73e8;
+  border-color: #1a73e8;
+  background: #f0f6ff;
+}
+
+.dir-btn--waze {
+  color: #00b4d8;
+  border-color: #00b4d8;
+  background: #f0fbff;
+}
 
 // ── Transportation rows ───────────────────────────────────────────────────────
-.transport-rows { display: flex; flex-direction: column; gap: 0; }
+.transport-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
 
 .transport-row {
   display: flex;
@@ -598,13 +687,36 @@ ion-button {
   padding: 14px 0;
   border-bottom: 0.5px solid #f5f5f5;
 
-  &:last-child { border-bottom: none; }
+  &:last-child {
+    border-bottom: none;
+  }
 }
 
-.transport-icon { font-size: 22px; color: $gold-mid; flex-shrink: 0; margin-top: 2px; }
-.transport-info  { flex: 1; text-align: left; }
-.transport-title { font-size: 14px; font-weight: 600; color: #333; margin: 0 0 3px; }
-.transport-sub   { font-size: 12px; color: #888; margin: 0; line-height: 1.5; }
+.transport-icon {
+  font-size: 22px;
+  color: $gold-mid;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.transport-info {
+  flex: 1;
+  text-align: left;
+}
+
+.transport-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 3px;
+}
+
+.transport-sub {
+  font-size: 12px;
+  color: #888;
+  margin: 0;
+  line-height: 1.5;
+}
 
 .transport-link {
   font-size: 12px;
@@ -616,7 +728,11 @@ ion-button {
 }
 
 // ── Accommodation rows ────────────────────────────────────────────────────────
-.hotel-rows { display: flex; flex-direction: column; gap: 10px; }
+.hotel-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
 
 .hotel-row {
   display: flex;
@@ -636,7 +752,8 @@ ion-button {
 
 .hotel-row__badge {
   position: absolute;
-  top: -9px; left: 12px;
+  top: -9px;
+  left: 12px;
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -647,10 +764,29 @@ ion-button {
   border-radius: 20px;
 }
 
-.hotel-row__info  { flex: 1; }
-.hotel-row__name  { font-size: 14px; font-weight: 600; color: #333; margin: 0 0 2px; }
-.hotel-row__detail{ font-size: 12px; color: #888; margin: 0; line-height: 1.4; }
-.hotel-row__btns  { display: flex; gap: 6px; flex-shrink: 0; }
+.hotel-row__info {
+  flex: 1;
+}
+
+.hotel-row__name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 2px;
+}
+
+.hotel-row__detail {
+  font-size: 12px;
+  color: #888;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.hotel-row__btns {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
 
 .hotel-link {
   font-size: 12px;
@@ -668,7 +804,10 @@ ion-button {
     color: $gold-mid;
     border-color: $gold;
     background: $gold-bg;
-    ion-icon { font-size: 15px; }
+
+    ion-icon {
+      font-size: 15px;
+    }
   }
 }
 
@@ -690,8 +829,13 @@ ion-button {
   text-decoration: none;
   transition: opacity 0.15s;
 
-  ion-icon { font-size: 17px; }
-  &:active { opacity: 0.7; }
+  ion-icon {
+    font-size: 17px;
+  }
+
+  &:active {
+    opacity: 0.7;
+  }
 }
 
 // ── Accordion (dress code & any other) ───────────────────────────────────────────
@@ -703,5 +847,8 @@ ion-accordion-group {
 
 ion-accordion {
   background: transparent;
-  &:not(:last-child) { border-bottom: 0.5px solid $gold-border; }
+
+  &:not(:last-child) {
+    border-bottom: 0.5px solid $gold-border;
+  }
 }

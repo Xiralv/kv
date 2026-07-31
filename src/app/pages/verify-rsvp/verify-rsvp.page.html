@@ -146,24 +146,10 @@
               </p>
             }
 
-            @if (!isAlreadyAnswered) {
+            @if (isAlreadyAnswered) {
               <p>{{ messageText }}</p>
-              @if (guestCount === 1) {
-                @if (arrGuests[0].attend === false) {
-                  <p>{{ arrGuests[0].full_name }} can't attend.</p>
-                } @else {
-                  <p>{{ arrGuests[0].full_name }}</p>
-                }
-              } @else if (hasAccepted && hasDeclined) {
-                <p>The following guest(s) can't attend:</p>
-                <ul>@for (g of arrGuests; track g.id) { @if (!g.attend) { <li>{{ g.full_name }}</li> } }</ul>
-              } @else if (hasDeclined && !hasAccepted) {
-                <p>The following guest(s) can't attend:</p>
-                <ul>@for (g of arrGuests; track g.id) { @if (!g.attend) { <li>{{ g.full_name }}</li> } }</ul>
-              } @else if (hasAccepted && !hasDeclined) {
-                <p>We're happy that all guest(s) can join!</p>
-                <ul>@for (g of arrGuests; track g.id) { @if (g.attend) { <li>{{ g.full_name }}</li> } }</ul>
-              }
+
+        
             }
 
             <!-- Seating card — only shown when table_number is assigned -->
@@ -204,10 +190,13 @@
             </ion-button>
           </div>
 
-          <ng-lottie
-            [options]="congratsOptions"
-            style="width:100%;height:100%;pointer-events:none;">
-          </ng-lottie>
+          <!-- Only show the congrats animation when at least one guest accepted -->
+          @if (!allDeclined && !isAlreadyAnswered) {
+            <ng-lottie
+              [options]="congratsOptions"
+              style="width:100%;height:100%;pointer-events:none;">
+            </ng-lottie>
+          }
 
         </ion-card-content>
       </ion-card>

@@ -26,25 +26,26 @@ export class HomePage implements AfterViewInit, OnDestroy {
 
   user_fullname: string | null = null;
   hasSubmittedRsvp = false;   // drives the sticky button label
+  guestDeclined = false;   // true when the primary guest declined
   bannerHeight = Math.min(window.innerHeight * 0.3, 300);
   private map!: L.Map;
 
-  churchImage    = 'https://vismin.ph/wp-content/uploads/2024/07/Our-Mother-of-Perpetual-Help-Parish-1-1024x768.jpg';
+  churchImage = 'https://vismin.ph/wp-content/uploads/2024/07/Our-Mother-of-Perpetual-Help-Parish-1-1024x768.jpg';
   receptionImage = 'https://cf.bstatic.com/xdata/images/hotel/max1024x768/702406430.jpg?k=23c7108d3cbaaefe1151a0cbe2e8deed01eb26e1ff8654468db1a7b0c3aa217d&o=';
 
   // Venue coordinates
-  readonly CHURCH_LAT    = 7.0921547;
-  readonly CHURCH_LNG    = 125.6071803;
+  readonly CHURCH_LAT = 7.0921547;
+  readonly CHURCH_LNG = 125.6071803;
   readonly RECEPTION_LAT = 7.1064277;
   readonly RECEPTION_LNG = 125.647736;
 
   // Google Maps directions links (opens destination in Maps, user's location auto-detected)
-  get churchGoogleMaps()    { return `https://www.google.com/maps/dir/?api=1&destination=${this.CHURCH_LAT},${this.CHURCH_LNG}&travelmode=driving`; }
+  get churchGoogleMaps() { return `https://www.google.com/maps/dir/?api=1&destination=${this.CHURCH_LAT},${this.CHURCH_LNG}&travelmode=driving`; }
   get receptionGoogleMaps() { return `https://www.google.com/maps/dir/?api=1&destination=${this.RECEPTION_LAT},${this.RECEPTION_LNG}&travelmode=driving`; }
 
   // Waze deeplinks (dominant nav app in PH)
-  get churchWaze()          { return `https://waze.com/ul?ll=${this.CHURCH_LAT},${this.CHURCH_LNG}&navigate=yes`; }
-  get receptionWaze()       { return `https://waze.com/ul?ll=${this.RECEPTION_LAT},${this.RECEPTION_LNG}&navigate=yes`; }
+  get churchWaze() { return `https://waze.com/ul?ll=${this.CHURCH_LAT},${this.CHURCH_LNG}&navigate=yes`; }
+  get receptionWaze() { return `https://waze.com/ul?ll=${this.RECEPTION_LAT},${this.RECEPTION_LNG}&navigate=yes`; }
   selectedImage: string | null = null;
 
   // ─── Countdown ────────────────────────────────────────────────────────────
@@ -52,15 +53,15 @@ export class HomePage implements AfterViewInit, OnDestroy {
   private countdownInterval: any;
 
   countdown = { days: '00', hours: '00', minutes: '00', seconds: '00' };
-  isWeddingDay   = false;
+  isWeddingDay = false;
   weddingDayPassed = false;
 
   schedule = [
-    { time: '3:00 PM',  label: 'Ceremony begins',         hour: 15, minute: 0,  isNow: false, isPast: false },
-    { time: '4:30 PM',  label: 'Cocktail hour',           hour: 16, minute: 30, isNow: false, isPast: false },
-    { time: '6:00 PM',  label: 'Reception & dinner',      hour: 18, minute: 0,  isNow: false, isPast: false },
-    { time: '7:00 PM',  label: 'Speeches & first dance',  hour: 19, minute: 0,  isNow: false, isPast: false },
-    { time: '8:00 PM',  label: 'Open floor / party 🎉',   hour: 20, minute: 0,  isNow: false, isPast: false },
+    { time: '3:00 PM', label: 'Ceremony begins', hour: 15, minute: 0, isNow: false, isPast: false },
+    { time: '4:30 PM', label: 'Cocktail hour', hour: 16, minute: 30, isNow: false, isPast: false },
+    { time: '6:00 PM', label: 'Reception & dinner', hour: 18, minute: 0, isNow: false, isPast: false },
+    { time: '7:00 PM', label: 'Speeches & first dance', hour: 19, minute: 0, isNow: false, isPast: false },
+    { time: '8:00 PM', label: 'Open floor / party 🎉', hour: 20, minute: 0, isNow: false, isPast: false },
   ];
 
   constructor(
@@ -68,7 +69,7 @@ export class HomePage implements AfterViewInit, OnDestroy {
     private routerOutlet: IonRouterOutlet,
     private alertCtrl: AlertController,
     private api: SupabaseService,           // ← injected for DB check
-  ) {}
+  ) { }
 
   async ngAfterViewInit() {
     setTimeout(() => this.initMap(), 1000);
@@ -104,6 +105,11 @@ export class HomePage implements AfterViewInit, OnDestroy {
       this.hasSubmittedRsvp = data.every(
         (g: any) => g.attend !== null && g.attend !== undefined
       );
+
+      // Track whether the primary guest (first row) declined
+      // so the welcome banner can show a different message
+      this.guestDeclined = this.hasSubmittedRsvp &&
+        data.every((g: any) => g.attend === false);
     } catch {
       // Network error or Supabase down — fail silently, show "RSVP Now"
       this.hasSubmittedRsvp = false;
@@ -118,12 +124,12 @@ export class HomePage implements AfterViewInit, OnDestroy {
   }
 
   private tickCountdown(): void {
-    const now  = new Date();
+    const now = new Date();
     const diff = this.WEDDING.getTime() - now.getTime();
 
-    const todayDate   = now.toDateString();
+    const todayDate = now.toDateString();
     const weddingDate = this.WEDDING.toDateString();
-    this.isWeddingDay     = todayDate === weddingDate;
+    this.isWeddingDay = todayDate === weddingDate;
     this.weddingDayPassed = diff < 0 && !this.isWeddingDay;
 
     if (!this.isWeddingDay && diff > 0) {
@@ -133,8 +139,8 @@ export class HomePage implements AfterViewInit, OnDestroy {
       const m = Math.floor((totalSeconds % 3600) / 60);
       const s = totalSeconds % 60;
       this.countdown = {
-        days:    String(d).padStart(2, '0'),
-        hours:   String(h).padStart(2, '0'),
+        days: String(d).padStart(2, '0'),
+        hours: String(h).padStart(2, '0'),
         minutes: String(m).padStart(2, '0'),
         seconds: String(s).padStart(2, '0'),
       };
@@ -149,8 +155,8 @@ export class HomePage implements AfterViewInit, OnDestroy {
     const currentMinutes = now.getHours() * 60 + now.getMinutes();
     this.schedule = this.schedule.map((event, i) => {
       const eventMinutes = event.hour * 60 + event.minute;
-      const nextEvent    = this.schedule[i + 1];
-      const nextMinutes  = nextEvent ? nextEvent.hour * 60 + nextEvent.minute : 24 * 60;
+      const nextEvent = this.schedule[i + 1];
+      const nextMinutes = nextEvent ? nextEvent.hour * 60 + nextEvent.minute : 24 * 60;
       return {
         ...event,
         isNow: currentMinutes >= eventMinutes && currentMinutes < nextMinutes,
@@ -174,7 +180,7 @@ export class HomePage implements AfterViewInit, OnDestroy {
       attribution: '&copy; OpenStreetMap contributors'
     }).addTo(this.map);
 
-    const churchCoords: L.LatLngExpression    = [this.CHURCH_LAT,    this.CHURCH_LNG];
+    const churchCoords: L.LatLngExpression = [this.CHURCH_LAT, this.CHURCH_LNG];
     const receptionCoords: L.LatLngExpression = [this.RECEPTION_LAT, this.RECEPTION_LNG];
 
     const popupStyle = `
@@ -203,7 +209,7 @@ export class HomePage implements AfterViewInit, OnDestroy {
     `;
 
     const gmapsBtn = `${btnBase} color:#1a73e8; border-color:#1a73e8; background:#fff;`;
-    const wazeBtn  = `${btnBase} color:#33ccff; border-color:#33ccff; background:#fff;`;
+    const wazeBtn = `${btnBase} color:#33ccff; border-color:#33ccff; background:#fff;`;
 
     L.marker(churchCoords, { icon: churchIcon })
       .addTo(this.map)
@@ -281,8 +287,8 @@ export class HomePage implements AfterViewInit, OnDestroy {
       header: 'Are you sure?',
       message: 'Do you really want to close this modal?',
       buttons: [
-        { text: 'Cancel', role: 'cancel',  handler: () => false },
-        { text: 'Yes',    role: 'confirm', handler: () => true  },
+        { text: 'Cancel', role: 'cancel', handler: () => false },
+        { text: 'Yes', role: 'confirm', handler: () => true },
       ],
     });
     await alert.present();
@@ -295,6 +301,11 @@ export class HomePage implements AfterViewInit, OnDestroy {
     this.bannerHeight = Math.max(250 - scrollTop, 56);
   }
 
-  openImage(img: string) { this.selectedImage = img; }
-  closeImage()            { this.selectedImage = null; }
+  openImage(img: string) {
+    this.selectedImage = img;
+  }
+  
+  closeImage() {
+    this.selectedImage = null;
+  }
 }
