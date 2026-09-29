@@ -10,7 +10,17 @@ export interface Guest {
 export interface WeddingPhoto {
   id: string;
   url: string;
+  storage_path?: string;
   uploader_name: string;
+  created_at: string;
+}
+
+export interface PrenupPhoto {
+  id: string;
+  url: string;
+  storage_path: string;
+  caption: string | null;
+  sort_order: number;
   created_at: string;
 }
 
@@ -26,19 +36,8 @@ export interface SeatingResult {
   table_number: string | null;
 }
 
-export interface PrenupPhoto {
-  id: string;
-  url: string;
-  storage_path: string;
-  caption: string | null;
-  sort_order: number;
-  created_at: string;
-}
-
-
 const PHOTO_BUCKET = 'wedding-photos';
 const PHOTO_TABLE = 'photos';
-
 
 const PRENUP_BUCKET = 'prenup-photos';
 const PRENUP_TABLE = 'prenup_photos';
@@ -131,6 +130,141 @@ export class SupabaseService {
   }
 
 
+
+
+  // ─── Photos ────────────────────────────────────────────────────────────────
+
+  /**
+   * Server-side check: returns true only if the guest exists in the guests
+   * table with attend = true. Runs via a SECURITY DEFINER RPC so the guests
+   * table is never directly exposed to the browser.
+   */
+  async isConfirmedGuest(fullname: string): Promise<boolean> {
+    const { data, error } = await supabase.rpc('is_confirmed_guest', {
+      p_fullname: fullname.trim(),
+    });
+    if (error) {
+      console.error('isConfirmedGuest error:', error);
+      return false;
+    }
+    return data === true;
+  }
+
+  /** Returns how many photos this guest has already uploaded (0–10). */
+  async getGuestPhotoCount(fullname: string): Promise<number> {
+    const { data, error } = await supabase.rpc('get_guest_photo_count', {
+      p_fullname: fullname.trim(),
+    });
+    if (error) { console.error('getGuestPhotoCount error:', error); return 0; }
+    return data as number;
+  }
+
+
+  /**
+   * Fetch a page of photos, newest first.
+   * @param page  zero-based page index
+   * @param limit number of photos per page (default 10)
+   */
+  async getPhotos(page = 0, limit = 10): Promise<WeddingPhoto[]> {
+    const from = page * limit;
+    const to = from + limit - 1;          // Supabase range is inclusive
+
+    const { data, error } = await supabase
+      .from(PHOTO_TABLE)
+      .select('id, storage_path, uploader_name, created_at')
+      .order('created_at', { ascending: false })
+      .range(from, to);
+
+    if (error) throw error;
+    if (!data) return [];
+
+    return data.map((row: any) => ({
+      id: row.id,
+      storage_path: row.storage_path,
+      uploader_name: row.uploader_name,
+      created_at: row.created_at,
+      url: supabase.storage
+        .from(PHOTO_BUCKET)
+        .getPublicUrl(row.storage_path).data.publicUrl,
+    }));
+  }
+
+  /** Admin: every guest-uploaded photo, newest first (no paging). */
+  async getAllGuestPhotos(): Promise<WeddingPhoto[]> {
+    const { data, error } = await supabase
+      .from(PHOTO_TABLE)
+      .select('id, storage_path, uploader_name, created_at')
+      .order('created_at', { ascending: false })
+      .limit(1000);
+
+    if (error) throw error;
+    if (!data) return [];
+
+    return data.map((row: any) => ({
+      id: row.id,
+      storage_path: row.storage_path,
+      uploader_name: row.uploader_name,
+      created_at: row.created_at,
+      url: supabase.storage
+        .from(PHOTO_BUCKET)
+        .getPublicUrl(row.storage_path).data.publicUrl,
+    }));
+  }
+
+  /**
+   * Admin: delete a guest photo (row + file).
+   * Note: when RLS blocks a delete, Supabase returns NO error and simply
+   * deletes nothing — so we ask for the deleted rows back and treat an empty
+   * result as a failure. See supabase/guest_photos_admin_delete.sql.
+   */
+  async deleteGuestPhoto(id: string, storagePath: string): Promise<void> {
+    const { data, error } = await supabase
+      .from(PHOTO_TABLE)
+      .delete()
+      .eq('id', id)
+      .select('id');
+
+    if (error) throw error;
+    if (!data || data.length === 0) {
+      throw new Error('Delete was blocked (missing delete policy on photos table)');
+    }
+
+    // Best-effort file cleanup — the row is already gone even if this fails.
+    await supabase.storage.from(PHOTO_BUCKET).remove([storagePath]);
+  }
+
+  /** Compress, upload to Storage, insert metadata row. Returns WeddingPhoto. */
+  async uploadPhoto(file: File, uploaderName: string): Promise<WeddingPhoto> {
+    const compressed = await this.compressImage(file, 1600, 0.82);
+
+    const ext = file.name.split('.').pop() || 'jpg';
+    const path = `photos/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from(PHOTO_BUCKET)
+      .upload(path, compressed, { contentType: 'image/jpeg', upsert: false });
+
+    if (uploadError) throw uploadError;
+
+    const { data, error: insertError } = await supabase
+      .from(PHOTO_TABLE)
+      .insert({ storage_path: path, uploader_name: uploaderName })
+      .select('id, storage_path, uploader_name, created_at')
+      .single();
+
+    if (insertError) {
+      await supabase.storage.from(PHOTO_BUCKET).remove([path]);
+      throw insertError;
+    }
+
+    return {
+      id: data.id,
+      uploader_name: data.uploader_name,
+      created_at: data.created_at,
+      url: supabase.storage.from(PHOTO_BUCKET).getPublicUrl(path).data.publicUrl,
+    };
+  }
+
   // ─── Prenup Album ──────────────────────────────────────────────────────────
 
   /**
@@ -213,99 +347,6 @@ export class SupabaseService {
 
     // Best-effort file cleanup — row is already gone even if this fails.
     await supabase.storage.from(PRENUP_BUCKET).remove([storagePath]);
-  }
-
-
-
-
-
-
-  // ─── Photos ────────────────────────────────────────────────────────────────
-
-  /**
-   * Server-side check: returns true only if the guest exists in the guests
-   * table with attend = true. Runs via a SECURITY DEFINER RPC so the guests
-   * table is never directly exposed to the browser.
-   */
-  async isConfirmedGuest(fullname: string): Promise<boolean> {
-    const { data, error } = await supabase.rpc('is_confirmed_guest', {
-      p_fullname: fullname.trim(),
-    });
-    if (error) {
-      console.error('isConfirmedGuest error:', error);
-      return false;
-    }
-    return data === true;
-  }
-
-  /** Returns how many photos this guest has already uploaded (0–10). */
-  async getGuestPhotoCount(fullname: string): Promise<number> {
-    const { data, error } = await supabase.rpc('get_guest_photo_count', {
-      p_fullname: fullname.trim(),
-    });
-    if (error) { console.error('getGuestPhotoCount error:', error); return 0; }
-    return data as number;
-  }
-
-
-  /**
-   * Fetch a page of photos, newest first.
-   * @param page  zero-based page index
-   * @param limit number of photos per page (default 10)
-   */
-  async getPhotos(page = 0, limit = 10): Promise<WeddingPhoto[]> {
-    const from = page * limit;
-    const to = from + limit - 1;          // Supabase range is inclusive
-
-    const { data, error } = await supabase
-      .from(PHOTO_TABLE)
-      .select('id, storage_path, uploader_name, created_at')
-      .order('created_at', { ascending: false })
-      .range(from, to);
-
-    if (error) throw error;
-    if (!data) return [];
-
-    return data.map((row: any) => ({
-      id: row.id,
-      uploader_name: row.uploader_name,
-      created_at: row.created_at,
-      url: supabase.storage
-        .from(PHOTO_BUCKET)
-        .getPublicUrl(row.storage_path).data.publicUrl,
-    }));
-  }
-
-  /** Compress, upload to Storage, insert metadata row. Returns WeddingPhoto. */
-  async uploadPhoto(file: File, uploaderName: string): Promise<WeddingPhoto> {
-    const compressed = await this.compressImage(file, 1600, 0.82);
-
-    const ext = file.name.split('.').pop() || 'jpg';
-    const path = `photos/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-
-    const { error: uploadError } = await supabase.storage
-      .from(PHOTO_BUCKET)
-      .upload(path, compressed, { contentType: 'image/jpeg', upsert: false });
-
-    if (uploadError) throw uploadError;
-
-    const { data, error: insertError } = await supabase
-      .from(PHOTO_TABLE)
-      .insert({ storage_path: path, uploader_name: uploaderName })
-      .select('id, storage_path, uploader_name, created_at')
-      .single();
-
-    if (insertError) {
-      await supabase.storage.from(PHOTO_BUCKET).remove([path]);
-      throw insertError;
-    }
-
-    return {
-      id: data.id,
-      uploader_name: data.uploader_name,
-      created_at: data.created_at,
-      url: supabase.storage.from(PHOTO_BUCKET).getPublicUrl(path).data.publicUrl,
-    };
   }
 
   /** Resize to maxWidth and re-encode as JPEG using an off-screen canvas. */

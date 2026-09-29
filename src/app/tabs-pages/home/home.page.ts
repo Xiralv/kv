@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, OnDestroy } from '@angular/core';
 import { AlertController, IonRouterOutlet, ModalController } from '@ionic/angular';
 import { VerifyRsvpPage } from 'src/app/pages/verify-rsvp/verify-rsvp.page';
-import { SupabaseService } from 'src/app/services/api/supabase.service';
+import { SupabaseService, SeatingResult } from 'src/app/services/api/supabase.service';
 import * as L from 'leaflet';
 
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -26,7 +26,7 @@ export class HomePage implements AfterViewInit, OnDestroy {
 
   user_fullname: string | null = null;
   hasSubmittedRsvp = false;   // drives the sticky button label
-  guestDeclined = false;   // true when the primary guest declined
+  seating: SeatingResult[] = [];   // table assignments for the guest's party
   bannerHeight = Math.min(window.innerHeight * 0.3, 300);
   private map!: L.Map;
 
@@ -77,7 +77,53 @@ export class HomePage implements AfterViewInit, OnDestroy {
 
     // Check Supabase on load — catches guests who submitted on a different device
     await this.checkRsvpStatus();
+    await this.loadSeating();
     this.startCountdown();
+  }
+
+  /** Runs every time the Home tab is shown, so a table the admin assigns
+   *  after the guest first opened the app appears without a full reload. */
+  async ionViewWillEnter() {
+    const stored = localStorage.getItem('user_fullname') || null;
+    if (!stored) return;               // first entry: ngAfterViewInit handles it
+    this.user_fullname = stored;
+    await this.loadSeating();
+  }
+
+  /**
+   * Fetches the table assignment(s) for the guest's party so the welcome
+   * banner can show them. Fails silently — no table yet (or a network hiccup)
+   * simply means no chip is shown.
+   */
+  private async loadSeating(): Promise<void> {
+    if (!this.user_fullname) {
+      this.seating = [];
+      return;
+    }
+    try {
+      this.seating = await this.api.getPartySeating(this.user_fullname);
+    } catch {
+      // keep whatever we already had
+    }
+  }
+
+  /**
+   * Unique table labels for the welcome banner, e.g. [{label:'Table 5'}] or
+   * [{label:'VIP', vip:true}]. Empty until a table has been assigned.
+   */
+  get seatingChips(): { label: string; vip: boolean }[] {
+    const seen = new Set<string>();
+    const chips: { label: string; vip: boolean }[] = [];
+    for (const s of this.seating) {
+      const t = (s.table_number || '').trim();
+      if (!t) continue;
+      const key = t.toUpperCase();
+      if (seen.has(key)) continue;
+      seen.add(key);
+      const vip = key.startsWith('VIP');
+      chips.push({ vip, label: vip || /^table/i.test(t) ? t : `Table ${t}` });
+    }
+    return chips;
   }
 
   /**
@@ -105,11 +151,6 @@ export class HomePage implements AfterViewInit, OnDestroy {
       this.hasSubmittedRsvp = data.every(
         (g: any) => g.attend !== null && g.attend !== undefined
       );
-
-      // Track whether the primary guest (first row) declined
-      // so the welcome banner can show a different message
-      this.guestDeclined = this.hasSubmittedRsvp &&
-        data.every((g: any) => g.attend === false);
     } catch {
       // Network error or Supabase down — fail silently, show "RSVP Now"
       this.hasSubmittedRsvp = false;
@@ -277,6 +318,7 @@ export class HomePage implements AfterViewInit, OnDestroy {
 
     // Re-check DB so button label updates immediately after they submit
     await this.checkRsvpStatus();
+    await this.loadSeating();
     this.startCountdown();
   }
 
@@ -301,11 +343,6 @@ export class HomePage implements AfterViewInit, OnDestroy {
     this.bannerHeight = Math.max(250 - scrollTop, 56);
   }
 
-  openImage(img: string) {
-    this.selectedImage = img;
-  }
-  
-  closeImage() {
-    this.selectedImage = null;
-  }
+  openImage(img: string) { this.selectedImage = img; }
+  closeImage() { this.selectedImage = null; }
 }

@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { AlertController, ToastController } from '@ionic/angular';
 import { AdminService, AdminGuest, AdminStats } from '../../services/admin/admin.service';
-import { SupabaseService, PrenupPhoto } from '../../services/api/supabase.service';
+import { SupabaseService, PrenupPhoto, WeddingPhoto } from '../../services/api/supabase.service';
 
 
 const ADMIN_PASSWORD = 'kv2026admin'; // change this before deploying
@@ -24,7 +24,8 @@ export class AdminPage implements OnInit, OnDestroy {
   // 'dashboard' = couple's full admin view
   // 'checkin'   = coordinator's simplified check-in scanner view
   // 'prenup'    = manage the prenup album (upload / caption / delete)
-  viewMode: 'dashboard' | 'checkin' | 'prenup' = 'dashboard';
+  // 'guestphotos' = review / moderate photos guests shared on the Photos tab
+  viewMode: 'dashboard' | 'checkin' | 'prenup' | 'guestphotos' = 'dashboard';
 
   // ── Data ────────────────────────────────────────────────────────────────────
   allGuests: AdminGuest[] = [];
@@ -70,6 +71,13 @@ export class AdminPage implements OnInit, OnDestroy {
   newPrenupCaption = '';
   uploadProgress = { current: 0, total: 0 };
 
+  // ── Guest photos (moderation) ───────────────────────────────────────────────
+  guestPhotos: WeddingPhoto[] = [];
+  filteredGuestPhotos: WeddingPhoto[] = [];
+  isLoadingGuestPhotos = false;
+  guestPhotoSearch = '';
+  viewingGuestPhoto: WeddingPhoto | null = null;
+
   editingPrenupPhoto: PrenupPhoto | null = null;
   editPrenupCaption = '';
   editPrenupSortOrder = 0;
@@ -106,6 +114,9 @@ export class AdminPage implements OnInit, OnDestroy {
     this.passwordInput = '';
     this.allGuests = [];
     this.prenupPhotos = [];
+    this.guestPhotos = [];
+    this.filteredGuestPhotos = [];
+    this.viewingGuestPhoto = null;
     this.cancelPrenupUpload();
     this.stopWatchingGuests();
     this.viewMode = 'dashboard';
@@ -163,6 +174,8 @@ export class AdminPage implements OnInit, OnDestroy {
     try {
       if (this.viewMode === 'prenup') {
         await this.loadPrenupPhotos();
+      } else if (this.viewMode === 'guestphotos') {
+        await this.loadGuestPhotos();
       } else {
         await this.loadData();
       }
@@ -191,7 +204,7 @@ export class AdminPage implements OnInit, OnDestroy {
   toggleSortByUpdated() {
     this.sortByUpdated =
       this.sortByUpdated === 'none' ? 'desc' :
-        this.sortByUpdated === 'desc' ? 'asc' : 'none';
+      this.sortByUpdated === 'desc' ? 'asc' : 'none';
     this.applyFilter();
   }
 
@@ -356,10 +369,13 @@ export class AdminPage implements OnInit, OnDestroy {
 
   // ── View switching ───────────────────────────────────────────────────────────
 
-  switchView(mode: 'dashboard' | 'checkin' | 'prenup') {
+  switchView(mode: 'dashboard' | 'checkin' | 'prenup' | 'guestphotos') {
     this.viewMode = mode;
     if (mode === 'prenup' && this.prenupPhotos.length === 0 && !this.isLoadingPrenup) {
       this.loadPrenupPhotos();
+    }
+    if (mode === 'guestphotos' && this.guestPhotos.length === 0 && !this.isLoadingGuestPhotos) {
+      this.loadGuestPhotos();
     }
   }
 
@@ -522,6 +538,66 @@ export class AdminPage implements OnInit, OnDestroy {
     } catch (err) {
       console.error(err);
       await this.showToast('Failed to delete photo', 'danger');
+    }
+  }
+
+  // ── Guest photos (moderation) ────────────────────────────────────────────────
+
+  async loadGuestPhotos() {
+    this.isLoadingGuestPhotos = true;
+    try {
+      this.guestPhotos = await this.supabaseService.getAllGuestPhotos();
+      this.applyGuestPhotoFilter();
+    } catch (err) {
+      console.error(err);
+      await this.showToast('Failed to load guest photos', 'danger');
+    } finally {
+      this.isLoadingGuestPhotos = false;
+    }
+  }
+
+  onGuestPhotoSearch(event: any) {
+    this.guestPhotoSearch = event.detail?.value ?? '';
+    this.applyGuestPhotoFilter();
+  }
+
+  private applyGuestPhotoFilter() {
+    const q = this.guestPhotoSearch.trim().toLowerCase();
+    this.filteredGuestPhotos = q
+      ? this.guestPhotos.filter(p => (p.uploader_name || '').toLowerCase().includes(q))
+      : [...this.guestPhotos];
+  }
+
+  /** Unique uploader count, shown in the summary line. */
+  get guestPhotoUploaderCount(): number {
+    return new Set(this.guestPhotos.map(p => (p.uploader_name || '').toLowerCase())).size;
+  }
+
+  openGuestPhoto(photo: WeddingPhoto) { this.viewingGuestPhoto = photo; }
+  closeGuestPhoto() { this.viewingGuestPhoto = null; }
+
+  async confirmDeleteGuestPhoto(photo: WeddingPhoto) {
+    const alert = await this.alertCtrl.create({
+      header: 'Delete photo?',
+      message: `Remove this photo shared by ${photo.uploader_name}? This can't be undone.`,
+      buttons: [
+        { text: 'Cancel', role: 'cancel' },
+        { text: 'Delete', role: 'destructive', handler: () => this.deleteGuestPhoto(photo) },
+      ],
+    });
+    await alert.present();
+  }
+
+  private async deleteGuestPhoto(photo: WeddingPhoto) {
+    try {
+      await this.supabaseService.deleteGuestPhoto(photo.id, photo.storage_path || '');
+      this.guestPhotos = this.guestPhotos.filter(p => p.id !== photo.id);
+      this.applyGuestPhotoFilter();
+      this.closeGuestPhoto();
+      await this.showToast('Photo deleted', 'warning');
+    } catch (err) {
+      console.error(err);
+      await this.showToast("Couldn't delete photo (check delete policy in Supabase)", 'danger');
     }
   }
 
